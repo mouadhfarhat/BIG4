@@ -33,6 +33,9 @@ public class homepage {
     private Button cartBtn;
 
     @FXML
+    private Button adminBtn;
+
+    @FXML
     private Button profileBtn;
 
     @FXML
@@ -98,6 +101,11 @@ public class homepage {
                         "• Restaurant Performance Analysis\n" +
                         "• Menu Popularity Report\n\n" +
                         "Reports are generated and updated regularly.");
+    }
+
+    @FXML
+    private void handleAdmin(ActionEvent event) {
+        loadScene("/main-view.fxml", "Inventory Management");
     }
 
     /**
