@@ -4,13 +4,13 @@ import Entities.DeliveryMan;
 import Utils.Mydatabase;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeliverymanService {
 
     private Connection cnx;
-
 
     public DeliverymanService() {
         try {
@@ -19,12 +19,13 @@ public class DeliverymanService {
             e.printStackTrace();
         }
     }
+
     /**
      * Add new delivery man (using PreparedStatement - SAFER)
      */
     public void addDeliveryMan2(DeliveryMan deliveryMan) throws SQLException {
-        String sql = "insert into delivery_man(name, phone, email, vehicle_type, vehicle_number, status, address, salary, rating)" +
-                "values(?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO delivery_man(name, phone, email, vehicle_type, vehicle_number, status, address, salary, date_of_joining, rating) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         PreparedStatement ps = cnx.prepareStatement(sql);
         ps.setString(1, deliveryMan.getName());
         ps.setString(2, deliveryMan.getPhone());
@@ -34,8 +35,16 @@ public class DeliverymanService {
         ps.setString(6, deliveryMan.getStatus());
         ps.setString(7, deliveryMan.getAddress());
         ps.setDouble(8, deliveryMan.getSalary() != null ? deliveryMan.getSalary() : 0);
-        ps.setDouble(9, deliveryMan.getRating() != null ? deliveryMan.getRating() : 0);
+
+        if (deliveryMan.getDateOfJoining() != null) {
+            ps.setDate(9, java.sql.Date.valueOf(deliveryMan.getDateOfJoining()));
+        } else {
+            ps.setDate(9, java.sql.Date.valueOf(LocalDate.now()));
+        }
+
+        ps.setDouble(10, deliveryMan.getRating() != null ? deliveryMan.getRating() : 0);
         ps.executeUpdate();
+        ps.close();
     }
 
     /**
@@ -43,7 +52,7 @@ public class DeliverymanService {
      */
     public List<DeliveryMan> getAllDeliveryMen() throws SQLException {
         List<DeliveryMan> deliveryMen = new ArrayList<>();
-        String sql = "select * from delivery_man";
+        String sql = "SELECT * FROM delivery_man";
         Statement st = cnx.createStatement();
         ResultSet rs = st.executeQuery(sql);
         while (rs.next()) {
@@ -57,9 +66,16 @@ public class DeliverymanService {
             dm.setStatus(rs.getString("status"));
             dm.setAddress(rs.getString("address"));
             dm.setSalary(rs.getDouble("salary"));
+
+            Date dateOfJoining = rs.getDate("date_of_joining");
+            if (dateOfJoining != null) {
+                dm.setDateOfJoining(dateOfJoining.toLocalDate());
+            }
+
             dm.setRating(rs.getDouble("rating"));
             deliveryMen.add(dm);
         }
+        st.close();
         return deliveryMen;
     }
 
@@ -67,9 +83,11 @@ public class DeliverymanService {
      * Get delivery man by ID
      */
     public DeliveryMan getDeliveryManById(Long id) throws SQLException {
-        String sql = "select * from delivery_man where delivery_man_id = " + id;
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+        String sql = "SELECT * FROM delivery_man WHERE delivery_man_id = ?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setLong(1, id);
+        ResultSet rs = ps.executeQuery();
+
         if (rs.next()) {
             DeliveryMan dm = new DeliveryMan();
             dm.setDeliveryManId(rs.getLong("delivery_man_id"));
@@ -81,9 +99,17 @@ public class DeliverymanService {
             dm.setStatus(rs.getString("status"));
             dm.setAddress(rs.getString("address"));
             dm.setSalary(rs.getDouble("salary"));
+
+            Date dateOfJoining = rs.getDate("date_of_joining");
+            if (dateOfJoining != null) {
+                dm.setDateOfJoining(dateOfJoining.toLocalDate());
+            }
+
             dm.setRating(rs.getDouble("rating"));
+            ps.close();
             return dm;
         }
+        ps.close();
         return null;
     }
 
@@ -92,9 +118,11 @@ public class DeliverymanService {
      */
     public List<DeliveryMan> getDeliveryMenByStatus(String status) throws SQLException {
         List<DeliveryMan> deliveryMen = new ArrayList<>();
-        String sql = "select * from delivery_man where status = '" + status + "'";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
+        String sql = "SELECT * FROM delivery_man WHERE status = ?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setString(1, status);
+        ResultSet rs = ps.executeQuery();
+
         while (rs.next()) {
             DeliveryMan dm = new DeliveryMan();
             dm.setDeliveryManId(rs.getLong("delivery_man_id"));
@@ -106,9 +134,16 @@ public class DeliverymanService {
             dm.setStatus(rs.getString("status"));
             dm.setAddress(rs.getString("address"));
             dm.setSalary(rs.getDouble("salary"));
+
+            Date dateOfJoining = rs.getDate("date_of_joining");
+            if (dateOfJoining != null) {
+                dm.setDateOfJoining(dateOfJoining.toLocalDate());
+            }
+
             dm.setRating(rs.getDouble("rating"));
             deliveryMen.add(dm);
         }
+        ps.close();
         return deliveryMen;
     }
 
@@ -122,23 +157,9 @@ public class DeliverymanService {
     /**
      * Update delivery man
      */
-    public void updateDeliveryMan(DeliveryMan deliveryMan) throws SQLException {
-        String sql = "update delivery_man set name='" + deliveryMan.getName() + "', phone='" + deliveryMan.getPhone() +
-                "', email='" + deliveryMan.getEmail() + "', vehicle_type='" + deliveryMan.getVehicleType() +
-                "', vehicle_number='" + deliveryMan.getVehicleNumber() + "', status='" + deliveryMan.getStatus() +
-                "', address='" + deliveryMan.getAddress() + "', salary=" + (deliveryMan.getSalary() != null ? deliveryMan.getSalary() : 0) +
-                ", rating=" + (deliveryMan.getRating() != null ? deliveryMan.getRating() : 0) +
-                " where delivery_man_id=" + deliveryMan.getDeliveryManId();
-        Statement st = cnx.createStatement();
-        st.executeUpdate(sql);
-    }
-
-    /**
-     * Update delivery man (using PreparedStatement - SAFER)
-     */
     public void updateDeliveryMan2(DeliveryMan deliveryMan) throws SQLException {
-        String sql = "update delivery_man set name=?, phone=?, email=?, vehicle_type=?, vehicle_number=?, " +
-                "status=?, address=?, salary=?, rating=? where delivery_man_id=?";
+        String sql = "UPDATE delivery_man SET name=?, phone=?, email=?, vehicle_type=?, vehicle_number=?, " +
+                "status=?, address=?, salary=?, date_of_joining=?, rating=? WHERE delivery_man_id=?";
         PreparedStatement ps = cnx.prepareStatement(sql);
         ps.setString(1, deliveryMan.getName());
         ps.setString(2, deliveryMan.getPhone());
@@ -148,48 +169,67 @@ public class DeliverymanService {
         ps.setString(6, deliveryMan.getStatus());
         ps.setString(7, deliveryMan.getAddress());
         ps.setDouble(8, deliveryMan.getSalary() != null ? deliveryMan.getSalary() : 0);
-        ps.setDouble(9, deliveryMan.getRating() != null ? deliveryMan.getRating() : 0);
-        ps.setLong(10, deliveryMan.getDeliveryManId());
+
+        if (deliveryMan.getDateOfJoining() != null) {
+            ps.setDate(9, java.sql.Date.valueOf(deliveryMan.getDateOfJoining()));
+        } else {
+            ps.setDate(9, java.sql.Date.valueOf(LocalDate.now()));
+        }
+
+        ps.setDouble(10, deliveryMan.getRating() != null ? deliveryMan.getRating() : 0);
+        ps.setLong(11, deliveryMan.getDeliveryManId());
         ps.executeUpdate();
+        ps.close();
     }
 
     /**
      * Update delivery man status
      */
     public void updateDeliveryManStatus(Long id, String status) throws SQLException {
-        String sql = "update delivery_man set status='" + status + "' where delivery_man_id=" + id;
-        Statement st = cnx.createStatement();
-        st.executeUpdate(sql);
+        String sql = "UPDATE delivery_man SET status=? WHERE delivery_man_id=?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setString(1, status);
+        ps.setLong(2, id);
+        ps.executeUpdate();
+        ps.close();
     }
 
     /**
      * Update delivery man rating
      */
     public void updateDeliveryManRating(Long id, Double rating) throws SQLException {
-        String sql = "update delivery_man set rating=" + rating + " where delivery_man_id=" + id;
-        Statement st = cnx.createStatement();
-        st.executeUpdate(sql);
+        String sql = "UPDATE delivery_man SET rating=? WHERE delivery_man_id=?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setDouble(1, rating);
+        ps.setLong(2, id);
+        ps.executeUpdate();
+        ps.close();
     }
 
     /**
      * Delete delivery man
      */
     public void deleteDeliveryMan(Long id) throws SQLException {
-        String sql = "delete from delivery_man where delivery_man_id=" + id;
-        Statement st = cnx.createStatement();
-        st.executeUpdate(sql);
+        String sql = "DELETE FROM delivery_man WHERE delivery_man_id=?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setLong(1, id);
+        ps.executeUpdate();
+        ps.close();
     }
 
     /**
      * Count all delivery men
      */
     public int countDeliveryMen() throws SQLException {
-        String sql = "select count(*) as count from delivery_man";
+        String sql = "SELECT COUNT(*) as count FROM delivery_man";
         Statement st = cnx.createStatement();
         ResultSet rs = st.executeQuery(sql);
         if (rs.next()) {
-            return rs.getInt("count");
+            int count = rs.getInt("count");
+            st.close();
+            return count;
         }
+        st.close();
         return 0;
     }
 }

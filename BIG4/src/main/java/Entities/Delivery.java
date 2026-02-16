@@ -1,164 +1,94 @@
 package Entities;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.math.BigDecimal;
 
 public class Delivery {
     private Long deliveryId;
     private Long orderId;
     private Long deliveryManId;
-    private String deliveryAddress;
     private String recipientName;
     private String recipientPhone;
+    private String deliveryAddress;
     private String pickupLocation;
     private String status;
-    private Timestamp scheduledDate;
-    private Timestamp actualDeliveryDate;
+    private LocalDateTime scheduledDate;
+    private LocalDateTime actualDeliveryDate;
     private Integer estimatedTime;
-    private Double currentLatitude;
-    private Double currentLongitude;
+    private BigDecimal currentLatitude;
+    private BigDecimal currentLongitude;
     private String deliveryNotes;
     private Integer rating;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
-    // Constructors
     public Delivery() {
     }
 
-    public Delivery(Long orderId, String deliveryAddress, String recipientName, String recipientPhone) {
+    public Delivery(Long orderId, String recipientName, String recipientPhone, String deliveryAddress) {
         this.orderId = orderId;
-        this.deliveryAddress = deliveryAddress;
         this.recipientName = recipientName;
         this.recipientPhone = recipientPhone;
+        this.deliveryAddress = deliveryAddress;
         this.status = "PENDING";
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
-    // Getters and Setters
-    public Long getDeliveryId() {
-        return deliveryId;
-    }
+    public Long getDeliveryId() { return deliveryId; }
+    public void setDeliveryId(Long deliveryId) { this.deliveryId = deliveryId; }
 
-    public void setDeliveryId(Long deliveryId) {
-        this.deliveryId = deliveryId;
-    }
+    public Long getOrderId() { return orderId; }
+    public void setOrderId(Long orderId) { this.orderId = orderId; }
 
-    public Long getOrderId() {
-        return orderId;
-    }
+    public Long getDeliveryManId() { return deliveryManId; }
+    public void setDeliveryManId(Long deliveryManId) { this.deliveryManId = deliveryManId; }
 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
+    public String getRecipientName() { return recipientName; }
+    public void setRecipientName(String recipientName) { this.recipientName = recipientName; }
 
-    public Long getDeliveryManId() {
-        return deliveryManId;
-    }
+    public String getRecipientPhone() { return recipientPhone; }
+    public void setRecipientPhone(String recipientPhone) { this.recipientPhone = recipientPhone; }
 
-    public void setDeliveryManId(Long deliveryManId) {
-        this.deliveryManId = deliveryManId;
-    }
+    public String getDeliveryAddress() { return deliveryAddress; }
+    public void setDeliveryAddress(String deliveryAddress) { this.deliveryAddress = deliveryAddress; }
 
-    public String getDeliveryAddress() {
-        return deliveryAddress;
-    }
+    public String getPickupLocation() { return pickupLocation; }
+    public void setPickupLocation(String pickupLocation) { this.pickupLocation = pickupLocation; }
 
-    public void setDeliveryAddress(String deliveryAddress) {
-        this.deliveryAddress = deliveryAddress;
-    }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 
-    public String getRecipientName() {
-        return recipientName;
-    }
+    public LocalDateTime getScheduledDate() { return scheduledDate; }
+    public void setScheduledDate(LocalDateTime scheduledDate) { this.scheduledDate = scheduledDate; }
 
-    public void setRecipientName(String recipientName) {
-        this.recipientName = recipientName;
-    }
+    public LocalDateTime getActualDeliveryDate() { return actualDeliveryDate; }
+    public void setActualDeliveryDate(LocalDateTime actualDeliveryDate) { this.actualDeliveryDate = actualDeliveryDate; }
 
-    public String getRecipientPhone() {
-        return recipientPhone;
-    }
+    public Integer getEstimatedTime() { return estimatedTime; }
+    public void setEstimatedTime(Integer estimatedTime) { this.estimatedTime = estimatedTime; }
 
-    public void setRecipientPhone(String recipientPhone) {
-        this.recipientPhone = recipientPhone;
-    }
+    public BigDecimal getCurrentLatitude() { return currentLatitude; }
+    public void setCurrentLatitude(BigDecimal currentLatitude) { this.currentLatitude = currentLatitude; }
 
-    public String getPickupLocation() {
-        return pickupLocation;
-    }
+    public BigDecimal getCurrentLongitude() { return currentLongitude; }
+    public void setCurrentLongitude(BigDecimal currentLongitude) { this.currentLongitude = currentLongitude; }
 
-    public void setPickupLocation(String pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
+    public String getDeliveryNotes() { return deliveryNotes; }
+    public void setDeliveryNotes(String deliveryNotes) { this.deliveryNotes = deliveryNotes; }
 
-    public String getStatus() {
-        return status;
-    }
+    public Integer getRating() { return rating; }
+    public void setRating(Integer rating) { this.rating = rating; }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-    public Timestamp getScheduledDate() {
-        return scheduledDate;
-    }
-
-    public void setScheduledDate(Timestamp scheduledDate) {
-        this.scheduledDate = scheduledDate;
-    }
-
-    public Timestamp getActualDeliveryDate() {
-        return actualDeliveryDate;
-    }
-
-    public void setActualDeliveryDate(Timestamp actualDeliveryDate) {
-        this.actualDeliveryDate = actualDeliveryDate;
-    }
-
-    public Integer getEstimatedTime() {
-        return estimatedTime;
-    }
-
-    public void setEstimatedTime(Integer estimatedTime) {
-        this.estimatedTime = estimatedTime;
-    }
-
-    public Double getCurrentLatitude() {
-        return currentLatitude;
-    }
-
-    public void setCurrentLatitude(Double currentLatitude) {
-        this.currentLatitude = currentLatitude;
-    }
-
-    public Double getCurrentLongitude() {
-        return currentLongitude;
-    }
-
-    public void setCurrentLongitude(Double currentLongitude) {
-        this.currentLongitude = currentLongitude;
-    }
-
-    public String getDeliveryNotes() {
-        return deliveryNotes;
-    }
-
-    public void setDeliveryNotes(String deliveryNotes) {
-        this.deliveryNotes = deliveryNotes;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
-    }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 
     @Override
     public String toString() {
-        return "Delivery{" +
-                "deliveryId=" + deliveryId +
-                ", orderId=" + orderId +
-                ", status='" + status + '\'' +
-                ", deliveryAddress='" + deliveryAddress + '\'' +
-                '}';
+        return "Delivery{" + "deliveryId=" + deliveryId + ", orderId=" + orderId +
+                ", recipientName='" + recipientName + '\'' + ", status='" + status + '\'' + '}';
     }
 }
