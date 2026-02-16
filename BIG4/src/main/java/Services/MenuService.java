@@ -1,15 +1,25 @@
 package Services;
 import Entities.Menu;
 import Utils.Mydatabase;
-import java.sql.*;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuService {
-    private Connection cnx ;
-    public  MenuService () {
+    private final Connection cnx;
 
-        cnx = Mydatabase.getInstance().getConnection();    }
+    public MenuService() {
+        try {
+            cnx = Mydatabase.getInstance().getConnection();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to obtain database connection", e);
+        }
+    }
     /*public void addMenu(Menu menu) throws SQLException{
         String sql = "insert into menu (title, description, isActive) " +
                 "values ('" + menu.getTitle() + "', '" +

@@ -3,7 +3,12 @@ package Services;
 import Entities.Dish;
 import Utils.Mydatabase;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +17,11 @@ public class DishService {
     private final Connection cnx;
 
     public DishService() {
-        cnx = Mydatabase.getInstance().getConnection();
+        try {
+            cnx = Mydatabase.getInstance().getConnection();
+        } catch (SQLException e) {
+            throw new IllegalStateException("Unable to obtain database connection", e);
+        }
     }
 
     // ✅ CREATE (now includes menu_id)
@@ -23,17 +32,15 @@ public class DishService {
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement ps = cnx.prepareStatement(sql);
-        System.out.println("DEBUG DishService.add menu_id=" + dish.getMenu_id());
-        ps.setInt(1, dish.getMenu_id());              // ✅ menu_id
+        ps.setInt(1, dish.getMenu_id());
         ps.setString(2, dish.getName());
         ps.setString(3, dish.getDescription());
         ps.setFloat(4, dish.getBase_price());
-        ps.setBoolean(5, dish.getAvailable());
+        ps.setBoolean(5, dish.getAvailable() != null && dish.getAvailable());
         ps.setInt(6, dish.getStock_quantity());
         ps.setString(7, dish.getImage_url());
         ps.setTimestamp(8, dish.getCreated_at());
         ps.setTimestamp(9, dish.getUpdate_at());
-        System.out.println("DEBUG menu_id = " + dish.getMenu_id());
         ps.executeUpdate();
     }
 
@@ -109,7 +116,7 @@ public class DishService {
         ps.setString(2, dish.getName());
         ps.setString(3, dish.getDescription());
         ps.setFloat(4, dish.getBase_price());
-        ps.setBoolean(5, dish.getAvailable());
+        ps.setBoolean(5, dish.getAvailable() != null && dish.getAvailable());
         ps.setInt(6, dish.getStock_quantity());
         ps.setString(7, dish.getImage_url());
         ps.setTimestamp(8, dish.getUpdate_at());

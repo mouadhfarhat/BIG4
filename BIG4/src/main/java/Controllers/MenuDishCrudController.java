@@ -4,11 +4,17 @@ import Entities.Dish;
 import Entities.Menu;
 import Services.DishService;
 import Services.MenuService;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -47,59 +53,59 @@ public class MenuDishCrudController {
     @FXML private TextField tfDishImage;
     @FXML private Label lblDishMsg;
 
-    // ===== Services =====
     private final MenuService menuService = new MenuService();
     private final DishService dishService = new DishService();
 
-    // ===== State =====
     private Menu selectedMenu;
 
     @FXML
     public void initialize() {
-        // Menu columns
-        colMenuId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
-        colMenuTitle.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("title"));
-        colMenuDesc.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("description"));
-        colMenuActive.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("active"));
+        configureMenuTable();
+        configureDishTable();
 
-        // Dish columns
-        colDishId.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("id"));
-        colDishName.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("name"));
-        colDishDesc.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("description"));
-        colDishPrice.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("base_price"));
-        colDishAvail.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("available"));
-        colDishStock.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("stock_quantity"));
-        colDishImage.setCellValueFactory(new javafx.scene.control.cell.PropertyValueFactory<>("image_url"));
-
-        // Selection listeners
         tvMenus.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             selectedMenu = newV;
             onMenuSelected(newV);
         });
 
         tvDishes.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-            if (newV != null) fillDishForm(newV);
+            if (newV != null) {
+                fillDishForm(newV);
+            }
         });
 
-        // Load initial data
         refreshMenus();
         refreshDishesForSelectedMenu();
     }
 
-    // ===================== MENUS =====================
+    private void configureMenuTable() {
+        colMenuId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colMenuTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+        colMenuDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colMenuActive.setCellValueFactory(new PropertyValueFactory<>("active"));
+    }
 
-    private void onMenuSelected(Menu m) {
-        lblMenuMsg.setText("");
-        lblDishMsg.setText("");
-        if (m == null) {
+    private void configureDishTable() {
+        colDishId.setCellValueFactory(new PropertyValueFactory<>("id"));
+        colDishName.setCellValueFactory(new PropertyValueFactory<>("name"));
+        colDishDesc.setCellValueFactory(new PropertyValueFactory<>("description"));
+        colDishPrice.setCellValueFactory(new PropertyValueFactory<>("base_price"));
+        colDishAvail.setCellValueFactory(new PropertyValueFactory<>("available"));
+        colDishStock.setCellValueFactory(new PropertyValueFactory<>("stock_quantity"));
+        colDishImage.setCellValueFactory(new PropertyValueFactory<>("image_url"));
+    }
+
+    private void onMenuSelected(Menu menu) {
+        clearMessages();
+        if (menu == null) {
             lblSelectedMenu.setText("Selected menu: (none)");
             clearDishForm();
             tvDishes.setItems(FXCollections.observableArrayList());
             return;
         }
 
-        lblSelectedMenu.setText("Selected menu: " + m.getId() + " - " + m.getTitle());
-        fillMenuForm(m);
+        lblSelectedMenu.setText("Selected menu: " + menu.getId() + " - " + menu.getTitle());
+        fillMenuForm(menu);
         refreshDishesForSelectedMenu();
     }
 
@@ -112,15 +118,15 @@ public class MenuDishCrudController {
         }
     }
 
-    private void fillMenuForm(Menu m) {
-        tfMenuTitle.setText(m.getTitle());
-        taMenuDesc.setText(m.getDescription());
-        cbMenuActive.setSelected(m.isActive());
+    private void fillMenuForm(Menu menu) {
+        tfMenuTitle.setText(menu.getTitle());
+        taMenuDesc.setText(menu.getDescription());
+        cbMenuActive.setSelected(menu.isActive());
     }
 
     @FXML
     private void onAddMenu() {
-        lblMenuMsg.setText("");
+        clearMessages();
         try {
             String title = tfMenuTitle.getText().trim();
             String desc = taMenuDesc.getText().trim();
@@ -130,12 +136,12 @@ public class MenuDishCrudController {
                 return;
             }
 
-            Menu m = new Menu();
-            m.setTitle(title);
-            m.setDescription(desc);
-            m.setActive(cbMenuActive.isSelected());
+            Menu menu = new Menu();
+            menu.setTitle(title);
+            menu.setDescription(desc);
+            menu.setActive(cbMenuActive.isSelected());
 
-            menuService.addMenu2(m);
+            menuService.addMenu2(menu);
 
             onClearMenu();
             refreshMenus();
@@ -147,9 +153,9 @@ public class MenuDishCrudController {
 
     @FXML
     private void onUpdateMenu() {
-        lblMenuMsg.setText("");
-        Menu m = tvMenus.getSelectionModel().getSelectedItem();
-        if (m == null) {
+        clearMessages();
+        Menu menu = tvMenus.getSelectionModel().getSelectedItem();
+        if (menu == null) {
             lblMenuMsg.setText("Select a menu first.");
             return;
         }
@@ -162,11 +168,11 @@ public class MenuDishCrudController {
                 return;
             }
 
-            m.setTitle(title);
-            m.setDescription(desc);
-            m.setActive(cbMenuActive.isSelected());
+            menu.setTitle(title);
+            menu.setDescription(desc);
+            menu.setActive(cbMenuActive.isSelected());
 
-            menuService.updateMenu(m);
+            menuService.updateMenu(menu);
 
             refreshMenus();
 
@@ -177,18 +183,16 @@ public class MenuDishCrudController {
 
     @FXML
     private void onDeleteMenu() {
-        lblMenuMsg.setText("");
+        clearMessages();
 
-        Menu m = tvMenus.getSelectionModel().getSelectedItem();
-        if (m == null) {
+        Menu menu = tvMenus.getSelectionModel().getSelectedItem();
+        if (menu == null) {
             lblMenuMsg.setText("Select a menu first.");
             return;
         }
 
         try {
-            menuService.delete(m.getId());
-
-            // because ON DELETE CASCADE -> dishes will be deleted too
+            menuService.delete(menu.getId());
             selectedMenu = null;
             tvMenus.getSelectionModel().clearSelection();
             lblSelectedMenu.setText("Selected menu: (none)");
@@ -216,8 +220,6 @@ public class MenuDishCrudController {
         refreshMenus();
     }
 
-    // ===================== DISHES =====================
-
     private void refreshDishesForSelectedMenu() {
         if (selectedMenu == null) {
             tvDishes.setItems(FXCollections.observableArrayList());
@@ -236,7 +238,7 @@ public class MenuDishCrudController {
 
     @FXML
     private void onAddDish() {
-        lblDishMsg.setText("");
+        clearMessages();
 
         if (selectedMenu == null) {
             lblDishMsg.setText("Select a menu first (left table).");
@@ -253,28 +255,28 @@ public class MenuDishCrudController {
                 return;
             }
 
-            float price;
-            try { price = Float.parseFloat(tfDishPrice.getText().trim()); }
-            catch (Exception ex) { lblDishMsg.setText("Invalid price."); return; }
+            Float price = parseFloat(tfDishPrice.getText(), "price");
+            if (price == null) {
+                return;
+            }
 
-            int stock;
-            try { stock = Integer.parseInt(tfDishStock.getText().trim()); }
-            catch (Exception ex) { lblDishMsg.setText("Invalid stock quantity."); return; }
+            Integer stock = parseInt(tfDishStock.getText(), "stock quantity");
+            if (stock == null) {
+                return;
+            }
 
-            Dish d = new Dish();
-            d.setMenu_id(selectedMenu.getId());  // ✅ CRITICAL (no more 0)
-            d.setName(name);
-            d.setDescription(desc);
-            d.setBase_price(price);
-            d.setAvailable(cbDishAvailable.isSelected());
-            d.setStock_quantity(stock);
-            d.setImage_url(img);
+            Dish dish = new Dish();
+            dish.setMenu_id(selectedMenu.getId());
+            dish.setName(name);
+            dish.setDescription(desc);
+            dish.setBase_price(price);
+            dish.setAvailable(cbDishAvailable.isSelected());
+            dish.setStock_quantity(stock);
+            dish.setImage_url(img);
+            dish.setCreated_at(Timestamp.from(Instant.now()));
+            dish.setUpdate_at(Timestamp.from(Instant.now()));
 
-            // because your DishService requires timestamps:
-            d.setCreated_at(Timestamp.from(Instant.now()));
-            d.setUpdate_at(Timestamp.from(Instant.now()));
-
-            dishService.add(d);
+            dishService.add(dish);
 
             onClearDish();
             refreshDishesForSelectedMenu();
@@ -286,10 +288,10 @@ public class MenuDishCrudController {
 
     @FXML
     private void onUpdateDish() {
-        lblDishMsg.setText("");
+        clearMessages();
 
-        Dish d = tvDishes.getSelectionModel().getSelectedItem();
-        if (d == null) {
+        Dish dish = tvDishes.getSelectionModel().getSelectedItem();
+        if (dish == null) {
             lblDishMsg.setText("Select a dish first.");
             return;
         }
@@ -308,25 +310,26 @@ public class MenuDishCrudController {
                 return;
             }
 
-            float price;
-            try { price = Float.parseFloat(tfDishPrice.getText().trim()); }
-            catch (Exception ex) { lblDishMsg.setText("Invalid price."); return; }
+            Float price = parseFloat(tfDishPrice.getText(), "price");
+            if (price == null) {
+                return;
+            }
 
-            int stock;
-            try { stock = Integer.parseInt(tfDishStock.getText().trim()); }
-            catch (Exception ex) { lblDishMsg.setText("Invalid stock quantity."); return; }
+            Integer stock = parseInt(tfDishStock.getText(), "stock quantity");
+            if (stock == null) {
+                return;
+            }
 
-            d.setMenu_id(selectedMenu.getId());
-            d.setName(name);
-            d.setDescription(desc);
-            d.setBase_price(price);
-            d.setAvailable(cbDishAvailable.isSelected());
-            d.setStock_quantity(stock);
-            d.setImage_url(img);
+            dish.setMenu_id(selectedMenu.getId());
+            dish.setName(name);
+            dish.setDescription(desc);
+            dish.setBase_price(price);
+            dish.setAvailable(cbDishAvailable.isSelected());
+            dish.setStock_quantity(stock);
+            dish.setImage_url(img);
+            dish.setUpdate_at(Timestamp.from(Instant.now()));
 
-            d.setUpdate_at(Timestamp.from(Instant.now()));
-
-            dishService.update(d);
+            dishService.update(dish);
 
             refreshDishesForSelectedMenu();
 
@@ -337,16 +340,16 @@ public class MenuDishCrudController {
 
     @FXML
     private void onDeleteDish() {
-        lblDishMsg.setText("");
+        clearMessages();
 
-        Dish d = tvDishes.getSelectionModel().getSelectedItem();
-        if (d == null) {
+        Dish dish = tvDishes.getSelectionModel().getSelectedItem();
+        if (dish == null) {
             lblDishMsg.setText("Select a dish first.");
             return;
         }
 
         try {
-            dishService.delete(d.getId());
+            dishService.delete(dish.getId());
             onClearDish();
             refreshDishesForSelectedMenu();
 
@@ -361,6 +364,11 @@ public class MenuDishCrudController {
         lblDishMsg.setText("");
     }
 
+    @FXML
+    private void onRefreshDishes() {
+        refreshDishesForSelectedMenu();
+    }
+
     private void clearDishForm() {
         tfDishName.clear();
         taDishDesc.clear();
@@ -370,17 +378,43 @@ public class MenuDishCrudController {
         tfDishImage.clear();
     }
 
-    private void fillDishForm(Dish d) {
-        tfDishName.setText(d.getName());
-        taDishDesc.setText(d.getDescription());
-        tfDishPrice.setText(String.valueOf(d.getBase_price()));
-        cbDishAvailable.setSelected(d.getAvailable() != null && d.getAvailable());
-        tfDishStock.setText(String.valueOf(d.getStock_quantity()));
-        tfDishImage.setText(d.getImage_url());
+    private void fillDishForm(Dish dish) {
+        tfDishName.setText(dish.getName());
+        taDishDesc.setText(dish.getDescription());
+        tfDishPrice.setText(String.valueOf(dish.getBase_price()));
+        cbDishAvailable.setSelected(dish.getAvailable() != null && dish.getAvailable());
+        tfDishStock.setText(String.valueOf(dish.getStock_quantity()));
+        tfDishImage.setText(dish.getImage_url());
     }
 
-    @FXML
-    private void onRefreshDishes() {
-        refreshDishesForSelectedMenu();
+    private Float parseFloat(String value, String label) {
+        try {
+            return Float.parseFloat(value.trim());
+        } catch (NumberFormatException ex) {
+            showValidationAlert("Invalid " + label + ".");
+            return null;
+        }
+    }
+
+    private Integer parseInt(String value, String label) {
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException ex) {
+            showValidationAlert("Invalid " + label + ".");
+            return null;
+        }
+    }
+
+    private void showValidationAlert(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Validation");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.show();
+    }
+
+    private void clearMessages() {
+        lblMenuMsg.setText("");
+        lblDishMsg.setText("");
     }
 }
