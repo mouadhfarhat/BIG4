@@ -33,7 +33,10 @@ public class homepage {
     private Button cartBtn;
 
     @FXML
-    private Button adminBtn;
+    private Button adminInventoryBtn;
+
+    @FXML
+    private Button adminMenuBtn;
 
     @FXML
     private Button profileBtn;
@@ -104,8 +107,13 @@ public class homepage {
     }
 
     @FXML
-    private void handleAdmin(ActionEvent event) {
-        loadScene("/main-view.fxml", "Inventory Management");
+    private void handleAdminInventory(ActionEvent event) {
+        loadScene("/inventory-view.fxml", "Inventory Management");
+    }
+
+    @FXML
+    private void handleAdminMenu(ActionEvent event) {
+        loadScene("/menu-management.fxml", "Menu & Dish Management");
     }
 
     /**

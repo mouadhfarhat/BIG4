@@ -19,7 +19,10 @@
             prefWidth="900.0" prefHeight="600.0">
 
     <top>
-        <VBox spacing="6" padding="15" styleClass="header-section">
+        <VBox spacing="6" styleClass="header-section">
+            <padding>
+                <Insets top="15" right="15" bottom="15" left="15"/>
+            </padding>
             <children>
                 <Label text="Menu &amp; Dish Management" styleClass="title-label"/>
                 <Label text="Manage restaurant menus and associated dishes." styleClass="subtitle-label"/>
