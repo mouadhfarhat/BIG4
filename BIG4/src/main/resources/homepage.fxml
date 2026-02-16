@@ -49,6 +49,9 @@
                 <Button fx:id="contactBtn" text="Contact"
                         style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
                         onAction="#handleContact" />
+                <Button fx:id="deliveryBtn" text="Delivery"
+                        style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
+                        onAction="#handleDelivery" />
             </HBox>
 
             <!-- Spacer to push buttons to the right -->

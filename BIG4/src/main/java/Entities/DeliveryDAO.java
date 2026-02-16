@@ -1,20 +1,13 @@
-package Services;
+package Entities;
 
-import Entities.Delivery;
 import Utils.Mydatabase;
-import java.math.BigDecimal;
 import java.sql.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class DeliveryService {
+public class DeliveryDAO {
 
-    /**
-     * Create a new delivery with auto-assignment of delivery man
-     */
-    public boolean addDeliveryWithAutoAssignment(Delivery delivery) throws SQLException {
+    public static boolean createDelivery(Delivery delivery) {
         String sql = "INSERT INTO delivery (order_id, delivery_man_id, recipient_name, recipient_phone, " +
                 "delivery_address, pickup_location, status, scheduled_date, estimated_time, delivery_notes) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -45,15 +38,11 @@ public class DeliveryService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
         return false;
     }
 
-    /**
-     * Get all deliveries
-     */
-    public List<Delivery> getAllDeliveries() throws SQLException {
+    public static List<Delivery> getAllDeliveries() {
         List<Delivery> deliveries = new ArrayList<>();
         String sql = "SELECT * FROM delivery ORDER BY created_at DESC";
 
@@ -66,15 +55,11 @@ public class DeliveryService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
         return deliveries;
     }
 
-    /**
-     * Get delivery by ID
-     */
-    public Delivery getDeliveryById(Long deliveryId) throws SQLException {
+    public static Delivery getDeliveryById(Long deliveryId) {
         String sql = "SELECT * FROM delivery WHERE delivery_id = ?";
 
         try (Connection conn = Mydatabase.getInstance().getConnection();
@@ -88,15 +73,11 @@ public class DeliveryService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
         return null;
     }
 
-    /**
-     * Update delivery status
-     */
-    public boolean updateDeliveryStatus(Long deliveryId, String newStatus) throws SQLException {
+    public static boolean updateDeliveryStatus(Long deliveryId, String newStatus) {
         String sql = "UPDATE delivery SET status = ?, updated_at = NOW() WHERE delivery_id = ?";
 
         try (Connection conn = Mydatabase.getInstance().getConnection();
@@ -108,14 +89,11 @@ public class DeliveryService {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
+        return false;
     }
 
-    /**
-     * Update full delivery record
-     */
-    public boolean updateDelivery(Delivery delivery) throws SQLException {
+    public static boolean updateDelivery(Delivery delivery) {
         String sql = "UPDATE delivery SET recipient_name = ?, recipient_phone = ?, delivery_address = ?, " +
                 "pickup_location = ?, status = ?, scheduled_date = ?, estimated_time = ?, " +
                 "delivery_notes = ?, delivery_man_id = ?, updated_at = NOW() WHERE delivery_id = ?";
@@ -137,14 +115,11 @@ public class DeliveryService {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
+        return false;
     }
 
-    /**
-     * Delete delivery
-     */
-    public boolean deleteDelivery(Long deliveryId) throws SQLException {
+    public static boolean deleteDelivery(Long deliveryId) {
         String sql = "DELETE FROM delivery WHERE delivery_id = ?";
 
         try (Connection conn = Mydatabase.getInstance().getConnection();
@@ -154,14 +129,11 @@ public class DeliveryService {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
+        return false;
     }
 
-    /**
-     * Search deliveries by name, phone, or ID
-     */
-    public List<Delivery> searchDeliveries(String searchTerm) throws SQLException {
+    public static List<Delivery> searchDeliveries(String searchTerm) {
         List<Delivery> deliveries = new ArrayList<>();
         String sql = "SELECT * FROM delivery WHERE recipient_name LIKE ? OR recipient_phone LIKE ? " +
                 "OR delivery_id LIKE ? ORDER BY created_at DESC";
@@ -181,15 +153,11 @@ public class DeliveryService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
         return deliveries;
     }
 
-    /**
-     * Get deliveries by status
-     */
-    public List<Delivery> getDeliveriesByStatus(String status) throws SQLException {
+    public static List<Delivery> getDeliveriesByStatus(String status) {
         List<Delivery> deliveries = new ArrayList<>();
         String sql = "SELECT * FROM delivery WHERE status = ? ORDER BY created_at DESC";
 
@@ -204,96 +172,29 @@ public class DeliveryService {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            throw e;
         }
         return deliveries;
     }
 
-    /**
-     * Get deliveries for a specific delivery man
-     */
-    public List<Delivery> getDeliveriesByDeliveryMan(Long deliveryManId) throws SQLException {
-        List<Delivery> deliveries = new ArrayList<>();
-        String sql = "SELECT * FROM delivery WHERE delivery_man_id = ? ORDER BY created_at DESC";
-
-        try (Connection conn = Mydatabase.getInstance().getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setLong(1, deliveryManId);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    deliveries.add(mapResultSetToDelivery(rs));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
-        }
-        return deliveries;
-    }
-
-    /**
-     * Map ResultSet to Delivery object
-     */
-    private Delivery mapResultSetToDelivery(ResultSet rs) throws SQLException {
+    private static Delivery mapResultSetToDelivery(ResultSet rs) throws SQLException {
         Delivery delivery = new Delivery();
-
         delivery.setDeliveryId(rs.getLong("delivery_id"));
         delivery.setOrderId(rs.getLong("order_id"));
-
-        // Handle nullable delivery_man_id
-        Object deliveryManObj = rs.getObject("delivery_man_id");
-        if (deliveryManObj != null) {
-            delivery.setDeliveryManId(((Number) deliveryManObj).longValue());
-        }
-
+        delivery.setDeliveryManId(rs.getObject("delivery_man_id") != null ? rs.getLong("delivery_man_id") : null);
         delivery.setRecipientName(rs.getString("recipient_name"));
         delivery.setRecipientPhone(rs.getString("recipient_phone"));
         delivery.setDeliveryAddress(rs.getString("delivery_address"));
         delivery.setPickupLocation(rs.getString("pickup_location"));
         delivery.setStatus(rs.getString("status"));
-
-        // Handle nullable scheduled_date
-        Timestamp scheduledTs = rs.getTimestamp("scheduled_date");
-        if (scheduledTs != null) {
-            delivery.setScheduledDate(scheduledTs.toLocalDateTime());
-        }
-
-        // Handle nullable actual_delivery_date
-        Timestamp actualTs = rs.getTimestamp("actual_delivery_date");
-        if (actualTs != null) {
-            delivery.setActualDeliveryDate(actualTs.toLocalDateTime());
-        }
-
-        // Handle nullable estimated_time
-        Object estimatedObj = rs.getObject("estimated_time");
-        if (estimatedObj != null) {
-            delivery.setEstimatedTime(((Number) estimatedObj).intValue());
-        }
-
-        // Handle nullable current_latitude
-        Object latObj = rs.getObject("current_latitude");
-        if (latObj != null) {
-            delivery.setCurrentLatitude((BigDecimal) latObj);
-        }
-
-        // Handle nullable current_longitude
-        Object longObj = rs.getObject("current_longitude");
-        if (longObj != null) {
-            delivery.setCurrentLongitude((BigDecimal) longObj);
-        }
-
+        delivery.setScheduledDate(rs.getObject("scheduled_date") != null ? rs.getTimestamp("scheduled_date").toLocalDateTime() : null);
+        delivery.setActualDeliveryDate(rs.getObject("actual_delivery_date") != null ? rs.getTimestamp("actual_delivery_date").toLocalDateTime() : null);
+        delivery.setEstimatedTime(rs.getObject("estimated_time") != null ? rs.getInt("estimated_time") : null);
+        delivery.setCurrentLatitude(rs.getObject("current_latitude") != null ? rs.getBigDecimal("current_latitude") : null);
+        delivery.setCurrentLongitude(rs.getObject("current_longitude") != null ? rs.getBigDecimal("current_longitude") : null);
         delivery.setDeliveryNotes(rs.getString("delivery_notes"));
-
-        // Handle nullable rating
-        Object ratingObj = rs.getObject("rating");
-        if (ratingObj != null) {
-            delivery.setRating(((Number) ratingObj).intValue());
-        }
-
+        delivery.setRating(rs.getObject("rating") != null ? rs.getInt("rating") : null);
         delivery.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         delivery.setUpdatedAt(rs.getTimestamp("updated_at").toLocalDateTime());
-
         return delivery;
     }
 }

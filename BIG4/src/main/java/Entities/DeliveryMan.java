@@ -1,5 +1,7 @@
 package Entities;
 
+import java.time.LocalDate;
+
 public class DeliveryMan {
     private Long deliveryManId;
     private String name;
@@ -10,6 +12,7 @@ public class DeliveryMan {
     private String status;
     private String address;
     private Double salary;
+    private LocalDate dateOfJoining;
     private Double rating;
 
     // Constructors
@@ -99,6 +102,14 @@ public class DeliveryMan {
         this.salary = salary;
     }
 
+    public LocalDate getDateOfJoining() {
+        return dateOfJoining;
+    }
+
+    public void setDateOfJoining(LocalDate dateOfJoining) {
+        this.dateOfJoining = dateOfJoining;
+    }
+
     public Double getRating() {
         return rating;
     }
@@ -116,4 +127,6 @@ public class DeliveryMan {
                 ", status='" + status + '\'' +
                 '}';
     }
+
+
 }

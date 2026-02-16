@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.AddEditDeliveryManDialog"
+            style="-fx-background-color: #f5f5f5;">
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 30;">
+            <!-- Title -->
+            <Label fx:id="titleLabel" text="Add New Delivery Man"
+                   style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                <font>
+                    <Font size="22.0" />
+                </font>
+            </Label>
+
+            <!-- Scrollable Form Section -->
+            <ScrollPane style="-fx-border: none; -fx-padding: 0;" VBox.vgrow="ALWAYS">
+                <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 25; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);">
+
+                    <!-- Name -->
+                    <VBox spacing="5">
+                        <Label text="Full Name *" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                            <font><Font size="12.0" /></font>
+                        </Label>
+                        <TextField fx:id="nameField" promptText="Enter full name"
+                                   style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                    </VBox>
+
+                    <!-- Phone and Email (Row) -->
+                    <HBox spacing="20">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Phone *" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <TextField fx:id="phoneField" promptText="Phone number"
+                                       style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                        </VBox>
+
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Email *" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <TextField fx:id="emailField" promptText="Email address"
+                                       style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Vehicle Type and Vehicle Number (Row) -->
+                    <HBox spacing="20">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Vehicle Type *" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <ComboBox fx:id="vehicleTypeCombo" promptText="Select vehicle type"
+                                      style="-fx-padding: 10; -fx-font-size: 12; -fx-border-radius: 5;">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="Motorcycle"/>
+                                        <String fx:value="Car"/>
+                                        <String fx:value="Van"/>
+                                        <String fx:value="Truck"/>
+                                        <String fx:value="Bicycle"/>
+                                        <String fx:value="Scooter"/>
+                                        <String fx:value="Electric Bike"/>
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                        </VBox>
+
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Vehicle Number *" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <TextField fx:id="vehicleNumberField" promptText="License plate"
+                                       style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Address -->
+                    <VBox spacing="5">
+                        <Label text="Address" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                            <font><Font size="12.0" /></font>
+                        </Label>
+                        <TextArea fx:id="addressField" promptText="Street address"
+                                  style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD; -fx-control-inner-background: white;"
+                                  wrapText="true" prefRowCount="3" />
+                    </VBox>
+
+                    <!-- Status and Date of Joining (Row) -->
+                    <HBox spacing="20">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Status" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <ComboBox fx:id="statusCombo" promptText="Select status"
+                                      style="-fx-padding: 10; -fx-font-size: 12; -fx-border-radius: 5;">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="ACTIVE"/>
+                                        <String fx:value="INACTIVE"/>
+                                        <String fx:value="ON_DELIVERY"/>
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                        </VBox>
+
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Date of Joining" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <DatePicker fx:id="joiningDatePicker" style="-fx-padding: 10; -fx-font-size: 12; -fx-border-radius: 5;" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Salary and Rating (Row) -->
+                    <HBox spacing="20">
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Salary" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <TextField fx:id="salaryField" promptText="Monthly salary"
+                                       style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                        </VBox>
+
+                        <VBox spacing="5" HBox.hgrow="ALWAYS">
+                            <Label text="Rating (0-5)" style="-fx-text-fill: rgb(1,10,34); -fx-font-weight: bold;">
+                                <font><Font size="12.0" /></font>
+                            </Label>
+                            <TextField fx:id="ratingField" promptText="0.0 - 5.0"
+                                       style="-fx-padding: 12; -fx-font-size: 12; -fx-border-radius: 5; -fx-border-color: #DDD;" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Validation Message -->
+                    <Label fx:id="validationLabel" text="" style="-fx-text-fill: #e74c3c; -fx-font-weight: bold;" />
+                </VBox>
+            </ScrollPane>
+
+            <!-- Button Section -->
+            <HBox spacing="15" alignment="CENTER_RIGHT">
+                <Button text="Cancel" style="-fx-padding: 12 40; -fx-font-size: 12; -fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 5; -fx-cursor: hand;"
+                        onAction="#handleCancel" />
+                <Button fx:id="saveBtn" text="Save" style="-fx-padding: 12 40; -fx-font-size: 12; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-border-radius: 5; -fx-cursor: hand;"
+                        onAction="#handleSave" />
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
