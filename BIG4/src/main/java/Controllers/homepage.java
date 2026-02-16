@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Popup;
@@ -33,16 +34,134 @@ public class homepage {
     @FXML private Button callBtn;
     @FXML private Button viewMenuBtn;
     @FXML private Button reserveTableBtn;
+    @FXML private BorderPane rootPane;
 
     // We use a plain Popup instead of ContextMenu for full visual control
     private Popup deliveryPopup;
+    private Popup adminPopup;
 
     @FXML
     public void initialize() {
+        buildAdminPopup();
         buildDeliveryPopup();
     }
 
     // ── Build popup ───────────────────────────────────────────────────────────
+
+        private void buildAdminPopup() {
+        adminPopup = new Popup();
+        adminPopup.setAutoHide(true);
+        adminPopup.setAutoFix(true);
+
+        VBox card = new VBox(0);
+        card.setStyle(
+            "-fx-background-color: rgb(5, 14, 42);" +
+                "-fx-background-radius: 14;" +
+                "-fx-border-color: rgba(255,165,0,0.30);" +
+                "-fx-border-width: 1;" +
+                "-fx-border-radius: 14;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.60), 24, 0.25, 0, 8);" +
+                "-fx-padding: 10 0 10 0;" +
+                "-fx-min-width: 240;"
+        );
+
+        Label sectionLabel = new Label("A D M I N");
+        sectionLabel.setStyle(
+            "-fx-text-fill: #FFA500;" +
+                "-fx-font-size: 9.5px;" +
+                "-fx-font-family: 'Arial';" +
+                "-fx-padding: 4 20 8 20;" +
+                "-fx-opacity: 0.75;"
+        );
+        card.getChildren().add(sectionLabel);
+
+        HBox line = new HBox();
+        line.setStyle("-fx-background-color: rgba(255,165,0,0.18); -fx-pref-height: 1;");
+        VBox.setMargin(line, new Insets(0, 14, 6, 14));
+        card.getChildren().add(line);
+
+        card.getChildren().addAll(
+            buildAdminItem("📦", "Ingredients", "Inventory dashboard", this::openInventoryStock),
+            buildAdminItem("🗑", "Waste Records", "Record and review waste", this::openInventoryWaste)
+        );
+
+        adminPopup.getContent().add(card);
+        }
+
+        private HBox buildAdminItem(String emoji, String title, String subtitle, Runnable action) {
+        Label icon = new Label(emoji);
+        icon.setStyle(
+            "-fx-font-size: 17px;" +
+                "-fx-background-color: rgba(255,165,0,0.13);" +
+                "-fx-background-radius: 9;" +
+                "-fx-padding: 7 9 7 9;" +
+                "-fx-min-width: 38;" +
+                "-fx-alignment: CENTER;"
+        );
+
+        Label titleLbl = new Label(title);
+        titleLbl.setStyle(
+            "-fx-text-fill: white;" +
+                "-fx-font-size: 13px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-family: 'Arial';"
+        );
+        Label subLbl = new Label(subtitle);
+        subLbl.setStyle(
+            "-fx-text-fill: rgba(255,255,255,0.40);" +
+                "-fx-font-size: 10px;" +
+                "-fx-font-family: 'Arial';"
+        );
+        VBox text = new VBox(2, titleLbl, subLbl);
+        text.setAlignment(Pos.CENTER_LEFT);
+
+        HBox row = new HBox(12, icon, text);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(9, 18, 9, 14));
+        row.setStyle("-fx-cursor: hand; -fx-background-color: transparent; -fx-background-radius: 10;");
+
+        row.setOnMouseEntered(e -> {
+            row.setStyle("-fx-cursor: hand; -fx-background-color: rgba(255,165,0,0.09); -fx-background-radius: 10;");
+            icon.setStyle(
+                "-fx-font-size: 17px;" +
+                    "-fx-background-color: rgba(255,165,0,0.25);" +
+                    "-fx-background-radius: 9;" +
+                    "-fx-padding: 7 9 7 9;" +
+                    "-fx-min-width: 38;" +
+                    "-fx-alignment: CENTER;"
+            );
+            titleLbl.setStyle(
+                "-fx-text-fill: #FFA500;" +
+                    "-fx-font-size: 13px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Arial';"
+            );
+        });
+        row.setOnMouseExited(e -> {
+            row.setStyle("-fx-cursor: hand; -fx-background-color: transparent; -fx-background-radius: 10;");
+            icon.setStyle(
+                "-fx-font-size: 17px;" +
+                    "-fx-background-color: rgba(255,165,0,0.13);" +
+                    "-fx-background-radius: 9;" +
+                    "-fx-padding: 7 9 7 9;" +
+                    "-fx-min-width: 38;" +
+                    "-fx-alignment: CENTER;"
+            );
+            titleLbl.setStyle(
+                "-fx-text-fill: white;" +
+                    "-fx-font-size: 13px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Arial';"
+            );
+        });
+
+        row.setOnMouseClicked(e -> {
+            adminPopup.hide();
+            action.run();
+        });
+
+        return row;
+        }
 
     private void buildDeliveryPopup() {
         deliveryPopup = new Popup();
@@ -203,6 +322,35 @@ public class homepage {
         }
     }
 
+    private void openInventoryStock() {
+        openInventoryAndSelectTab(false);
+    }
+
+    private void openInventoryWaste() {
+        openInventoryAndSelectTab(true);
+    }
+
+    private void openInventoryAndSelectTab(boolean selectWasteTab) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main-view.fxml"));
+            Parent inventoryRoot = loader.load();
+            Controllers.MainController controller = loader.getController();
+            if (selectWasteTab) {
+                controller.showWasteTab();
+            } else {
+                controller.showStockTab();
+            }
+
+            // Keep navbar visible by swapping only the center content on the same stage.
+            rootPane.setCenter(inventoryRoot);
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setTitle(selectWasteTab ? "Waste Records - Big4" : "Inventory Dashboard - Big4");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open inventory.\n\nError: " + e.getMessage());
+        }
+    }
+
     private void loadAddDelivery() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/CreateDelivery.fxml"));
@@ -280,15 +428,13 @@ public class homepage {
 
     @FXML
     private void handleAdmin(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDelivery.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) adminBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, 1400, 800));
-            stage.setTitle("Admin Delivery - Big4");
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Navigation Error", "Unable to open Admin dashboard.\n\nError: " + e.getMessage());
+        if (adminPopup.isShowing()) {
+            adminPopup.hide();
+        } else {
+            javafx.geometry.Bounds bounds = adminBtn.localToScreen(adminBtn.getBoundsInLocal());
+            double x = bounds.getMinX();
+            double y = bounds.getMaxY() + 6;
+            adminPopup.show(adminBtn.getScene().getWindow(), x, y);
         }
     }
 

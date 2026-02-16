@@ -8,6 +8,8 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -19,6 +21,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.TabPane;
 import javafx.util.StringConverter;
 
 import java.sql.Connection;
@@ -67,6 +70,8 @@ public class MainController {
 	private TextField ingredientUnitCostField;
 	@FXML
 	private DatePicker ingredientExpiryDatePicker;
+		@FXML
+		private TextField ingredientFilterField;
 
 	@FXML
 	private TableView<WasteRecord> wasteTable;
@@ -89,9 +94,16 @@ public class MainController {
 	private ComboBox<String> wasteTypeCombo;
 	@FXML
 	private TextArea wasteReasonField;
+		@FXML
+		private TextField wasteFilterField;
+
+		@FXML
+		private TabPane mainTabPane;
 
 	private final ObservableList<Ingredient> ingredients = FXCollections.observableArrayList();
 	private final ObservableList<WasteRecord> wasteRecords = FXCollections.observableArrayList();
+	private FilteredList<Ingredient> filteredIngredients;
+	private FilteredList<WasteRecord> filteredWasteRecords;
 	private final Mydatabase database = Mydatabase.getInstance();
 	private final DateTimeFormatter wasteDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -108,10 +120,32 @@ public class MainController {
 
 	@FXML
 	private void initialize() {
+		configureFilters();
 		configureIngredientTable();
 		configureWasteTable();
 		configureWasteInputs();
 		loadDataFromDatabase();
+	}
+
+	private void configureFilters() {
+		filteredIngredients = new FilteredList<>(ingredients, this::ingredientMatchesFilter);
+		SortedList<Ingredient> sortedIngredients = new SortedList<>(filteredIngredients);
+		sortedIngredients.comparatorProperty().bind(ingredientsTable.comparatorProperty());
+		ingredientsTable.setItems(sortedIngredients);
+
+		filteredWasteRecords = new FilteredList<>(wasteRecords, this::wasteRecordMatchesFilter);
+		SortedList<WasteRecord> sortedWaste = new SortedList<>(filteredWasteRecords);
+		sortedWaste.comparatorProperty().bind(wasteTable.comparatorProperty());
+		wasteTable.setItems(sortedWaste);
+
+		if (ingredientFilterField != null) {
+			ingredientFilterField.textProperty().addListener((obs, oldVal, newVal) ->
+					filteredIngredients.setPredicate(this::ingredientMatchesFilter));
+		}
+		if (wasteFilterField != null) {
+			wasteFilterField.textProperty().addListener((obs, oldVal, newVal) ->
+					filteredWasteRecords.setPredicate(this::wasteRecordMatchesFilter));
+		}
 	}
 
 	private void configureIngredientTable() {
@@ -126,7 +160,6 @@ public class MainController {
 			return new SimpleStringProperty(display);
 		});
 
-		ingredientsTable.setItems(ingredients);
 		ingredientsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
 			if (newSel == null) {
 				clearIngredientForm();
@@ -155,7 +188,6 @@ public class MainController {
 				Optional.ofNullable(cell.getValue().getReason()).filter(reason -> !reason.isBlank()).orElse("-")
 		));
 
-		wasteTable.setItems(wasteRecords);
 	}
 
 	private void configureWasteInputs() {
@@ -662,6 +694,35 @@ public class MainController {
 		wasteTable.getSelectionModel().clearSelection();
 	}
 
+	private boolean ingredientMatchesFilter(Ingredient ingredient) {
+		String query = normalizedFilterText(ingredientFilterField);
+		if (query.isEmpty()) {
+			return true;
+		}
+		String haystack = (ingredient.getName() + " " + ingredient.getUnit()).toLowerCase();
+		return haystack.contains(query);
+	}
+
+	private boolean wasteRecordMatchesFilter(WasteRecord record) {
+		String query = normalizedFilterText(wasteFilterField);
+		if (query.isEmpty()) {
+			return true;
+		}
+		String ingredientName = ingredientNameById(record.getIngredientId()).toLowerCase();
+		String type = Optional.ofNullable(record.getWasteType()).orElse("").toLowerCase();
+		String reason = Optional.ofNullable(record.getReason()).orElse("").toLowerCase();
+		String haystack = String.join(" ", ingredientName, type, reason);
+		return haystack.contains(query);
+	}
+
+	private String normalizedFilterText(TextField field) {
+		return Optional.ofNullable(field)
+				.map(TextField::getText)
+				.map(String::trim)
+				.map(String::toLowerCase)
+				.orElse("");
+	}
+
 	private Double parseNumeric(String value, String label) {
 		try {
 			return Double.parseDouble(value);
@@ -721,5 +782,18 @@ public class MainController {
 		alert.setHeaderText(null);
 		alert.setContentText(message);
 		alert.show();
+	}
+
+	// Public helpers to select tabs when opened from navigation dropdowns.
+	public void showStockTab() {
+		if (mainTabPane != null && !mainTabPane.getTabs().isEmpty()) {
+			mainTabPane.getSelectionModel().select(0);
+		}
+	}
+
+	public void showWasteTab() {
+		if (mainTabPane != null && mainTabPane.getTabs().size() > 1) {
+			mainTabPane.getSelectionModel().select(1);
+		}
 	}
 }
