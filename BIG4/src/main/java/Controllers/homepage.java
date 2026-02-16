@@ -25,6 +25,7 @@ public class homepage {
     @FXML private Button reserveBtn;
     @FXML private Button eventsBtn;
     @FXML private Button rapportBtn;
+    @FXML private Button adminBtn;
     @FXML private Button contactBtn;
     @FXML private Button deliveryBtn;
     @FXML private Button cartBtn;
@@ -275,6 +276,20 @@ public class homepage {
                         "• Restaurant Performance Analysis\n" +
                         "• Menu Popularity Report\n\n" +
                         "Reports are generated and updated regularly.");
+    }
+
+    @FXML
+    private void handleAdmin(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDelivery.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) adminBtn.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Admin Delivery - Big4");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open Admin dashboard.\n\nError: " + e.getMessage());
+        }
     }
 
     @FXML
