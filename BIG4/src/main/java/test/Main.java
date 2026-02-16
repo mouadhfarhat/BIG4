@@ -2,17 +2,23 @@ package test;
 
 import Entities.DeliveryMan;
 import Entities.Delivery;
+import Entities.Fooddonationevent;
+import Entities.FoodDonationItem;
 import Services.DeliverymanService;
 import Services.DeliveryService;
+import Services.Fooddonationeventservice;
+import Services.FoodDonationItemService;
 
+import java.sql.Date;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 public class Main {
 
     public static void main(String[] args) {
         System.out.println("========================================");
-        System.out.println("   DELIVERY APP - DATABASE TEST");
+        System.out.println("   BIG4 RESTAURANT - DATABASE TEST");
         System.out.println("========================================\n");
 
         // Test 1: Database Connection
@@ -23,6 +29,12 @@ public class Main {
 
         // Test 3: Delivery CRUD
         testDeliveryCRUD();
+
+        // Test 4: Food Donation Events CRUD
+        testFoodDonationEventCRUD();
+
+        // Test 5: Food Donation Items CRUD
+        testFoodDonationItemCRUD();
 
         System.out.println("\n========================================");
         System.out.println("   ALL TESTS COMPLETED");
@@ -46,8 +58,8 @@ public class Main {
             System.out.println("✗ Error: " + e.getMessage());
             System.out.println("✗ Please check:");
             System.out.println("  - MySQL is running");
-            System.out.println("  - Database 'delivery_db' exists");
-            System.out.println("  - Credentials in MyDB.java are correct");
+            System.out.println("  - Database 'project' exists");
+            System.out.println("  - Credentials in Mydatabase.java are correct");
             System.out.println();
             return;
         }
@@ -270,6 +282,273 @@ public class Main {
             System.out.println("✗ Delivery CRUD tests FAILED!");
             System.out.println("✗ Error: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Test 4: Test Food Donation Event CRUD operations
+     */
+    private static void testFoodDonationEventCRUD() {
+        System.out.println("TEST 4: FOOD DONATION EVENT CRUD OPERATIONS");
+        System.out.println("-------------------------------------------");
+
+        Fooddonationeventservice service = new Fooddonationeventservice();
+        Integer testId = null;
+
+        try {
+            // CREATE - Add food donation event
+            System.out.println("\n4.1 CREATE - Adding new donation event...");
+            Fooddonationevent newEvent = new Fooddonationevent();
+            newEvent.setEventDate(Date.valueOf(LocalDate.now().plusDays(7)));
+            newEvent.setTotalQuantity(100);
+            newEvent.setCharityName("Test Charity Organization");
+            newEvent.setStatus("PENDING");
+            newEvent.setCalendarEventId("TEST-CAL-001");
+
+            service.addFoodDonationEvent(newEvent);
+            System.out.println("✓ Donation event created successfully");
+
+            // READ - Get all donation events
+            System.out.println("\n4.2 READ - Getting all donation events...");
+            List<Fooddonationevent> allEvents = service.getAllFoodDonationEvents();
+            System.out.println("✓ Retrieved " + allEvents.size() + " donation events:");
+            for (Fooddonationevent event : allEvents) {
+                System.out.println("  - ID: " + event.getDonationEventId() +
+                        ", Charity: " + event.getCharityName() +
+                        ", Date: " + event.getEventDate() +
+                        ", Status: " + event.getStatus());
+                if ("Test Charity Organization".equals(event.getCharityName())) {
+                    testId = event.getDonationEventId();
+                }
+            }
+
+            // READ - Get by ID
+            System.out.println("\n4.3 READ - Getting donation event by ID...");
+            if (testId != null) {
+                Fooddonationevent event = service.getFoodDonationEventById(testId);
+                if (event != null) {
+                    System.out.println("✓ Found donation event:");
+                    System.out.println("  - Charity: " + event.getCharityName());
+                    System.out.println("  - Date: " + event.getEventDate());
+                    System.out.println("  - Total Quantity: " + event.getTotalQuantity());
+                    System.out.println("  - Status: " + event.getStatus());
+                    System.out.println("  - Calendar ID: " + event.getCalendarEventId());
+                }
+            }
+
+            // READ - Get by status
+            System.out.println("\n4.4 READ - Getting pending donation events...");
+            List<Fooddonationevent> pendingEvents = service.getFoodDonationEventsByStatus("PENDING");
+            System.out.println("✓ Found " + pendingEvents.size() + " pending donation events");
+
+            // UPDATE - Update donation event
+            System.out.println("\n4.5 UPDATE - Updating donation event...");
+            if (testId != null) {
+                Fooddonationevent eventToUpdate = service.getFoodDonationEventById(testId);
+                eventToUpdate.setStatus("SCHEDULED");
+                eventToUpdate.setTotalQuantity(150);
+                service.updateFoodDonationEvent(eventToUpdate);
+                System.out.println("✓ Donation event updated successfully");
+
+                Fooddonationevent updated = service.getFoodDonationEventById(testId);
+                System.out.println("  - New Status: " + updated.getStatus());
+                System.out.println("  - New Total Quantity: " + updated.getTotalQuantity());
+            }
+
+            // UPDATE - Update status only
+            System.out.println("\n4.6 UPDATE - Updating status to COMPLETED...");
+            if (testId != null) {
+                service.updateEventStatus(testId, "COMPLETED");
+                Fooddonationevent updated = service.getFoodDonationEventById(testId);
+                System.out.println("✓ Status updated to: " + updated.getStatus());
+            }
+
+            // STATISTICS
+            System.out.println("\n4.7 STATISTICS - Getting donation statistics...");
+            int totalEvents = service.countAllEvents();
+            int totalQuantity = service.getTotalQuantityDonated();
+            System.out.println("✓ Total Events: " + totalEvents);
+            System.out.println("✓ Total Quantity Donated: " + totalQuantity);
+
+            // DELETE - Delete donation event
+            System.out.println("\n4.8 DELETE - Deleting donation event...");
+            if (testId != null) {
+                service.deleteFoodDonationEvent(testId);
+                System.out.println("✓ Donation event deleted successfully");
+
+                Fooddonationevent deleted = service.getFoodDonationEventById(testId);
+                if (deleted == null) {
+                    System.out.println("✓ Verified: Donation event no longer exists");
+                }
+            }
+
+            System.out.println("\n✓ Food Donation Event CRUD tests PASSED\n");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Food Donation Event CRUD tests FAILED!");
+            System.out.println("✗ Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Test 5: Test Food Donation Item CRUD operations
+     */
+    private static void testFoodDonationItemCRUD() {
+        System.out.println("TEST 5: FOOD DONATION ITEM CRUD OPERATIONS");
+        System.out.println("------------------------------------------");
+
+        FoodDonationItemService itemService = new FoodDonationItemService();
+        Fooddonationeventservice eventService = new Fooddonationeventservice();
+        Integer testEventId = null;
+        Integer testItemId = 1;
+
+        try {
+            // SETUP - Create test event
+            System.out.println("\n5.0 SETUP - Creating test event for items...");
+            Fooddonationevent testEvent = new Fooddonationevent();
+            testEvent.setEventDate(Date.valueOf(LocalDate.now().plusDays(5)));
+            testEvent.setTotalQuantity(200);
+            testEvent.setCharityName("Test Items Charity");
+            testEvent.setStatus("PENDING");
+
+            eventService.addFoodDonationEvent(testEvent);
+
+            List<Fooddonationevent> events = eventService.getAllFoodDonationEvents();
+            for (Fooddonationevent e : events) {
+                if ("Test Items Charity".equals(e.getCharityName())) {
+                    testEventId = e.getDonationEventId();
+                    break;
+                }
+            }
+            System.out.println("✓ Test event created with ID: " + testEventId);
+
+            if (testEventId == null) {
+                System.out.println("✗ Could not create test event. Skipping item tests.");
+                return;
+            }
+
+            // CREATE - Add donation item
+            System.out.println("\n5.1 CREATE - Adding donation item...");
+            FoodDonationItem newItem = new FoodDonationItem();
+            newItem.setDonationEventId(testEventId);
+            newItem.setItemId(testItemId);
+            newItem.setQuantity(50);
+
+            itemService.addFoodDonationItem(newItem);
+            System.out.println("✓ Donation item added successfully");
+
+            // CREATE - Add multiple items
+            System.out.println("\n5.2 CREATE - Adding multiple items...");
+            FoodDonationItem item2 = new FoodDonationItem(testEventId, 2, 75);
+            FoodDonationItem item3 = new FoodDonationItem(testEventId, 3, 100);
+
+            itemService.addFoodDonationItem(item2);
+            itemService.addFoodDonationItem(item3);
+            System.out.println("✓ Additional items added successfully");
+
+            // READ - Get all items
+            System.out.println("\n5.3 READ - Getting all donation items...");
+            List<FoodDonationItem> allItems = itemService.getAllFoodDonationItems();
+            System.out.println("✓ Retrieved " + allItems.size() + " donation items:");
+            for (FoodDonationItem item : allItems) {
+                System.out.println("  - Event: " + item.getDonationEventId() +
+                        ", Item: " + (item.getItemName() != null ? item.getItemName() : "ID " + item.getItemId()) +
+                        ", Quantity: " + item.getQuantity());
+            }
+
+            // READ - Get items by event
+            System.out.println("\n5.4 READ - Getting items for test event...");
+            List<FoodDonationItem> eventItems = itemService.getItemsByEventId(testEventId);
+            System.out.println("✓ Found " + eventItems.size() + " items for event " + testEventId);
+
+            // READ - Get specific item
+            System.out.println("\n5.5 READ - Getting specific item...");
+            FoodDonationItem specificItem = itemService.getItemByIds(testEventId, testItemId);
+            if (specificItem != null) {
+                System.out.println("✓ Found item:");
+                System.out.println("  - Event ID: " + specificItem.getDonationEventId());
+                System.out.println("  - Item ID: " + specificItem.getItemId());
+                System.out.println("  - Quantity: " + specificItem.getQuantity());
+            }
+
+            // READ - Check if item exists
+            System.out.println("\n5.6 READ - Checking if item exists...");
+            boolean exists = itemService.itemExists(testEventId, testItemId);
+            System.out.println("✓ Item exists: " + exists);
+
+            // UPDATE - Update item quantity
+            System.out.println("\n5.7 UPDATE - Updating item quantity...");
+            FoodDonationItem itemToUpdate = itemService.getItemByIds(testEventId, testItemId);
+            if (itemToUpdate != null) {
+                itemToUpdate.setQuantity(80);
+                itemService.updateFoodDonationItem(itemToUpdate);
+                System.out.println("✓ Item quantity updated successfully");
+
+                FoodDonationItem updated = itemService.getItemByIds(testEventId, testItemId);
+                System.out.println("  - New Quantity: " + updated.getQuantity());
+            }
+
+            // UPDATE - Increment quantity
+            System.out.println("\n5.8 UPDATE - Incrementing item quantity...");
+            itemService.incrementItemQuantity(testEventId, testItemId, 20);
+            FoodDonationItem incremented = itemService.getItemByIds(testEventId, testItemId);
+            System.out.println("✓ Quantity incremented to: " + incremented.getQuantity());
+
+            // UPDATE - Decrement quantity
+            System.out.println("\n5.9 UPDATE - Decrementing item quantity...");
+            itemService.decrementItemQuantity(testEventId, testItemId, 10);
+            FoodDonationItem decremented = itemService.getItemByIds(testEventId, testItemId);
+            System.out.println("✓ Quantity decremented to: " + decremented.getQuantity());
+
+            // STATISTICS
+            System.out.println("\n5.10 STATISTICS - Getting item statistics...");
+            int totalItems = itemService.countAllItems();
+            int eventItemCount = itemService.countItemsForEvent(testEventId);
+            int eventTotalQty = itemService.getTotalQuantityForEvent(testEventId);
+
+            System.out.println("✓ Total Items (all events): " + totalItems);
+            System.out.println("✓ Items in test event: " + eventItemCount);
+            System.out.println("✓ Total quantity in test event: " + eventTotalQty);
+
+            // DELETE - Delete specific item
+            System.out.println("\n5.11 DELETE - Deleting specific item...");
+            itemService.deleteFoodDonationItem(testEventId, testItemId);
+            System.out.println("✓ Item deleted successfully");
+
+            FoodDonationItem deletedItem = itemService.getItemByIds(testEventId, testItemId);
+            if (deletedItem == null) {
+                System.out.println("✓ Verified: Item no longer exists");
+            }
+
+            // DELETE - Delete all items for event
+            System.out.println("\n5.12 DELETE - Deleting all items for test event...");
+            itemService.deleteItemsByEventId(testEventId);
+            System.out.println("✓ All items for event deleted successfully");
+
+            int remainingItems = itemService.countItemsForEvent(testEventId);
+            System.out.println("✓ Verified: " + remainingItems + " items remaining for event");
+
+            // CLEANUP - Delete test event
+            System.out.println("\n5.13 CLEANUP - Deleting test event...");
+            eventService.deleteFoodDonationEvent(testEventId);
+            System.out.println("✓ Test event cleaned up successfully");
+
+            System.out.println("\n✓ Food Donation Item CRUD tests PASSED\n");
+
+        } catch (SQLException e) {
+            System.out.println("✗ Food Donation Item CRUD tests FAILED!");
+            System.out.println("✗ Error: " + e.getMessage());
+            e.printStackTrace();
+
+            if (testEventId != null) {
+                try {
+                    eventService.deleteFoodDonationEvent(testEventId);
+                    System.out.println("✓ Cleanup completed");
+                } catch (SQLException cleanupError) {
+                    System.out.println("✗ Cleanup failed: " + cleanupError.getMessage());
+                }
+            }
         }
     }
 }

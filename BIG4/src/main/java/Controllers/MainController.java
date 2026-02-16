@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class MainController {
 
@@ -248,38 +247,18 @@ public class MainController {
 
 	@FXML
 	private void handleAddIngredient() {
-		List<String> missingFields = new ArrayList<>();
-		String name = Optional.ofNullable(ingredientNameField.getText()).map(String::trim).orElse("");
-		String quantityText = Optional.ofNullable(ingredientQuantityField.getText()).map(String::trim).orElse("");
-		String minStockText = Optional.ofNullable(ingredientMinStockField.getText()).map(String::trim).orElse("");
-		String unitCostText = Optional.ofNullable(ingredientUnitCostField.getText()).map(String::trim).orElse("");
-		String unit = Optional.ofNullable(ingredientUnitField.getText()).map(String::trim).orElse("");
-		LocalDate expiry = ingredientExpiryDatePicker.getValue();
-
-		if (name.isBlank()) {
-			missingFields.add("Name");
-		}
-		if (quantityText.isBlank()) {
-			missingFields.add("Quantity in stock");
-		}
-		if (minStockText.isBlank()) {
-			missingFields.add("Minimum stock");
-		}
-		if (unitCostText.isBlank()) {
-			missingFields.add("Unit cost");
-		}
-
-		if (!missingFields.isEmpty()) {
-			String message = "Please fill the following fields:\n" + missingFields.stream()
-					.map(field -> "- " + field)
-					.collect(Collectors.joining("\n"));
-			showAlert(Alert.AlertType.ERROR, "Validation", message);
+		String name = ingredientNameField.getText();
+		if (name == null || name.isBlank()) {
+			showAlert(Alert.AlertType.ERROR, "Validation", "Ingredient name is required.");
 			return;
 		}
 
-		Double quantity = parseNumeric(quantityText, "Quantity in stock");
-		Double minStock = parseNumeric(minStockText, "Minimum stock");
-		Double unitCost = parseNumeric(unitCostText, "Unit cost");
+		Double quantity = parseDouble(ingredientQuantityField, "Quantity in stock");
+		Double minStock = parseDouble(ingredientMinStockField, "Minimum stock");
+		Double unitCost = parseDouble(ingredientUnitCostField, "Unit cost");
+		String unit = Optional.ofNullable(ingredientUnitField.getText()).map(String::trim).orElse("");
+		LocalDate expiry = ingredientExpiryDatePicker.getValue();
+
 		if (quantity == null || minStock == null || unitCost == null) {
 			return;
 		}
@@ -334,38 +313,18 @@ public class MainController {
 			return;
 		}
 
-		List<String> missingFields = new ArrayList<>();
-		String name = Optional.ofNullable(ingredientNameField.getText()).map(String::trim).orElse("");
-		String quantityText = Optional.ofNullable(ingredientQuantityField.getText()).map(String::trim).orElse("");
-		String minStockText = Optional.ofNullable(ingredientMinStockField.getText()).map(String::trim).orElse("");
-		String unitCostText = Optional.ofNullable(ingredientUnitCostField.getText()).map(String::trim).orElse("");
-		String unit = Optional.ofNullable(ingredientUnitField.getText()).map(String::trim).orElse("");
-		LocalDate expiry = ingredientExpiryDatePicker.getValue();
-
-		if (name.isBlank()) {
-			missingFields.add("Name");
-		}
-		if (quantityText.isBlank()) {
-			missingFields.add("Quantity in stock");
-		}
-		if (minStockText.isBlank()) {
-			missingFields.add("Minimum stock");
-		}
-		if (unitCostText.isBlank()) {
-			missingFields.add("Unit cost");
-		}
-
-		if (!missingFields.isEmpty()) {
-			String message = "Please fill the following fields:\n" + missingFields.stream()
-					.map(field -> "- " + field)
-					.collect(Collectors.joining("\n"));
-			showAlert(Alert.AlertType.ERROR, "Validation", message);
+		String name = ingredientNameField.getText();
+		if (name == null || name.isBlank()) {
+			showAlert(Alert.AlertType.ERROR, "Validation", "Ingredient name is required.");
 			return;
 		}
 
-		Double quantity = parseNumeric(quantityText, "Quantity in stock");
-		Double minStock = parseNumeric(minStockText, "Minimum stock");
-		Double unitCost = parseNumeric(unitCostText, "Unit cost");
+		Double quantity = parseDouble(ingredientQuantityField, "Quantity in stock");
+		Double minStock = parseDouble(ingredientMinStockField, "Minimum stock");
+		Double unitCost = parseDouble(ingredientUnitCostField, "Unit cost");
+		LocalDate expiry = ingredientExpiryDatePicker.getValue();
+		String unit = Optional.ofNullable(ingredientUnitField.getText()).map(String::trim).orElse("");
+
 		if (quantity == null || minStock == null || unitCost == null) {
 			return;
 		}
@@ -502,10 +461,6 @@ public class MainController {
 		}
 
 		String reason = Optional.ofNullable(wasteReasonField.getText()).map(String::trim).orElse("");
-		if (reason.isBlank()) {
-			showAlert(Alert.AlertType.ERROR, "Validation", "Please provide a reason for this waste record.");
-			return;
-		}
 		LocalDateTime recordedAt = LocalDateTime.now();
 		WasteRecord record = new WasteRecord(
 				null,
@@ -525,7 +480,11 @@ public class MainController {
 				insertWaste.setDouble(2, record.getQuantityWasted());
 				insertWaste.setString(3, record.getWasteType());
 				insertWaste.setTimestamp(4, Timestamp.valueOf(recordedAt));
-				insertWaste.setString(5, reason);
+				if (reason.isBlank()) {
+					insertWaste.setNull(5, Types.VARCHAR);
+				} else {
+					insertWaste.setString(5, reason);
+				}
 				insertWaste.executeUpdate();
 				try (ResultSet keys = insertWaste.getGeneratedKeys()) {
 					if (keys.next()) {
@@ -660,15 +619,6 @@ public class MainController {
 		wasteTypeCombo.getSelectionModel().clearSelection();
 		wasteReasonField.clear();
 		wasteTable.getSelectionModel().clearSelection();
-	}
-
-	private Double parseNumeric(String value, String label) {
-		try {
-			return Double.parseDouble(value);
-		} catch (NumberFormatException ex) {
-			showAlert(Alert.AlertType.ERROR, "Validation", label + " must be a number.");
-			return null;
-		}
 	}
 
 	private Double parseDouble(TextField field, String label) {

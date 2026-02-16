@@ -8,6 +8,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
+import javafx.scene.Node;
+import java.io.IOException;
+
 
 public class homepage {
 
@@ -31,9 +34,6 @@ public class homepage {
 
     @FXML
     private Button cartBtn;
-
-    @FXML
-    private Button adminBtn;
 
     @FXML
     private Button profileBtn;
@@ -75,18 +75,24 @@ public class homepage {
     }
 
     /**
-     * Handles the "Events" button click
+     * Handles the "Events" button click - Opens Food Donation Events page
      */
     @FXML
     private void handleEvents(ActionEvent event) {
-        showAlert("Events", "Upcoming Events",
-                "Welcome to our Events section!\n\n" +
-                        "Current Events:\n" +
-                        "• Wine Tasting Night - Friday 7 PM\n" +
-                        "• Chef's Special Dinner - Saturday 8 PM\n" +
-                        "• Brunch Event - Sunday 10 AM\n\n" +
-                        "Check back soon for more events!");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/food-donation-events.fxml"));
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error loading food donation page: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
+
+
+
+
 
     /**
      * Handles the "Reports" button click
@@ -101,11 +107,6 @@ public class homepage {
                         "• Restaurant Performance Analysis\n" +
                         "• Menu Popularity Report\n\n" +
                         "Reports are generated and updated regularly.");
-    }
-
-    @FXML
-    private void handleAdmin(ActionEvent event) {
-        loadScene("/main-view.fxml", "Inventory Management");
     }
 
     /**
