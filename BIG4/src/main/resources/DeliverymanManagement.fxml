@@ -151,6 +151,7 @@
                         <TableColumn text="Email"          prefWidth="110" fx:id="emailColumn" />
                         <TableColumn text="Vehicle Type"   prefWidth="95"  fx:id="vehicleTypeColumn" />
                         <TableColumn text="Vehicle Number" prefWidth="100" fx:id="vehicleNumberColumn" />
+                        <TableColumn text="Assigned car"   prefWidth="130" fx:id="assignedCarColumn" />
                         <TableColumn text="Status"         prefWidth="80"  fx:id="statusColumn" />
                         <TableColumn text="Address"        prefWidth="110" fx:id="addressColumn" />
                         <TableColumn text="Joining Date"   prefWidth="95"  fx:id="joiningDateColumn" />

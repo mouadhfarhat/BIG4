@@ -1,6 +1,8 @@
 package Controllers;
 
+import Entities.Car;
 import Entities.DeliveryMan;
+import Services.CarService;
 import Services.DeliverymanService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,6 +36,7 @@ public class DeliverymanManagement {
     @FXML private TableColumn<DeliveryMan, String>    emailColumn;
     @FXML private TableColumn<DeliveryMan, String>    vehicleTypeColumn;
     @FXML private TableColumn<DeliveryMan, String>    vehicleNumberColumn;
+    @FXML private TableColumn<DeliveryMan, String>    assignedCarColumn;
     @FXML private TableColumn<DeliveryMan, String>    addressColumn;
     @FXML private TableColumn<DeliveryMan, String>    statusColumn;
     @FXML private TableColumn<DeliveryMan, LocalDate> joiningDateColumn;
@@ -68,7 +71,9 @@ public class DeliverymanManagement {
 
     // ── Services ──────────────────────────────────────────────────────────────
     private DeliverymanService          deliverymanService;
+    private CarService                  carService;
     private ObservableList<DeliveryMan> deliveryManList;
+    private java.util.Map<Long, String> deliveryManIdToCarDisplay = new java.util.HashMap<>();
 
     // ═════════════════════════════════════════════════════════════════════════
     // Init
@@ -77,6 +82,7 @@ public class DeliverymanManagement {
     @FXML
     public void initialize() {
         deliverymanService = new DeliverymanService();
+        carService = new CarService();
         deliveryManList    = FXCollections.observableArrayList();
 
         buildDeliveryPopup();
@@ -87,6 +93,8 @@ public class DeliverymanManagement {
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         vehicleTypeColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleType"));
         vehicleNumberColumn.setCellValueFactory(new PropertyValueFactory<>("vehicleNumber"));
+        assignedCarColumn.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(
+                deliveryManIdToCarDisplay.getOrDefault(cell.getValue().getDeliveryManId(), "—")));
         addressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
         joiningDateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfJoining"));
@@ -146,6 +154,7 @@ public class DeliverymanManagement {
         card.getChildren().addAll(
                 buildPopupItem("📦", "Delivery Dashboard", "Overview & management", () -> { /* already here */ }),
                 buildPopupItem("➕", "Add Delivery",        "Create a new delivery", () -> navigateTo("/CreateDelivery.fxml",  "Add Delivery - Big4",      1400, 800)),
+                buildPopupItem("🚗", "Fleet",              "Assign cars to drivers", () -> navigateTo("/FleetManagement.fxml", "Fleet - Big4",             900, 700)),
                 buildPopupItem("🚴", "DeliveryMan View",    "Driver's interface",    () -> navigateTo("/DeliveryView.fxml",    "DeliveryMan View - Big4",  1400, 800))
         );
 
@@ -214,6 +223,12 @@ public class DeliverymanManagement {
 
     private void loadAllDeliveryMen() {
         try {
+            deliveryManIdToCarDisplay.clear();
+            List<Car> cars = carService.getAllCars();
+            for (Car c : cars) {
+                if (c.getDeliveryManId() != null)
+                    deliveryManIdToCarDisplay.put(c.getDeliveryManId(), c.getMake() + " " + c.getModel() + " (" + c.getLicensePlate() + ")");
+            }
             List<DeliveryMan> men = deliverymanService.getAllDeliveryMen();
             deliveryManList.setAll(men);
             deliveryTable.setItems(deliveryManList);
@@ -341,7 +356,7 @@ public class DeliverymanManagement {
     @FXML private void handleRapport()      { navigateTo("/Rapport.fxml",      "Reports - Big4",       1400, 800); }
     @FXML private void handleContact()      { navigateTo("/Contact.fxml",      "Contact - Big4",       1400, 800); }
     @FXML private void handleCart()         { navigateTo("/Cart.fxml",         "My Cart - Big4",       1400, 800); }
-    @FXML private void handleProfile()      { navigateTo("/Profile.fxml",      "Profile - Big4",       1400, 800); }
+    @FXML private void handleProfile()      { navigateTo("/profile.fxml",      "My Profile - Big4",    900, 700); }
     @FXML private void handleCall()         { showInfo("Call feature not yet implemented"); }
 
     // ═════════════════════════════════════════════════════════════════════════

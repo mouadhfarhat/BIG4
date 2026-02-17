@@ -23,6 +23,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import Services.AuthService;
 import java.util.stream.Collectors;
 
 /**
@@ -68,7 +69,10 @@ public class AdminDelivery {
     @FXML private Button deliveryBtn;
     @FXML private Button cartBtn;
     @FXML private Button profileBtn;
+    @FXML private Button manageUsersBtn;
+    @FXML private Button fleetBtn;
     @FXML private Button callBtn;
+    @FXML private Button logoutBtn;
 
     // ══════════════════════════════════════════════════════════════════════════
     // Services and Data
@@ -487,7 +491,30 @@ public class AdminDelivery {
 
     @FXML
     private void handleProfile() {
-        navigateTo("/Profile.fxml", "Profile - Big4", 1200, 800);
+        navigateTo("/profile.fxml", "My Profile - Big4", 900, 700);
+    }
+
+    @FXML
+    private void handleManageUsers() {
+        navigateTo("/UserManagement.fxml", "Manage users - Big4", 900, 700);
+    }
+
+    @FXML
+    private void handleFleet() {
+        navigateTo("/FleetManagement.fxml", "Fleet - Assign car to delivery man - Big4", 900, 700);
+    }
+
+    @FXML
+    private void handleLogout() {
+        AuthService.logout();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
+            Stage stage = (Stage) deliveryTable.getScene().getWindow();
+            stage.setScene(new Scene(root, 500, 600));
+            stage.setTitle("Big4 - Login");
+        } catch (IOException e) {
+            showError("Could not open login: " + e.getMessage());
+        }
     }
 
     @FXML

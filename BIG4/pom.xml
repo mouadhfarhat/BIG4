@@ -54,6 +54,11 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>test.MainFX</mainClass>
+                    <!-- Required on JDK 17+ so JavaFX internals can be accessed -->
+                    <options>
+                        <option>--add-opens</option>
+                        <option>javafx.graphics/com.sun.javafx.tk.quantum=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>

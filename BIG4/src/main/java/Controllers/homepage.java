@@ -15,6 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
+import Services.AuthService;
 import java.io.IOException;
 
 
@@ -31,6 +32,7 @@ public class homepage {
     @FXML private Button cartBtn;
     @FXML private Button profileBtn;
     @FXML private Button callBtn;
+    @FXML private Button logoutBtn;
     @FXML private Button viewMenuBtn;
     @FXML private Button reserveTableBtn;
 
@@ -308,14 +310,29 @@ public class homepage {
 
     @FXML
     private void handleProfile(ActionEvent event) {
-        showAlert("Profile", "User Profile",
-                "Welcome to your profile!\n\n" +
-                        "Profile Information:\n" +
-                        "• Name: [Your Name]\n" +
-                        "• Email: your.email@example.com\n" +
-                        "• Phone: Your Phone Number\n" +
-                        "• Member Since: 2024\n\n" +
-                        "Edit your profile in the profile page.");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/profile.fxml"));
+            Stage stage = (Stage) profileBtn.getScene().getWindow();
+            stage.setScene(new Scene(root, 900, 700));
+            stage.setTitle("My Profile - Big4");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Could not open profile: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        AuthService.logout();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
+            Stage stage = (Stage) logoutBtn.getScene().getWindow();
+            stage.setScene(new Scene(root, 500, 600));
+            stage.setTitle("Big4 - Login");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Error", "Could not open login: " + e.getMessage());
+        }
     }
 
     @FXML

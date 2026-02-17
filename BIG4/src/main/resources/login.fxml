@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.LoginController"
+            prefHeight="600" prefWidth="500"
+            style="-fx-background-color: linear-gradient(to bottom right, #010a22, #050e2a);">
+
+    <center>
+        <VBox alignment="CENTER" spacing="24">
+            <padding>
+                <Insets top="40" right="50" bottom="40" left="50"/>
+            </padding>
+
+            <!-- Title -->
+            <Label text="Big4" style="-fx-text-fill: #FFA500;">
+                <font><Font name="Arial Bold" size="36"/></font>
+            </Label>
+            <Label text="Sign in or create an account" style="-fx-text-fill: rgba(255,255,255,0.8); -fx-font-size: 14;"/>
+
+            <!-- Role selector -->
+            <VBox spacing="8" alignment="CENTER">
+                <Label text="I am a" style="-fx-text-fill: rgba(255,255,255,0.9); -fx-font-size: 12;"/>
+                <ComboBox fx:id="roleCombo" prefWidth="280" promptText="Select your role"
+                          style="-fx-background-color: rgba(255,255,255,0.1); -fx-text-fill: white; -fx-font-size: 14;"/>
+            </VBox>
+
+            <!-- Login form -->
+            <VBox fx:id="loginPanel" spacing="14" alignment="CENTER">
+                <TextField fx:id="loginEmail" prefWidth="280" promptText="Email"
+                           style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <PasswordField fx:id="loginPassword" prefWidth="280" promptText="Password"
+                               style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <Button fx:id="loginButton" text="Log in" onAction="#handleLogin" prefWidth="280"
+                        style="-fx-background-color: #FFA500; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 12; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 8;"/>
+            </VBox>
+
+            <!-- Switch to sign up (hidden when sign up panel is visible) -->
+            <HBox fx:id="loginSwitchBox" alignment="CENTER" spacing="6">
+                <Label text="Don't have an account?" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 13;"/>
+                <Hyperlink fx:id="showSignUpLink" text="Sign up" onAction="#showSignUp"
+                           style="-fx-text-fill: #FFA500; -fx-font-size: 13; -fx-underline: false; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Sign up form (hidden by default) -->
+            <VBox fx:id="signUpPanel" spacing="10" visible="false" managed="false" alignment="CENTER">
+                <TextField fx:id="signUpName" prefWidth="280" promptText="Full name"
+                           style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <TextField fx:id="signUpEmail" prefWidth="280" promptText="Email"
+                           style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <PasswordField fx:id="signUpPassword" prefWidth="280" promptText="Password (min 4 characters)"
+                               style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <PasswordField fx:id="signUpConfirmPassword" prefWidth="280" promptText="Confirm password"
+                               style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <TextField fx:id="signUpPhone" prefWidth="280" promptText="Phone"
+                           style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 14; -fx-padding: 10;"/>
+                <!-- Delivery man extra fields -->
+                <HBox fx:id="deliveryExtraBox" spacing="12" visible="false" managed="false" alignment="CENTER">
+                    <TextField fx:id="signUpVehicleType" prefWidth="130" promptText="Vehicle type"
+                               style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 13; -fx-padding: 8;"/>
+                    <TextField fx:id="signUpVehicleNumber" prefWidth="130" promptText="Vehicle number"
+                               style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-prompt-text-fill: rgba(255,255,255,0.5); -fx-font-size: 13; -fx-padding: 8;"/>
+                </HBox>
+                <Button fx:id="signUpButton" text="Create account" onAction="#handleSignUp" prefWidth="280"
+                        style="-fx-background-color: #FFA500; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 12; -fx-font-size: 14; -fx-cursor: hand; -fx-background-radius: 8;"/>
+            </VBox>
+
+            <!-- Switch back to login (when on sign up) -->
+            <HBox fx:id="backToLoginBox" alignment="CENTER" spacing="6" visible="false" managed="false">
+                <Label text="Already have an account?" style="-fx-text-fill: rgba(255,255,255,0.7); -fx-font-size: 13;"/>
+                <Hyperlink fx:id="showLoginLink" text="Log in" onAction="#showLogin"
+                           style="-fx-text-fill: #FFA500; -fx-font-size: 13; -fx-underline: false; -fx-cursor: hand;"/>
+            </HBox>
+
+            <Label fx:id="messageLabel" text="" style="-fx-text-fill: #f87171; -fx-font-size: 12;" wrapText="true" maxWidth="280"/>
+        </VBox>
+    </center>
+</BorderPane>

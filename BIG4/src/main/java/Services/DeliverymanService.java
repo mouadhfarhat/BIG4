@@ -48,6 +48,71 @@ public class DeliverymanService {
     }
 
     /**
+     * Add new delivery man and return the generated delivery_man_id.
+     * Works even when delivery_man_id has no AUTO_INCREMENT (generates ID in code).
+     */
+    public Long addDeliveryManAndGetId(DeliveryMan deliveryMan) throws SQLException {
+        Long nextId;
+        try (Statement st = cnx.createStatement();
+             ResultSet rs = st.executeQuery("SELECT COALESCE(MAX(delivery_man_id), 0) + 1 FROM delivery_man")) {
+            if (!rs.next()) return null;
+            nextId = rs.getLong(1);
+        }
+        String sql = "INSERT INTO delivery_man(delivery_man_id, name, phone, email, vehicle_type, vehicle_number, status, address, salary, date_of_joining, rating) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setLong(1, nextId);
+        ps.setString(2, deliveryMan.getName());
+        ps.setString(3, deliveryMan.getPhone());
+        ps.setString(4, deliveryMan.getEmail());
+        ps.setString(5, deliveryMan.getVehicleType());
+        ps.setString(6, deliveryMan.getVehicleNumber());
+        ps.setString(7, deliveryMan.getStatus());
+        ps.setString(8, deliveryMan.getAddress());
+        ps.setDouble(9, deliveryMan.getSalary() != null ? deliveryMan.getSalary() : 0);
+        if (deliveryMan.getDateOfJoining() != null) {
+            ps.setDate(10, java.sql.Date.valueOf(deliveryMan.getDateOfJoining()));
+        } else {
+            ps.setDate(10, java.sql.Date.valueOf(LocalDate.now()));
+        }
+        ps.setDouble(11, deliveryMan.getRating() != null ? deliveryMan.getRating() : 0);
+        ps.executeUpdate();
+        ps.close();
+        return nextId;
+    }
+
+    /**
+     * Get delivery man by email
+     */
+    public DeliveryMan getDeliveryManByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM delivery_man WHERE email = ?";
+        PreparedStatement ps = cnx.prepareStatement(sql);
+        ps.setString(1, email);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            DeliveryMan dm = new DeliveryMan();
+            dm.setDeliveryManId(rs.getLong("delivery_man_id"));
+            dm.setName(rs.getString("name"));
+            dm.setPhone(rs.getString("phone"));
+            dm.setEmail(rs.getString("email"));
+            dm.setVehicleType(rs.getString("vehicle_type"));
+            dm.setVehicleNumber(rs.getString("vehicle_number"));
+            dm.setStatus(rs.getString("status"));
+            dm.setAddress(rs.getString("address"));
+            dm.setSalary(rs.getDouble("salary"));
+            Date dateOfJoining = rs.getDate("date_of_joining");
+            if (dateOfJoining != null) {
+                dm.setDateOfJoining(dateOfJoining.toLocalDate());
+            }
+            dm.setRating(rs.getDouble("rating"));
+            ps.close();
+            return dm;
+        }
+        ps.close();
+        return null;
+    }
+
+    /**
      * Get all delivery men
      */
     public List<DeliveryMan> getAllDeliveryMen() throws SQLException {

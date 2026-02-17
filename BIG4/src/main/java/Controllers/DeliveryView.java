@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import Services.AuthService;
 import java.util.Optional;
 
 public class DeliveryView {
@@ -48,6 +49,7 @@ public class DeliveryView {
     @FXML private Button cartBtn;
     @FXML private Button profileBtn;
     @FXML private Button callBtn;
+    @FXML private Button logoutBtn;
 
     // ── Delivery dropdown ─────────────────────────────────────────────────────
     private Popup deliveryPopup;
@@ -180,10 +182,23 @@ public class DeliveryView {
     @FXML private void handleRapport()      { navigateTo("/Rapport.fxml",       "Reports - Big4",       1400, 800); }
     @FXML private void handleContact()      { navigateTo("/Contact.fxml",       "Contact - Big4",       1400, 800); }
     @FXML private void handleCart()         { navigateTo("/Cart.fxml",          "My Cart - Big4",       1400, 800); }
-    @FXML private void handleProfile()      { navigateTo("/Profile.fxml",       "Profile - Big4",       1400,  800); }
+    @FXML private void handleProfile()      { navigateTo("/profile.fxml",       "My Profile - Big4",    900, 700); }
     @FXML private void handleCall()         { showAlert("Call Big4",
             "Phone: +33 1 23 45 67 89\n\nMon–Fri: 10:00–23:00\nSat: 11:00–00:00\nSun: 11:00–23:00",
             Alert.AlertType.INFORMATION); }
+
+    @FXML
+    private void handleLogout() {
+        AuthService.logout();
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/login.fxml"));
+            Stage stage = getStage();
+            stage.setScene(new Scene(root, 500, 600));
+            stage.setTitle("Big4 - Login");
+        } catch (IOException e) {
+            showAlert("Error", "Could not open login: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
 
     // ═════════════════════════════════════════════════════════════════════════
     // Table / data logic (unchanged)

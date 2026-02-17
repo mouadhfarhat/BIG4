@@ -120,12 +120,7 @@ public class DeliveryMan {
 
     @Override
     public String toString() {
-        return "DeliveryMan{" +
-                "deliveryManId=" + deliveryManId +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", status='" + status + '\'' +
-                '}';
+        return name + (email != null && !email.isEmpty() ? " (" + email + ")" : "");
     }
 
 

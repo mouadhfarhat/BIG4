@@ -173,7 +173,7 @@ public class CreateDelivery {
     @FXML private void handleRapport()      { navigateTo("/Rapport.fxml",             "Reports - Big4",        1400, 800); }
     @FXML private void handleContact()      { navigateTo("/Contact.fxml",             "Contact - Big4",        1400, 800); }
     @FXML private void handleCart()         { navigateTo("/Cart.fxml",                "My Cart - Big4",        1400, 800); }
-    @FXML private void handleProfile()      { navigateTo("/Profile.fxml",             "Profile - Big4",        1400, 800); }
+    @FXML private void handleProfile()      { navigateTo("/profile.fxml",             "My Profile - Big4",     900, 700); }
     @FXML private void handleCall()         { showAlert("Call Big4",
             "Phone: +33 1 23 45 67 89\n\nMon–Fri: 10:00–23:00\nSat: 11:00–00:00\nSun: 11:00–23:00",
             Alert.AlertType.INFORMATION); }

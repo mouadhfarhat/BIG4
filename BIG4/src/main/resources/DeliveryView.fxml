@@ -68,6 +68,9 @@
                     <Button fx:id="callBtn" text="☎ Call"
                             style="-fx-font-size: 14; -fx-background-color: #FFA500; -fx-text-fill: black; -fx-font-weight: bold; -fx-padding: 12 25; -fx-border-radius: 25; -fx-background-radius: 25; -fx-cursor: hand;"
                             onAction="#handleCall" />
+                    <Button fx:id="logoutBtn" text="Log out"
+                            style="-fx-font-size: 14; -fx-background-color: transparent; -fx-text-fill: rgba(255,255,255,0.9); -fx-padding: 12 20; -fx-cursor: hand;"
+                            onAction="#handleLogout" />
                 </HBox>
             </HBox>
 
