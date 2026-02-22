@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.WasteDialogController"
+      spacing="14" styleClass="modal-form-card" prefWidth="560">
+    <stylesheets>
+        <URL value="@../styles/main.css"/>
+    </stylesheets>
+    <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="8">
+        <Label fx:id="titleLabel" text="Record Waste" styleClass="modal-title"/>
+        <HBox HBox.hgrow="ALWAYS"/>
+        <Label text="Inventory" styleClass="chip-label"/>
+    </HBox>
+
+    <VBox spacing="10" styleClass="modal-form-inner">
+        <VBox spacing="6">
+            <Label text="Ingredient *" styleClass="modal-field-label"/>
+            <ComboBox fx:id="ingredientCombo" promptText="Select ingredient" maxWidth="1.7976931348623157E308"/>
+        </VBox>
+        <HBox spacing="12">
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Quantity *" styleClass="modal-field-label"/>
+                <TextField fx:id="quantityField" promptText="e.g. 2" styleClass="form-input"/>
+            </VBox>
+            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                <Label text="Waste Type *" styleClass="modal-field-label"/>
+                <ComboBox fx:id="typeCombo" promptText="Choose type" maxWidth="1.7976931348623157E308"/>
+            </VBox>
+        </HBox>
+        <VBox spacing="6">
+            <Label text="Reason" styleClass="modal-field-label"/>
+            <TextArea fx:id="reasonField" promptText="Describe what happened…" wrapText="true" prefRowCount="3" styleClass="form-textarea"/>
+        </VBox>
+    </VBox>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10" styleClass="modal-footer">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="modal-cancel-btn"/>
+        <Button fx:id="primaryButton" text="Save" onAction="#handlePrimary" styleClass="modal-save-btn"/>
+    </HBox>
+</VBox>

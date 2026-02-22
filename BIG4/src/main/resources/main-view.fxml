@@ -1,207 +1,226 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/17"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="Controllers.MainController"
-            prefHeight="600.0" prefWidth="900.0"
-            stylesheets="@styles/main.css"
-            styleClass="inventory-root">
-    <children>
-        <VBox spacing="18.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0"
-              AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
-            <children>
-                <VBox spacing="6.0" styleClass="header-section">
-                    <children>
-                        <Label text="Inventory Dashboard" styleClass="title-label"/>
-                        <Label text="Track ingredient levels, record waste, and keep your kitchen organized." styleClass="subtitle-label" wrapText="true"/>
-                    </children>
+<StackPane xmlns="http://javafx.com/javafx/17"
+           xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="Controllers.MainController"
+           prefHeight="900.0" prefWidth="1100.0">
+    <BorderPane stylesheets="@styles/main.css"
+                styleClass="inventory-root"
+                maxWidth="1.7976931348623157E308" maxHeight="1.7976931348623157E308">
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;">
+            <content>
+                <VBox spacing="14" styleClass="content-wrapper">
+                    <!-- Header moved into scrollable area so the whole page scrolls -->
+                    <VBox spacing="0" styleClass="nav-container">
+                        <VBox spacing="6" styleClass="page-header">
+                            <HBox alignment="CENTER_LEFT" spacing="18">
+                                <Label text="Inventory Dashboard" styleClass="header-title"/>
+                                <HBox HBox.hgrow="ALWAYS"/>
+                                <Button text="🔄 Refresh" styleClass="header-refresh"/>
+                            </HBox>
+                            <Label text="Track ingredient levels, record waste, and keep your kitchen organized." styleClass="header-subtitle" wrapText="true"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- ══ Statistics row 1 ══ -->
+                    <HBox spacing="14" styleClass="stats-row">
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Total Ingredients" styleClass="stat-label"/>
+                            <Label fx:id="totalIngredientsLabel" text="0" styleClass="stat-value stat-green"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Low Stock Items" styleClass="stat-label"/>
+                            <Label fx:id="lowStockLabel" text="0" styleClass="stat-value stat-warning"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Expired Items" styleClass="stat-label"/>
+                            <Label fx:id="expiredItemsLabel" text="0" styleClass="stat-value stat-red"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Waste Records" styleClass="stat-label"/>
+                            <Label fx:id="wasteRecordsLabel" text="0" styleClass="stat-value stat-accent"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- ══ Statistics row 2 ══ -->
+                    <HBox spacing="14" styleClass="stats-row">
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Inventory Value" styleClass="stat-label"/>
+                            <Label fx:id="inventoryValueLabel" text="\$0.00" styleClass="stat-value stat-blue"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Total Waste Cost" styleClass="stat-label"/>
+                            <Label fx:id="wasteCostLabel" text="\$0.00" styleClass="stat-value stat-orange"/>
+                        </VBox>
+                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                            <Label text="Most Wasted" styleClass="stat-label"/>
+                            <Label fx:id="mostWastedLabel" text="—" styleClass="stat-value stat-purple"/>
+                        </VBox>
+                    </HBox> 
+
+                    <!-- ══ Legend ══ -->
+                    <HBox spacing="18" alignment="CENTER_LEFT" styleClass="legend-row">
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Region styleClass="legend-dot-expired"/>
+                            <Label text="Expired" styleClass="legend-label"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Region styleClass="legend-dot-low"/>
+                            <Label text="Low Stock" styleClass="legend-label"/>
+                        </HBox>
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Region styleClass="legend-dot-ok"/>
+                            <Label text="Healthy" styleClass="legend-label"/>
+                        </HBox>
+                    </HBox>
+
+                    <!-- ══ Tab bar + filter on the same row ══ -->
+                    <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="card-tab-pane">
+                        <tabs>
+                            <Tab text="📦 Ingredients">
+                                <content>
+                                    <VBox spacing="0" styleClass="content-card">
+                                        <!-- Toolbar -->
+                                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="tab-toolbar">
+                                            <padding><Insets top="10" right="14" bottom="10" left="14"/></padding>
+                                            <Label text="🔍" styleClass="form-label"/>
+                                            <TextField fx:id="ingredientFilterField" promptText="Search ingredients…" styleClass="form-input" HBox.hgrow="ALWAYS"/>
+                                            <Button onAction="#handleExportIngredientsPdf" text="📄 Export PDF" styleClass="export-button"/>
+                                        </HBox>
+                                        <!-- Split: table left, buttons right -->
+                                        <HBox VBox.vgrow="ALWAYS" spacing="0">
+                                            <TableView fx:id="ingredientsTable" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="elevated-table">
+                                                <columns>
+                                                    <TableColumn fx:id="ingredientNameColumn" prefWidth="160.0" text="Ingredient"/>
+                                                    <TableColumn fx:id="ingredientQuantityColumn" prefWidth="100.0" text="In Stock"/>
+                                                    <TableColumn fx:id="ingredientUnitColumn" prefWidth="80.0" text="Unit"/>
+                                                    <TableColumn fx:id="ingredientMinStockColumn" prefWidth="100.0" text="Min Stock"/>
+                                                    <TableColumn fx:id="ingredientUnitCostColumn" prefWidth="100.0" text="Unit Cost"/>
+                                                    <TableColumn fx:id="ingredientExpiryColumn" prefWidth="160.0" text="Expiry"/>
+                                                </columns>
+                                                <placeholder>
+                                                    <Label text="No ingredients yet." styleClass="placeholder-label" wrapText="true"/>
+                                                </placeholder>
+                                            </TableView>
+                                            <!-- Right: buttons only -->
+                                            <VBox styleClass="side-panel" prefWidth="220.0" minWidth="200.0" spacing="12" alignment="TOP_CENTER">
+                                                <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
+                                                <Button text="➕ Add Ingredient" onAction="#showIngredientAddForm" styleClass="primary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="✏ Edit Selected" onAction="#showIngredientEditForm" styleClass="secondary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteIngredient" styleClass="danger-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                            </VBox>
+                                        </HBox>
+                                    </VBox>
+                                </content>
+                            </Tab>
+
+                            <Tab text="🗑 Waste Records">
+                                <content>
+                                    <VBox spacing="0" styleClass="content-card">
+                                        <!-- Toolbar -->
+                                        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="tab-toolbar">
+                                            <padding><Insets top="10" right="14" bottom="10" left="14"/></padding>
+                                            <Label text="🔍" styleClass="form-label"/>
+                                            <TextField fx:id="wasteFilterField" promptText="Search waste records…" styleClass="form-input" HBox.hgrow="ALWAYS"/>
+                                            <Label text="From" styleClass="form-label"/>
+                                            <DatePicker fx:id="wasteDateFromPicker" promptText="Start date" styleClass="filter-date-picker"/>
+                                            <Label text="To" styleClass="form-label"/>
+                                            <DatePicker fx:id="wasteDateToPicker" promptText="End date" styleClass="filter-date-picker"/>
+                                            <Button onAction="#handleClearDateFilter" text="✕" styleClass="clear-filter-button"/>
+                                            <Button onAction="#handleExportWastePdf" text="📄 Export PDF" styleClass="export-button"/>
+                                        </HBox>
+                                        <!-- Split: table left, buttons right -->
+                                        <HBox VBox.vgrow="ALWAYS" spacing="0">
+                                            <TableView fx:id="wasteTable" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="elevated-table">
+                                                <columns>
+                                                    <TableColumn fx:id="wasteIngredientColumn" prefWidth="150.0" text="Ingredient"/>
+                                                    <TableColumn fx:id="wasteQuantityColumn" prefWidth="100.0" text="Quantity"/>
+                                                    <TableColumn fx:id="wasteTypeColumn" prefWidth="130.0" text="Waste Type"/>
+                                                    <TableColumn fx:id="wasteDateColumn" prefWidth="160.0" text="Recorded At"/>
+                                                    <TableColumn fx:id="wasteReasonColumn" prefWidth="180.0" text="Reason"/>
+                                                </columns>
+                                                <placeholder>
+                                                    <Label text="No waste records yet." styleClass="placeholder-label"/>
+                                                </placeholder>
+                                            </TableView>
+                                            <!-- Right: buttons only -->
+                                            <VBox styleClass="side-panel" prefWidth="220.0" minWidth="200.0" spacing="12" alignment="TOP_CENTER">
+                                                <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
+                                                <Button text="➕ Record Waste" onAction="#showWasteAddForm" styleClass="primary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="✏ Edit Selected" onAction="#showWasteEditForm" styleClass="secondary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteWaste" styleClass="danger-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                            </VBox>
+                                        </HBox>
+                                    </VBox>
+                                </content>
+                            </Tab>
+
+                            <!-- ══ Analytics tab ══ -->
+                            <Tab text="📊 Analytics">
+                                <content>
+                                    <ScrollPane fitToWidth="true" styleClass="content-card" style="-fx-background-color: transparent;">
+                                        <VBox spacing="18">
+                                            <padding>
+                                                <Insets top="18" right="18" bottom="18" left="18"/>
+                                            </padding>
+                                            <!-- Row 1: Pie + Bar -->
+                                            <HBox spacing="18">
+                                                <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                                                    <Label text="Waste by Type" styleClass="chart-title"/>
+                                                    <PieChart fx:id="wasteTypePieChart" prefHeight="280" animated="true" labelsVisible="true" legendVisible="true"/>
+                                                </VBox>
+                                                <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                                                    <Label text="Top Wasted Ingredients" styleClass="chart-title"/>
+                                                    <BarChart fx:id="topWastedBarChart" prefHeight="280" animated="true" legendVisible="false">
+                                                        <xAxis><CategoryAxis label="Ingredient"/></xAxis>
+                                                        <yAxis><NumberAxis label="Quantity"/></yAxis>
+                                                    </BarChart>
+                                                </VBox>
+                                            </HBox>
+                                            <!-- Row 2: Stock levels -->
+                                            <VBox styleClass="chart-container">
+                                                <Label text="Stock Levels vs Minimum" styleClass="chart-title"/>
+                                                <BarChart fx:id="stockLevelsBarChart" prefHeight="300" animated="true" legendVisible="true">
+                                                    <xAxis><CategoryAxis label="Ingredient"/></xAxis>
+                                                    <yAxis><NumberAxis label="Quantity"/></yAxis>
+                                                </BarChart>
+                                            </VBox>
+                                        </VBox>
+                                    </ScrollPane>
+                                </content>
+                            </Tab>
+                        </tabs>
+                    </TabPane>
                 </VBox>
-                <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="card-tab-pane">
-                    <tabs>
-                        <Tab text="Stock">
-                            <content>
-                                <BorderPane prefHeight="400.0" styleClass="content-card">
-                                    <top>
-                                        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="filter-bar">
-                                            <padding>
-                                                <Insets top="10.0" right="12.0" bottom="6.0" left="12.0" />
-                                            </padding>
-                                            <children>
-                                                <Label text="Filter" styleClass="form-label" />
-                                                <TextField fx:id="ingredientFilterField" promptText="Search ingredients" styleClass="form-input" />
-                                            </children>
-                                        </HBox>
-                                    </top>
-                                    <center>
-                                        <TableView fx:id="ingredientsTable" prefHeight="200.0"
-                                                   BorderPane.alignment="CENTER" styleClass="elevated-table">
-                                            <columns>
-                                                <TableColumn fx:id="ingredientNameColumn" prefWidth="150.0"
-                                                             text="Ingredient"/>
-                                                <TableColumn fx:id="ingredientQuantityColumn" prefWidth="100.0"
-                                                             text="In Stock"/>
-                                                <TableColumn fx:id="ingredientUnitColumn" prefWidth="80.0"
-                                                             text="Unit"/>
-                                                <TableColumn fx:id="ingredientMinStockColumn" prefWidth="100.0"
-                                                             text="Min Stock"/>
-                                                <TableColumn fx:id="ingredientUnitCostColumn" prefWidth="100.0"
-                                                             text="Unit Cost"/>
-                                                <TableColumn fx:id="ingredientExpiryColumn" prefWidth="150.0"
-                                                             text="Expiry"/>
-                                            </columns>
-                                            <placeholder>
-                                                <Label text="No ingredients yet. Add your first ingredient to get started." styleClass="placeholder-label" wrapText="true"/>
-                                            </placeholder>
-                                        </TableView>
-                                    </center>
-                                    <bottom>
-                                        <VBox spacing="16.0" styleClass="form-card">
-                                            <padding>
-                                                <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
-                                            </padding>
-                                            <children>
-                                                <GridPane hgap="18.0" vgap="12.0" styleClass="form-grid">
-                                                    <columnConstraints>
-                                                        <ColumnConstraints percentWidth="20.0"/>
-                                                        <ColumnConstraints percentWidth="30.0"/>
-                                                        <ColumnConstraints percentWidth="20.0"/>
-                                                        <ColumnConstraints percentWidth="30.0"/>
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints percentHeight="25.0"/>
-                                                        <RowConstraints percentHeight="25.0"/>
-                                                        <RowConstraints percentHeight="25.0"/>
-                                                        <RowConstraints percentHeight="25.0"/>
-                                                    </rowConstraints>
-                                                    <children>
-                                                        <Label text="Name" styleClass="form-label"/>
-                                                        <TextField fx:id="ingredientNameField" GridPane.columnIndex="1" styleClass="form-input" promptText="e.g. Fresh Tomatoes"/>
-                                                        <Label text="Quantity" GridPane.rowIndex="1" styleClass="form-label"/>
-                                                        <TextField fx:id="ingredientQuantityField" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="1" styleClass="form-input" promptText="e.g. 25"/>
-                                                        <Label text="Unit" GridPane.columnIndex="2" styleClass="form-label"/>
-                                                        <TextField fx:id="ingredientUnitField" GridPane.columnIndex="3" styleClass="form-input" promptText="e.g. kg"/>
-                                                        <Label text="Min Stock" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="form-label"/>
-                                                        <TextField fx:id="ingredientMinStockField" GridPane.columnIndex="3"
-                                                                   GridPane.rowIndex="1" styleClass="form-input" promptText="e.g. 5"/>
-                                                        <Label text="Unit Cost" GridPane.rowIndex="2" styleClass="form-label"/>
-                                                        <TextField fx:id="ingredientUnitCostField" GridPane.columnIndex="1"
-                                                                   GridPane.rowIndex="2" styleClass="form-input" promptText="e.g. 3.50"/>
-                                                        <Label text="Expiry Date" GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="form-label"/>
-                                                        <DatePicker fx:id="ingredientExpiryDatePicker" GridPane.columnIndex="3"
-                                                                   GridPane.rowIndex="2" styleClass="form-date-picker" promptText="Select date"/>
-                                                    </children>
-                                                </GridPane>
-                                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                                                    <children>
-                                                        <Button onAction="#handleAddIngredient" text="Add" styleClass="primary-button"/>
-                                                        <Button onAction="#handleUpdateIngredient" text="Update" styleClass="secondary-button"/>
-                                                        <Button onAction="#handleDeleteIngredient" text="Delete" styleClass="danger-button"/>
-                                                        <Button onAction="#handleClearIngredientForm" text="Clear" styleClass="ghost-button"/>
-                                                    </children>
-                                                </HBox>
-                                            </children>
-                                        </VBox>
-                                    </bottom>
-                                </BorderPane>
-                            </content>
-                        </Tab>
-                        <Tab text="Waste">
-                            <content>
-                                <BorderPane prefHeight="400.0" styleClass="content-card">
-                                    <top>
-                                        <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="filter-bar">
-                                            <padding>
-                                                <Insets top="10.0" right="12.0" bottom="6.0" left="12.0" />
-                                            </padding>
-                                            <children>
-                                                <Label text="Filter" styleClass="form-label" />
-                                                <TextField fx:id="wasteFilterField" promptText="Search waste records" styleClass="form-input" />
-                                            </children>
-                                        </HBox>
-                                    </top>
-                                    <center>
-                                        <TableView fx:id="wasteTable" prefHeight="200.0" BorderPane.alignment="CENTER" styleClass="elevated-table">
-                                            <columns>
-                                                <TableColumn fx:id="wasteIngredientColumn" prefWidth="150.0"
-                                                             text="Ingredient"/>
-                                                <TableColumn fx:id="wasteQuantityColumn" prefWidth="100.0"
-                                                             text="Quantity"/>
-                                                <TableColumn fx:id="wasteTypeColumn" prefWidth="120.0"
-                                                             text="Waste Type"/>
-                                                <TableColumn fx:id="wasteDateColumn" prefWidth="160.0" text="Recorded At"/>
-                                                <TableColumn fx:id="wasteReasonColumn" prefWidth="220.0" text="Reason"/>
-                                            </columns>
-                                            <placeholder>
-                                                <Label text="No waste records recorded yet." styleClass="placeholder-label"/>
-                                            </placeholder>
-                                        </TableView>
-                                    </center>
-                                    <bottom>
-                                        <VBox spacing="16.0" styleClass="form-card">
-                                            <padding>
-                                                <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
-                                            </padding>
-                                            <children>
-                                                <GridPane hgap="18.0" vgap="12.0" styleClass="form-grid">
-                                                    <columnConstraints>
-                                                        <ColumnConstraints percentWidth="20.0"/>
-                                                        <ColumnConstraints percentWidth="30.0"/>
-                                                        <ColumnConstraints percentWidth="20.0"/>
-                                                        <ColumnConstraints percentWidth="30.0"/>
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints percentHeight="33.0"/>
-                                                        <RowConstraints percentHeight="33.0"/>
-                                                        <RowConstraints percentHeight="34.0"/>
-                                                    </rowConstraints>
-                                                    <children>
-                                                        <Label text="Ingredient" styleClass="form-label"/>
-                                                        <ComboBox fx:id="wasteIngredientCombo" GridPane.columnIndex="1" styleClass="form-input" promptText="Select ingredient"/>
-                                                        <Label text="Quantity" GridPane.columnIndex="2" styleClass="form-label"/>
-                                                        <TextField fx:id="wasteQuantityField" GridPane.columnIndex="3" styleClass="form-input" promptText="e.g. 2"/>
-                                                        <Label text="Waste Type" GridPane.rowIndex="1" styleClass="form-label"/>
-                                                        <ComboBox fx:id="wasteTypeCombo" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-input" promptText="Choose type"/>
-                                                        <Label text="Reason" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="form-label"/>
-                                                        <TextArea fx:id="wasteReasonField" GridPane.columnIndex="3" GridPane.rowIndex="1"
-                                                                  prefRowCount="2" wrapText="true" styleClass="form-textarea" promptText="Describe what happened"/>
-                                                    </children>
-                                                </GridPane>
-                                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
-                                                    <children>
-                                                        <Button onAction="#handleRecordWaste" text="Record Waste" styleClass="primary-button"/>
-                                                        <Button onAction="#handleDeleteWaste" text="Delete Record" styleClass="danger-button"/>
-                                                        <Button onAction="#handleClearWasteForm" text="Clear" styleClass="ghost-button"/>
-                                                    </children>
-                                                </HBox>
-                                            </children>
-                                        </VBox>
-                                    </bottom>
-                                </BorderPane>
-                            </content>
-                        </Tab>
-                    </tabs>
-                </TabPane>
-            </children>
-        </VBox>
-    </children>
-</AnchorPane>
+            </content>
+        </ScrollPane>
+    </center>
+    </BorderPane>
+
+</StackPane>
