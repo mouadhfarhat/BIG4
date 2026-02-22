@@ -66,7 +66,7 @@ public class homepage {
      */
     @FXML
     private void handleMenu(ActionEvent event) {
-        loadScene("resources/menu.fxml", "Menu - Big4");
+        loadScene("/menu.fxml", "Menu - Big4");
     }
 
     /**

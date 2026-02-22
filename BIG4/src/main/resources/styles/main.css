@@ -190,3 +190,350 @@
 .elevated-table .table-row-cell:selected {
     -fx-background-color: rgba(14, 165, 233, 0.25);
 }
+.split-root {
+    -fx-background-color: transparent;
+    -fx-padding: 0 18 18 18;
+}
+
+.split-root .split-pane-divider {
+    -fx-padding: 0 4 0 4;
+    -fx-background-color: transparent;
+}
+/* ===== Root + Header ===== */
+.inventory-root {
+    -fx-background-color: linear-gradient(to bottom, #0b1220, #111c2e);
+}
+
+.header-section {
+    -fx-background-color: transparent;
+}
+
+.title-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 42px;
+    -fx-font-weight: 800;
+}
+
+.subtitle-label {
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-size: 15px;
+}
+
+/* ===== Main surface (light area under header) ===== */
+.main-surface {
+    -fx-background-color: #eef2f7;
+    -fx-background-radius: 22;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 30, 0.18, 0, 10);
+}
+
+/* ===== SplitPane clean divider ===== */
+.split-root {
+    -fx-background-color: transparent;
+}
+
+.split-root .split-pane-divider {
+    -fx-padding: 0 6 0 6;
+    -fx-background-color: transparent;
+}
+
+/* ===== Cards ===== */
+.panel-card {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.12), 18, 0.18, 0, 6);
+}
+
+.panel-title {
+    -fx-text-fill: #0f172a;
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+/* ===== Table modern ===== */
+.modern-table {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(15,23,42,0.08);
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-table-cell-border-color: rgba(15,23,42,0.06);
+}
+
+.modern-table .column-header-background {
+    -fx-background-color: #e8edf5;
+    -fx-background-radius: 14 14 0 0;
+}
+
+.modern-table .column-header,
+.modern-table .column-header .label {
+    -fx-text-fill: #0f172a;
+    -fx-font-weight: 700;
+}
+
+.modern-table .table-row-cell {
+    -fx-background-color: white;
+}
+
+.modern-table .table-row-cell:odd {
+    -fx-background-color: #f7f9fc;
+}
+
+.modern-table .table-row-cell:selected {
+    -fx-background-color: rgba(14,165,233,0.18);
+}
+
+/* ===== Bottom form panel (like pic 2 big rounded area) ===== */
+.bottom-form-card {
+    -fx-background-color: #f8fafc;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-color: rgba(15,23,42,0.06);
+}
+
+/* ===== Fields ===== */
+.field-label {
+    -fx-text-fill: #0f172a;
+    -fx-font-weight: 600;
+}
+
+.field {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(15,23,42,0.10);
+    -fx-padding: 10 14;
+}
+
+.field:focused {
+    -fx-border-color: #0ea5e9;
+    -fx-effect: dropshadow(gaussian, rgba(14,165,233,0.25), 14, 0.25, 0, 0);
+}
+
+.field-area {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(15,23,42,0.10);
+    -fx-padding: 10 14;
+}
+
+.field-area:focused {
+    -fx-border-color: #0ea5e9;
+}
+
+/* ===== Checkbox ===== */
+.modern-check .box {
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: rgba(15,23,42,0.20);
+    -fx-background-color: white;
+}
+
+/* ===== Buttons (pill style like pic 2) ===== */
+.btn-primary {
+    -fx-background-color: #15a4ff;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #0b8fe0;
+}
+
+.btn-secondary {
+    -fx-background-color: #cfefff;
+    -fx-text-fill: #0f172a;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+
+.btn-secondary:hover {
+    -fx-background-color: #b9e7ff;
+}
+
+.btn-danger {
+    -fx-background-color: #ff4d4d;
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-padding: 10 22;
+    -fx-cursor: hand;
+}
+
+.btn-danger:hover {
+    -fx-background-color: #e83c3c;
+}
+
+.btn-ghost {
+    -fx-background-color: transparent;
+    -fx-text-fill: #0f172a;
+    -fx-font-weight: 700;
+    -fx-background-radius: 999;
+    -fx-padding: 10 20;
+    -fx-border-color: rgba(15,23,42,0.20);
+    -fx-border-radius: 999;
+    -fx-cursor: hand;
+}
+
+.btn-ghost:hover {
+    -fx-background-color: rgba(15,23,42,0.06);
+    -fx-border-color: rgba(15,23,42,0.35);
+}
+
+.error-label {
+    -fx-text-fill: #dc2626;
+    -fx-font-weight: 600;
+}
+/* ===== App Base ===== */
+.app-root {
+    -fx-font-family: "Segoe UI";
+    -fx-background-color: #0f1115;
+}
+
+.page {
+    -fx-padding: 16;
+    -fx-background-color: transparent;
+}
+
+/* ===== Header ===== */
+.header-section {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-padding: 16;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-width: 0 0 1 0;
+}
+
+.title-label {
+    -fx-text-fill: white;
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+}
+
+.subtitle-label {
+    -fx-text-fill: rgba(255,255,255,0.70);
+    -fx-font-size: 12.5px;
+}
+
+/* ===== Cards (left/right panels) ===== */
+.content-card {
+    -fx-padding: 16;
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-background-color: rgba(255,255,255,0.05);
+    -fx-border-color: rgba(255,255,255,0.10);
+}
+
+/* ===== Section Titles ===== */
+.section-title {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+}
+
+/* ===== Form ===== */
+.form-grid {
+    -fx-padding: 6 0 0 0;
+}
+
+.form-label {
+    -fx-text-fill: rgba(255,255,255,0.70);
+    -fx-font-size: 12px;
+}
+
+.form-input, .form-textarea {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.45);
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: rgba(255,255,255,0.12);
+    -fx-padding: 10;
+}
+
+.form-textarea {
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+/* ===== Table ===== */
+.elevated-table {
+    -fx-background-color: rgba(255,255,255,0.04);
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: rgba(255,255,255,0.10);
+}
+
+/* Table header */
+.table-view .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.06);
+}
+.table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+}
+.table-view .column-header .label {
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-font-weight: 700;
+}
+
+/* Rows */
+.table-row-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.table-row-cell:filled:selected {
+    -fx-background-color: rgba(255,255,255,0.12);
+}
+.table-cell {
+    -fx-text-fill: rgba(255,255,255,0.80);
+}
+
+/* ===== Buttons ===== */
+.primary-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #0f1115;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+
+.secondary-button {
+    -fx-background-color: rgba(255,255,255,0.12);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+
+.danger-button {
+    -fx-background-color: rgba(220,38,38,0.90);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+
+.ghost-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: rgba(255,255,255,0.75);
+    -fx-border-color: rgba(255,255,255,0.20);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 8 14;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover, .secondary-button:hover, .danger-button:hover, .ghost-button:hover {
+    -fx-opacity: 0.92;
+}
+/* Fix table text visibility */
+.table-view .table-cell {
+    -fx-text-fill: #0f172a;
+}
+
