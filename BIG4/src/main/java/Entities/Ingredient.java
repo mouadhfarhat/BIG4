@@ -1,6 +1,7 @@
 package Entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Ingredient {
 
@@ -11,17 +12,26 @@ public class Ingredient {
     private double minStockLevel;
     private double unitCost;
     private LocalDate expiryDate;
+    private LocalDateTime createdAt;
 
     public Ingredient(Long id, String name, double quantityInStock,
                       String unit, double minStockLevel,
                       double unitCost, LocalDate expiryDate) {
+        this(id, name, quantityInStock, unit, minStockLevel, unitCost, expiryDate, null);
+    }
+
+    public Ingredient(Long id, String name, double quantityInStock,
+                      String unit, double minStockLevel,
+                      double unitCost, LocalDate expiryDate,
+                      LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.quantityInStock = quantityInStock;
-        this.unit = unit;
+        setUnit(unit);
         this.minStockLevel = minStockLevel;
         this.unitCost = unitCost;
         this.expiryDate = expiryDate;
+        this.createdAt = createdAt;
     }
 
     public double getQuantityInStock() {
@@ -53,7 +63,7 @@ public class Ingredient {
     }
 
     public void setUnit(String unit) {
-        this.unit = unit;
+        this.unit = unit == null ? null : unit.toUpperCase();
     }
 
     public double getMinStockLevel() {
@@ -80,6 +90,14 @@ public class Ingredient {
         this.expiryDate = expiryDate;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Ingredient{" +
@@ -90,6 +108,7 @@ public class Ingredient {
                 ", minStockLevel=" + minStockLevel +
                 ", unitCost=" + unitCost +
                 ", expiryDate=" + expiryDate +
+                ", createdAt=" + createdAt +
                 '}';
     }
 }

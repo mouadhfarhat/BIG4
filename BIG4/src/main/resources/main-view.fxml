@@ -36,69 +36,71 @@
         <ScrollPane fitToWidth="true" fitToHeight="true" hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED" style="-fx-background-color: transparent;">
             <content>
                 <VBox spacing="14" styleClass="content-wrapper">
-                    <!-- Header moved into scrollable area so the whole page scrolls -->
-                    <VBox spacing="0" styleClass="nav-container">
-                        <VBox spacing="6" styleClass="page-header">
-                            <HBox alignment="CENTER_LEFT" spacing="18">
-                                <Label text="Inventory Dashboard" styleClass="header-title"/>
-                                <HBox HBox.hgrow="ALWAYS"/>
-                                <Button text="🔄 Refresh" styleClass="header-refresh"/>
+                    <VBox fx:id="overviewSection" spacing="14">
+                        <!-- Header moved into scrollable area so the whole page scrolls -->
+                        <VBox spacing="0" styleClass="nav-container">
+                            <VBox spacing="6" styleClass="page-header">
+                                <HBox alignment="CENTER_LEFT" spacing="18">
+                                    <Label text="Inventory Dashboard" styleClass="header-title"/>
+                                    <HBox HBox.hgrow="ALWAYS"/>
+                                    <Button text="🔄 Refresh" styleClass="header-refresh"/>
+                                </HBox>
+                                <Label text="Track ingredient levels, record waste, and keep your kitchen organized." styleClass="header-subtitle" wrapText="true"/>
+                            </VBox>
+                        </VBox>
+
+                        <!-- ══ Statistics row 1 ══ -->
+                        <HBox spacing="14" styleClass="stats-row">
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Total Ingredients" styleClass="stat-label"/>
+                                <Label fx:id="totalIngredientsLabel" text="0" styleClass="stat-value stat-green"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Low Stock Items" styleClass="stat-label"/>
+                                <Label fx:id="lowStockLabel" text="0" styleClass="stat-value stat-warning"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Expired Items" styleClass="stat-label"/>
+                                <Label fx:id="expiredItemsLabel" text="0" styleClass="stat-value stat-red"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Waste Records" styleClass="stat-label"/>
+                                <Label fx:id="wasteRecordsLabel" text="0" styleClass="stat-value stat-accent"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- ══ Statistics row 2 ══ -->
+                        <HBox spacing="14" styleClass="stats-row">
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Inventory Value" styleClass="stat-label"/>
+                                <Label fx:id="inventoryValueLabel" text="\$0.00" styleClass="stat-value stat-blue"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Total Waste Cost" styleClass="stat-label"/>
+                                <Label fx:id="wasteCostLabel" text="\$0.00" styleClass="stat-value stat-orange"/>
+                            </VBox>
+                            <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
+                                <Label text="Most Wasted" styleClass="stat-label"/>
+                                <Label fx:id="mostWastedLabel" text="—" styleClass="stat-value stat-purple"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- ══ Legend ══ -->
+                        <HBox spacing="18" alignment="CENTER_LEFT" styleClass="legend-row">
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <Region styleClass="legend-dot-expired"/>
+                                <Label text="Expired" styleClass="legend-label"/>
                             </HBox>
-                            <Label text="Track ingredient levels, record waste, and keep your kitchen organized." styleClass="header-subtitle" wrapText="true"/>
-                        </VBox>
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <Region styleClass="legend-dot-low"/>
+                                <Label text="Low Stock" styleClass="legend-label"/>
+                            </HBox>
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <Region styleClass="legend-dot-ok"/>
+                                <Label text="Healthy" styleClass="legend-label"/>
+                            </HBox>
+                        </HBox>
                     </VBox>
-
-                    <!-- ══ Statistics row 1 ══ -->
-                    <HBox spacing="14" styleClass="stats-row">
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Total Ingredients" styleClass="stat-label"/>
-                            <Label fx:id="totalIngredientsLabel" text="0" styleClass="stat-value stat-green"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Low Stock Items" styleClass="stat-label"/>
-                            <Label fx:id="lowStockLabel" text="0" styleClass="stat-value stat-warning"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Expired Items" styleClass="stat-label"/>
-                            <Label fx:id="expiredItemsLabel" text="0" styleClass="stat-value stat-red"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Waste Records" styleClass="stat-label"/>
-                            <Label fx:id="wasteRecordsLabel" text="0" styleClass="stat-value stat-accent"/>
-                        </VBox>
-                    </HBox>
-
-                    <!-- ══ Statistics row 2 ══ -->
-                    <HBox spacing="14" styleClass="stats-row">
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Inventory Value" styleClass="stat-label"/>
-                            <Label fx:id="inventoryValueLabel" text="\$0.00" styleClass="stat-value stat-blue"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Total Waste Cost" styleClass="stat-label"/>
-                            <Label fx:id="wasteCostLabel" text="\$0.00" styleClass="stat-value stat-orange"/>
-                        </VBox>
-                        <VBox styleClass="stat-card" HBox.hgrow="ALWAYS">
-                            <Label text="Most Wasted" styleClass="stat-label"/>
-                            <Label fx:id="mostWastedLabel" text="—" styleClass="stat-value stat-purple"/>
-                        </VBox>
-                    </HBox> 
-
-                    <!-- ══ Legend ══ -->
-                    <HBox spacing="18" alignment="CENTER_LEFT" styleClass="legend-row">
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <Region styleClass="legend-dot-expired"/>
-                            <Label text="Expired" styleClass="legend-label"/>
-                        </HBox>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <Region styleClass="legend-dot-low"/>
-                            <Label text="Low Stock" styleClass="legend-label"/>
-                        </HBox>
-                        <HBox spacing="5" alignment="CENTER_LEFT">
-                            <Region styleClass="legend-dot-ok"/>
-                            <Label text="Healthy" styleClass="legend-label"/>
-                        </HBox>
-                    </HBox>
 
                     <!-- ══ Tab bar + filter on the same row ══ -->
                     <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="card-tab-pane">
@@ -111,6 +113,11 @@
                                             <padding><Insets top="10" right="14" bottom="10" left="14"/></padding>
                                             <Label text="🔍" styleClass="form-label"/>
                                             <TextField fx:id="ingredientFilterField" promptText="Search ingredients…" styleClass="form-input" HBox.hgrow="ALWAYS"/>
+                                            <Label text="From" styleClass="form-label"/>
+                                            <DatePicker fx:id="ingredientDateFromPicker" promptText="Start date" styleClass="filter-date-picker"/>
+                                            <Label text="To" styleClass="form-label"/>
+                                            <DatePicker fx:id="ingredientDateToPicker" promptText="End date" styleClass="filter-date-picker"/>
+                                            <Button onAction="#handleClearIngredientDateFilter" text="✕" styleClass="clear-filter-button"/>
                                             <Button onAction="#handleExportIngredientsPdf" text="📄 Export PDF" styleClass="export-button"/>
                                         </HBox>
                                         <!-- Split: table left, buttons right -->
@@ -118,8 +125,8 @@
                                             <TableView fx:id="ingredientsTable" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS" styleClass="elevated-table">
                                                 <columns>
                                                     <TableColumn fx:id="ingredientNameColumn" prefWidth="160.0" text="Ingredient"/>
-                                                    <TableColumn fx:id="ingredientQuantityColumn" prefWidth="100.0" text="In Stock"/>
-                                                    <TableColumn fx:id="ingredientUnitColumn" prefWidth="80.0" text="Unit"/>
+                                                    <TableColumn fx:id="ingredientQuantityColumn" prefWidth="140.0" text="In Stock"/>
+                                                    <TableColumn fx:id="ingredientCreatedColumn" prefWidth="170.0" text="Added At"/>
                                                     <TableColumn fx:id="ingredientMinStockColumn" prefWidth="100.0" text="Min Stock"/>
                                                     <TableColumn fx:id="ingredientUnitCostColumn" prefWidth="100.0" text="Unit Cost"/>
                                                     <TableColumn fx:id="ingredientExpiryColumn" prefWidth="160.0" text="Expiry"/>
@@ -181,40 +188,6 @@
                                 </content>
                             </Tab>
 
-                            <!-- ══ Analytics tab ══ -->
-                            <Tab text="📊 Analytics">
-                                <content>
-                                    <ScrollPane fitToWidth="true" styleClass="content-card" style="-fx-background-color: transparent;">
-                                        <VBox spacing="18">
-                                            <padding>
-                                                <Insets top="18" right="18" bottom="18" left="18"/>
-                                            </padding>
-                                            <!-- Row 1: Pie + Bar -->
-                                            <HBox spacing="18">
-                                                <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
-                                                    <Label text="Waste by Type" styleClass="chart-title"/>
-                                                    <PieChart fx:id="wasteTypePieChart" prefHeight="280" animated="true" labelsVisible="true" legendVisible="true"/>
-                                                </VBox>
-                                                <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
-                                                    <Label text="Top Wasted Ingredients" styleClass="chart-title"/>
-                                                    <BarChart fx:id="topWastedBarChart" prefHeight="280" animated="true" legendVisible="false">
-                                                        <xAxis><CategoryAxis label="Ingredient"/></xAxis>
-                                                        <yAxis><NumberAxis label="Quantity"/></yAxis>
-                                                    </BarChart>
-                                                </VBox>
-                                            </HBox>
-                                            <!-- Row 2: Stock levels -->
-                                            <VBox styleClass="chart-container">
-                                                <Label text="Stock Levels vs Minimum" styleClass="chart-title"/>
-                                                <BarChart fx:id="stockLevelsBarChart" prefHeight="300" animated="true" legendVisible="true">
-                                                    <xAxis><CategoryAxis label="Ingredient"/></xAxis>
-                                                    <yAxis><NumberAxis label="Quantity"/></yAxis>
-                                                </BarChart>
-                                            </VBox>
-                                        </VBox>
-                                    </ScrollPane>
-                                </content>
-                            </Tab>
                         </tabs>
                     </TabPane>
                 </VBox>

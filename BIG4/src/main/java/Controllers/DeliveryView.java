@@ -269,6 +269,7 @@ public class DeliveryView {
             Stage stage = getStage();
             stage.setScene(new Scene(root, w, h));
             stage.setTitle(title);
+            stage.setMaximized(true);
         } catch (IOException e) {
             showAlert("Error", "Navigation error: " + e.getMessage(), Alert.AlertType.ERROR);
         }

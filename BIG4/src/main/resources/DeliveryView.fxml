@@ -19,7 +19,7 @@
         <VBox style="-fx-background-color: rgb(1,10,34);" spacing="0">
 
             <!-- ═══ NAVBAR ═══ -->
-            <HBox style="-fx-background-color: rgb(1,10,34); -fx-padding: 15;" spacing="40" alignment="CENTER_LEFT">
+            <HBox style="-fx-background-color: rgb(1,10,34); -fx-padding: 15;" spacing="20" alignment="CENTER_LEFT">
 
                 <!-- Logo -->
                 <VBox alignment="CENTER" prefWidth="100">
@@ -29,7 +29,7 @@
                 </VBox>
 
                 <!-- Nav Links -->
-                <HBox spacing="30" alignment="CENTER_LEFT">
+                <HBox spacing="18" alignment="CENTER_LEFT">
                     <Button fx:id="aboutBtn" text="About"
                             style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
                             onAction="#handleAbout" />
@@ -59,7 +59,7 @@
                 <HBox HBox.hgrow="ALWAYS" />
 
                 <!-- Right Buttons -->
-                <HBox spacing="15" alignment="CENTER_RIGHT">
+                <HBox spacing="10" alignment="CENTER_RIGHT">
                     <Button fx:id="cartBtn" text="🛒"
                             style="-fx-font-size: 18; -fx-background-color: #FFA500; -fx-text-fill: white; -fx-padding: 10 25; -fx-border-radius: 25; -fx-background-radius: 25; -fx-cursor: hand;"
                             onAction="#handleCart" />
@@ -91,8 +91,8 @@
 
     <!-- Table -->
     <center>
-        <VBox style="-fx-padding: 20; -fx-background-color: #f5f5f5;">
-            <TableView fx:id="deliveryTable" style="-fx-font-size: 12; -fx-padding: 10;">
+        <VBox style="-fx-padding: 20; -fx-background-color: #f5f5f5;" VBox.vgrow="ALWAYS">
+            <TableView fx:id="deliveryTable" style="-fx-font-size: 12; -fx-padding: 10;" VBox.vgrow="ALWAYS">
                 <columns>
                     <TableColumn text="Delivery ID"    prefWidth="70"  fx:id="idColumn" />
                     <TableColumn text="Order ID"       prefWidth="70"  fx:id="orderIdColumn" />
@@ -103,6 +103,9 @@
                     <TableColumn text="Created"        prefWidth="130" fx:id="createdColumn" />
                     <TableColumn text="Action"         prefWidth="110" fx:id="actionsColumn" />
                 </columns>
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
             </TableView>
         </VBox>
     </center>

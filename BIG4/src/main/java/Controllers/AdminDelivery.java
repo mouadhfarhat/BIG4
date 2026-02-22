@@ -511,6 +511,7 @@ public class AdminDelivery {
             Stage stage = (Stage) deliveryTable.getScene().getWindow();
             stage.setScene(new Scene(root, width, height));
             stage.setTitle(title);
+            stage.setMaximized(true);
         } catch (IOException e) {
             showError("Navigation error: " + e.getMessage());
             e.printStackTrace();

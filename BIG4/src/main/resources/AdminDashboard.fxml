@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="Controllers.AdminDashboardController"
+      spacing="14" style="-fx-background-color: #f5f5f5;">
+
+    <padding>
+        <Insets top="16" right="16" bottom="16" left="16"/>
+    </padding>
+
+    <Label text="Admin Dashboard"
+           style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+    <Label text="Overview of inventory and waste performance"
+           style="-fx-font-size: 13; -fx-text-fill: #666;"/>
+
+    <HBox spacing="14">
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Total Ingredients" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="totalIngredientsLabel" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #16a34a;"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Low Stock Items" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="lowStockLabel" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #f59e0b;"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Expired Items" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="expiredItemsLabel" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #ef4444;"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Waste Records" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="wasteRecordsLabel" text="0" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #2563eb;"/>
+        </VBox>
+    </HBox>
+
+    <HBox spacing="14">
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Inventory Value" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="inventoryValueLabel" text="\$0.00" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+        </VBox>
+        <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+            <Label text="Total Waste Quantity" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+            <Label fx:id="totalWasteQtyLabel" text="0.00" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+        </VBox>
+    </HBox>
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background-insets: 0;">
+        <content>
+            <VBox spacing="14" style="-fx-padding: 2 0 2 0;">
+                <HBox spacing="14">
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Waste by Type" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+                        <PieChart fx:id="wasteTypePieChart" prefHeight="280" legendVisible="true"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Stock Health" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+                        <PieChart fx:id="stockStatusPieChart" prefHeight="280" legendVisible="true"/>
+                    </VBox>
+                </HBox>
+
+                <VBox style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                    <Label text="Top Wasted Ingredients" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+                    <BarChart fx:id="topWastedBarChart" prefHeight="320" legendVisible="true">
+                        <xAxis><CategoryAxis label="Ingredient"/></xAxis>
+                        <yAxis><NumberAxis label="Quantity"/></yAxis>
+                    </BarChart>
+                </VBox>
+            </VBox>
+        </content>
+    </ScrollPane>
+
+</VBox>

@@ -27,6 +27,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.TabPane;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -67,18 +68,22 @@ public class MainController {
 	@FXML
 	private TableColumn<Ingredient, String> ingredientNameColumn;
 	@FXML
-	private TableColumn<Ingredient, Number> ingredientQuantityColumn;
-	@FXML
-	private TableColumn<Ingredient, String> ingredientUnitColumn;
+	private TableColumn<Ingredient, String> ingredientQuantityColumn;
 	@FXML
 	private TableColumn<Ingredient, Number> ingredientMinStockColumn;
 	@FXML
 	private TableColumn<Ingredient, Number> ingredientUnitCostColumn;
 	@FXML
 	private TableColumn<Ingredient, String> ingredientExpiryColumn;
+	@FXML
+	private TableColumn<Ingredient, String> ingredientCreatedColumn;
 
 	@FXML
 	private TextField ingredientFilterField;
+	@FXML
+	private DatePicker ingredientDateFromPicker;
+	@FXML
+	private DatePicker ingredientDateToPicker;
 
 	@FXML
 	private TableView<WasteRecord> wasteTable;
@@ -119,6 +124,7 @@ public class MainController {
 	private BarChart<String, Number> topWastedBarChart;
 	@FXML
 	private BarChart<String, Number> stockLevelsBarChart;
+		@FXML
 		private TabPane mainTabPane;
 
 		@FXML
@@ -127,6 +133,9 @@ public class MainController {
 		private Label lowStockLabel;
 		@FXML
 		private Label wasteRecordsLabel;
+
+		@FXML
+		private VBox overviewSection;
 
 	private final ObservableList<String> wasteTypes = FXCollections.observableArrayList(
 			"Preparation Loss",
@@ -142,8 +151,8 @@ public class MainController {
 	private final Mydatabase database = Mydatabase.getInstance();
 	private final DateTimeFormatter wasteDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-	private static final String INGREDIENT_SELECT_ALL = "SELECT id, name, quantityInStock, unit, minStockLevel, unitCost, expiryDate FROM Ingredient";
-	private static final String INGREDIENT_INSERT = "INSERT INTO Ingredient (name, quantityInStock, unit, minStockLevel, unitCost, expiryDate) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String INGREDIENT_SELECT_ALL = "SELECT id, name, quantityInStock, unit, minStockLevel, unitCost, expiryDate, createdAt FROM Ingredient";
+	private static final String INGREDIENT_INSERT = "INSERT INTO Ingredient (name, quantityInStock, unit, minStockLevel, unitCost, expiryDate, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?)";
 	private static final String INGREDIENT_UPDATE = "UPDATE Ingredient SET name = ?, quantityInStock = ?, unit = ?, minStockLevel = ?, unitCost = ?, expiryDate = ? WHERE id = ?";
 	private static final String INGREDIENT_DELETE = "DELETE FROM Ingredient WHERE id = ?";
 	private static final String INGREDIENT_DECREMENT_STOCK = "UPDATE Ingredient SET quantityInStock = quantityInStock - ? WHERE id = ?";
@@ -156,6 +165,7 @@ public class MainController {
 
 	@FXML
 	private void initialize() {
+		ensureIngredientCreatedAtColumn();
 		configureFilters();
 		configureIngredientTable();
 		configureIngredientRowFactory();
@@ -179,6 +189,14 @@ public class MainController {
 			ingredientFilterField.textProperty().addListener((obs, oldVal, newVal) ->
 					filteredIngredients.setPredicate(this::ingredientMatchesFilter));
 		}
+		if (ingredientDateFromPicker != null) {
+			ingredientDateFromPicker.valueProperty().addListener((obs, oldVal, newVal) ->
+					filteredIngredients.setPredicate(this::ingredientMatchesFilter));
+		}
+		if (ingredientDateToPicker != null) {
+			ingredientDateToPicker.valueProperty().addListener((obs, oldVal, newVal) ->
+					filteredIngredients.setPredicate(this::ingredientMatchesFilter));
+		}
 		if (wasteFilterField != null) {
 			wasteFilterField.textProperty().addListener((obs, oldVal, newVal) ->
 					filteredWasteRecords.setPredicate(this::wasteRecordMatchesFilter));
@@ -187,10 +205,19 @@ public class MainController {
 
 	private void configureIngredientTable() {
 		ingredientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-		ingredientQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantityInStock"));
-		ingredientUnitColumn.setCellValueFactory(new PropertyValueFactory<>("unit"));
+		ingredientQuantityColumn.setCellValueFactory(cell -> {
+			double quantity = cell.getValue().getQuantityInStock();
+			String unit = Optional.ofNullable(cell.getValue().getUnit()).orElse("").trim();
+			String quantityText = String.format("%.2f", quantity);
+			return new SimpleStringProperty(unit.isEmpty() ? quantityText : quantityText + " " + unit);
+		});
 		ingredientMinStockColumn.setCellValueFactory(new PropertyValueFactory<>("minStockLevel"));
 		ingredientUnitCostColumn.setCellValueFactory(new PropertyValueFactory<>("unitCost"));
+		ingredientCreatedColumn.setCellValueFactory(cell -> {
+			LocalDateTime createdAt = cell.getValue().getCreatedAt();
+			String display = createdAt != null ? createdAt.format(wasteDateFormatter) : "N/A";
+			return new SimpleStringProperty(display);
+		});
 
 		// ── Expiry countdown display ──
 		ingredientExpiryColumn.setCellValueFactory(cell -> {
@@ -297,6 +324,12 @@ public class MainController {
 		if (wasteDateToPicker != null) wasteDateToPicker.setValue(null);
 	}
 
+	@FXML
+	private void handleClearIngredientDateFilter() {
+		if (ingredientDateFromPicker != null) ingredientDateFromPicker.setValue(null);
+		if (ingredientDateToPicker != null) ingredientDateToPicker.setValue(null);
+	}
+
 	private void loadDataFromDatabase() {
 		try (Connection connection = database.getConnection()) {
 			ingredients.setAll(fetchIngredients(connection));
@@ -313,6 +346,7 @@ public class MainController {
 			 ResultSet resultSet = statement.executeQuery()) {
 			while (resultSet.next()) {
 				Date expiry = resultSet.getDate("expiryDate");
+				Timestamp created = resultSet.getTimestamp("createdAt");
 				data.add(new Ingredient(
 						resultSet.getLong("id"),
 						resultSet.getString("name"),
@@ -320,7 +354,8 @@ public class MainController {
 						resultSet.getString("unit"),
 						resultSet.getDouble("minStockLevel"),
 						resultSet.getDouble("unitCost"),
-						expiry == null ? null : expiry.toLocalDate()
+						expiry == null ? null : expiry.toLocalDate(),
+						created == null ? null : created.toLocalDateTime()
 				));
 			}
 		}
@@ -395,7 +430,8 @@ public class MainController {
 				resolvedUnit,
 				minStock,
 				unitCost,
-				expiry
+				expiry,
+				LocalDateTime.now()
 		);
 
 		try (Connection connection = database.getConnection();
@@ -890,16 +926,34 @@ public class MainController {
 		stage.setScene(scene);
 		stage.sizeToScene();
 		stage.centerOnScreen();
+		stage.setMaximized(true);
 		return stage;
 	}
 
 	private boolean ingredientMatchesFilter(Ingredient ingredient) {
 		String query = normalizedFilterText(ingredientFilterField);
-		if (query.isEmpty()) {
-			return true;
+		if (!query.isEmpty()) {
+			String haystack = (ingredient.getName() + " " + ingredient.getUnit()).toLowerCase();
+			if (!haystack.contains(query)) {
+				return false;
+			}
 		}
-		String haystack = (ingredient.getName() + " " + ingredient.getUnit()).toLowerCase();
-		return haystack.contains(query);
+
+		if (ingredientDateFromPicker != null && ingredientDateFromPicker.getValue() != null) {
+			LocalDate from = ingredientDateFromPicker.getValue();
+			if (ingredient.getCreatedAt() == null || ingredient.getCreatedAt().toLocalDate().isBefore(from)) {
+				return false;
+			}
+		}
+
+		if (ingredientDateToPicker != null && ingredientDateToPicker.getValue() != null) {
+			LocalDate to = ingredientDateToPicker.getValue();
+			if (ingredient.getCreatedAt() == null || ingredient.getCreatedAt().toLocalDate().isAfter(to)) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private boolean wasteRecordMatchesFilter(WasteRecord record) {
@@ -953,6 +1007,20 @@ public class MainController {
 			statement.setDate(6, Date.valueOf(ingredient.getExpiryDate()));
 		} else {
 			statement.setNull(6, Types.DATE);
+		}
+		if (ingredient.getCreatedAt() != null) {
+			statement.setTimestamp(7, Timestamp.valueOf(ingredient.getCreatedAt()));
+		} else {
+			statement.setTimestamp(7, Timestamp.valueOf(LocalDateTime.now()));
+		}
+	}
+
+	private void ensureIngredientCreatedAtColumn() {
+		try (Connection connection = database.getConnection();
+			 Statement statement = connection.createStatement()) {
+			statement.executeUpdate("ALTER TABLE Ingredient ADD COLUMN createdAt DATETIME NULL DEFAULT CURRENT_TIMESTAMP");
+		} catch (SQLException ignored) {
+			// Column may already exist; ignore.
 		}
 	}
 
@@ -1104,6 +1172,19 @@ public class MainController {
 	public void showWasteTab() {
 		if (mainTabPane != null && mainTabPane.getTabs().size() > 1) {
 			mainTabPane.getSelectionModel().select(1);
+		}
+	}
+
+	public void showAnalyticsTab() {
+		if (mainTabPane != null && mainTabPane.getTabs().size() > 2) {
+			mainTabPane.getSelectionModel().select(2);
+		}
+	}
+
+	public void hideOverviewSection() {
+		if (overviewSection != null) {
+			overviewSection.setVisible(false);
+			overviewSection.setManaged(false);
 		}
 	}
 
