@@ -20,6 +20,9 @@
                 <Button fx:id="dashboardBtn" text="Dashboard"
                     onAction="#showDashboard"
                     style="-fx-text-fill: #FFA500; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;" />
+                <Button fx:id="menuAdminBtn" text="Menu &amp; Dishes"
+                        onAction="#showMenuAdmin"
+                        style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;" />
                 <Button fx:id="ingredientsBtn" text="Ingredients"
                         onAction="#showIngredients"
                     style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;" />

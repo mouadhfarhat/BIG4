@@ -13,10 +13,12 @@ public class AdminPanelController {
 
     @FXML private StackPane contentHolder;
     @FXML private Button dashboardBtn;
+    @FXML private Button menuAdminBtn;
     @FXML private Button ingredientsBtn;
     @FXML private Button wasteBtn;
 
     private Parent dashboardView;
+    private Parent menuAdminView;
     private Parent mainView;
     private MainController mainController;
 
@@ -33,6 +35,17 @@ public class AdminPanelController {
         if (dashboardView != null) {
             contentHolder.getChildren().setAll(dashboardView);
             setActiveButton(dashboardBtn);
+        }
+    }
+
+    @FXML
+    private void showMenuAdmin() {
+        if (menuAdminView == null) {
+            menuAdminView = loadView("/menu-management.fxml", "Unable to load menu admin page");
+        }
+        if (menuAdminView != null) {
+            contentHolder.getChildren().setAll(menuAdminView);
+            setActiveButton(menuAdminBtn);
         }
     }
 
@@ -85,6 +98,7 @@ public class AdminPanelController {
         String activeStyle = "-fx-text-fill: #FFA500; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;";
 
         dashboardBtn.setStyle(defaultStyle);
+        menuAdminBtn.setStyle(defaultStyle);
         ingredientsBtn.setStyle(defaultStyle);
         wasteBtn.setStyle(defaultStyle);
 

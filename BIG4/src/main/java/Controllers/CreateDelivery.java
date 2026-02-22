@@ -167,7 +167,7 @@ public class CreateDelivery {
     // ═════════════════════════════════════════════════════════════════════════
 
     @FXML private void handleAbout()        { navigateTo("/homepage.fxml",            "Big4",                  1400, 800); }
-    @FXML private void handleMenu()         { navigateTo("/Menu.fxml",                "Menu - Big4",           1400, 800); }
+    @FXML private void handleMenu()         { navigateTo("/menu.fxml",                "Menu - Big4",           1400, 800); }
     @FXML private void handleReservations() { navigateTo("/Reservations.fxml",        "Reservations - Big4",   1400, 800); }
     @FXML private void handleEvents()       { navigateTo("/Events.fxml",              "Events - Big4",         1400, 800); }
     @FXML private void handleRapport()      { navigateTo("/Rapport.fxml",             "Reports - Big4",        1400, 800); }

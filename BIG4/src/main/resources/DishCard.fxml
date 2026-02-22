@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="Controllers.DishCardController"
+      prefWidth="240" minWidth="240" maxWidth="240"
+      styleClass="dish-card"
+      spacing="10">
+
+    <padding>
+        <Insets top="12" right="12" bottom="12" left="12"/>
+    </padding>
+
+    <StackPane styleClass="dish-image-wrap">
+        <ImageView fx:id="ivDish" fitWidth="216" fitHeight="140" preserveRatio="false" smooth="true" />
+        <Label fx:id="lblBadge" text="NOUVEAU" styleClass="badge" StackPane.alignment="TOP_LEFT"/>
+    </StackPane>
+
+    <VBox spacing="4">
+        <Label fx:id="lblName" text="Chicken Bowl" styleClass="dish-name" wrapText="true"/>
+        <Label fx:id="lblDesc" text="Poulet, riz, sauce maison, légumes."
+               styleClass="dish-desc" wrapText="true"/>
+    </VBox>
+
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label fx:id="lblPrice" text="12.500 DT" styleClass="dish-price"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnAdd" text="Ajouter" styleClass="btn-primary"/>
+    </HBox>
+
+</VBox>

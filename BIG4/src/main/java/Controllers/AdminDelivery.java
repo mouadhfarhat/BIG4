@@ -457,7 +457,7 @@ public class AdminDelivery {
 
     @FXML
     private void handleMenu() {
-        navigateTo("/Menu.fxml", "Menu - Big4", 1200, 800);
+        navigateTo("/menu.fxml", "Menu - Big4", 1200, 800);
     }
 
     @FXML

@@ -17,6 +17,7 @@ import javafx.geometry.Pos;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.net.URL;
 
 
 public class homepage {
@@ -82,7 +83,8 @@ public class homepage {
 
         card.getChildren().addAll(
             buildAdminItem("📦", "Ingredients", "Inventory dashboard", this::openInventoryStock),
-            buildAdminItem("🗑", "Waste Records", "Record and review waste", this::openInventoryWaste)
+            buildAdminItem("🗑", "Waste Records", "Record and review waste", this::openInventoryWaste),
+            buildAdminItem("🍽", "Menu & Dishes", "Manage menus and dishes", this::openMenuDishAdmin)
         );
 
         adminPopup.getContent().add(card);
@@ -331,6 +333,20 @@ public class homepage {
         openInventoryAndSelectTab(true);
     }
 
+    private void openMenuDishAdmin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/menu-management.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Menu & Dish Management - Big4");
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open menu management.\n\nError: " + e.getMessage());
+        }
+    }
+
     private void openInventoryAndSelectTab(boolean selectWasteTab) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/main-view.fxml"));
@@ -502,7 +518,13 @@ public class homepage {
 
     private void loadScene(String fxmlPath, String windowTitle, int width, int height) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            String normalizedPath = fxmlPath.startsWith("/") ? fxmlPath : "/" + fxmlPath;
+            URL resource = getClass().getResource(normalizedPath);
+            if (resource == null) {
+                throw new IOException("FXML not found: " + normalizedPath);
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle(windowTitle);
