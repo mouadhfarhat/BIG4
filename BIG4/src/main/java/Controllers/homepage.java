@@ -408,13 +408,17 @@ public class homepage {
 
     @FXML
     private void handleEvents(ActionEvent event) {
-        showAlert("Events", "Upcoming Events",
-                "Welcome to our Events section!\n\n" +
-                        "Current Events:\n" +
-                        "• Wine Tasting Night - Friday 7 PM\n" +
-                        "• Chef's Special Dinner - Saturday 8 PM\n" +
-                        "• Brunch Event - Sunday 10 AM\n\n" +
-                        "Check back soon for more events!");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/food-donation-events.fxml"));
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Food Donation Management - Big4");
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Loading Error",
+                    "Unable to load Food Donation page.\n\nError: " + e.getMessage());
+        }
     }
 
     @FXML
