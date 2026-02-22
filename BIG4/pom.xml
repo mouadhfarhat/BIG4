@@ -89,6 +89,7 @@
                     <argLine>
                         -XX:+EnableDynamicAgentLoading
                         -Xshare:off
+                        azert
                     </argLine>
                 </configuration>
             </plugin>
