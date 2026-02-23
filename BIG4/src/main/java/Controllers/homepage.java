@@ -11,12 +11,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 import Services.AuthService;
 import java.io.IOException;
+import java.net.URL;
 
 
 public class homepage {
@@ -35,16 +37,135 @@ public class homepage {
     @FXML private Button logoutBtn;
     @FXML private Button viewMenuBtn;
     @FXML private Button reserveTableBtn;
+    @FXML private BorderPane rootPane;
 
     // We use a plain Popup instead of ContextMenu for full visual control
     private Popup deliveryPopup;
+    private Popup adminPopup;
 
     @FXML
     public void initialize() {
+        buildAdminPopup();
         buildDeliveryPopup();
     }
 
     // ── Build popup ───────────────────────────────────────────────────────────
+
+        private void buildAdminPopup() {
+        adminPopup = new Popup();
+        adminPopup.setAutoHide(true);
+        adminPopup.setAutoFix(true);
+
+        VBox card = new VBox(0);
+        card.setStyle(
+            "-fx-background-color: rgb(5, 14, 42);" +
+                "-fx-background-radius: 14;" +
+                "-fx-border-color: rgba(255,165,0,0.30);" +
+                "-fx-border-width: 1;" +
+                "-fx-border-radius: 14;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.60), 24, 0.25, 0, 8);" +
+                "-fx-padding: 10 0 10 0;" +
+                "-fx-min-width: 240;"
+        );
+
+        Label sectionLabel = new Label("A D M I N");
+        sectionLabel.setStyle(
+            "-fx-text-fill: #FFA500;" +
+                "-fx-font-size: 9.5px;" +
+                "-fx-font-family: 'Arial';" +
+                "-fx-padding: 4 20 8 20;" +
+                "-fx-opacity: 0.75;"
+        );
+        card.getChildren().add(sectionLabel);
+
+        HBox line = new HBox();
+        line.setStyle("-fx-background-color: rgba(255,165,0,0.18); -fx-pref-height: 1;");
+        VBox.setMargin(line, new Insets(0, 14, 6, 14));
+        card.getChildren().add(line);
+
+        card.getChildren().addAll(
+            buildAdminItem("📦", "Ingredients", "Inventory dashboard", this::openInventoryStock),
+            buildAdminItem("🗑", "Waste Records", "Record and review waste", this::openInventoryWaste),
+            buildAdminItem("🍽", "Menu & Dishes", "Manage menus and dishes", this::openMenuDishAdmin)
+        );
+
+        adminPopup.getContent().add(card);
+        }
+
+        private HBox buildAdminItem(String emoji, String title, String subtitle, Runnable action) {
+        Label icon = new Label(emoji);
+        icon.setStyle(
+            "-fx-font-size: 17px;" +
+                "-fx-background-color: rgba(255,165,0,0.13);" +
+                "-fx-background-radius: 9;" +
+                "-fx-padding: 7 9 7 9;" +
+                "-fx-min-width: 38;" +
+                "-fx-alignment: CENTER;"
+        );
+
+        Label titleLbl = new Label(title);
+        titleLbl.setStyle(
+            "-fx-text-fill: white;" +
+                "-fx-font-size: 13px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-font-family: 'Arial';"
+        );
+        Label subLbl = new Label(subtitle);
+        subLbl.setStyle(
+            "-fx-text-fill: rgba(255,255,255,0.40);" +
+                "-fx-font-size: 10px;" +
+                "-fx-font-family: 'Arial';"
+        );
+        VBox text = new VBox(2, titleLbl, subLbl);
+        text.setAlignment(Pos.CENTER_LEFT);
+
+        HBox row = new HBox(12, icon, text);
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setPadding(new Insets(9, 18, 9, 14));
+        row.setStyle("-fx-cursor: hand; -fx-background-color: transparent; -fx-background-radius: 10;");
+
+        row.setOnMouseEntered(e -> {
+            row.setStyle("-fx-cursor: hand; -fx-background-color: rgba(255,165,0,0.09); -fx-background-radius: 10;");
+            icon.setStyle(
+                "-fx-font-size: 17px;" +
+                    "-fx-background-color: rgba(255,165,0,0.25);" +
+                    "-fx-background-radius: 9;" +
+                    "-fx-padding: 7 9 7 9;" +
+                    "-fx-min-width: 38;" +
+                    "-fx-alignment: CENTER;"
+            );
+            titleLbl.setStyle(
+                "-fx-text-fill: #FFA500;" +
+                    "-fx-font-size: 13px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Arial';"
+            );
+        });
+        row.setOnMouseExited(e -> {
+            row.setStyle("-fx-cursor: hand; -fx-background-color: transparent; -fx-background-radius: 10;");
+            icon.setStyle(
+                "-fx-font-size: 17px;" +
+                    "-fx-background-color: rgba(255,165,0,0.13);" +
+                    "-fx-background-radius: 9;" +
+                    "-fx-padding: 7 9 7 9;" +
+                    "-fx-min-width: 38;" +
+                    "-fx-alignment: CENTER;"
+            );
+            titleLbl.setStyle(
+                "-fx-text-fill: white;" +
+                    "-fx-font-size: 13px;" +
+                    "-fx-font-weight: bold;" +
+                    "-fx-font-family: 'Arial';"
+            );
+        });
+
+        row.setOnMouseClicked(e -> {
+            adminPopup.hide();
+            action.run();
+        });
+
+        return row;
+        }
 
     private void buildDeliveryPopup() {
         deliveryPopup = new Popup();
@@ -196,12 +317,56 @@ public class homepage {
             Stage stage = (Stage) deliveryBtn.getScene().getWindow();
             stage.setScene(new Scene(root, 1400, 800));
             stage.setTitle("Delivery Dashboard - Big4");
+            stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Loading Error",
                     "Unable to load Delivery Dashboard.\n" +
                             "Make sure DeliverymanManagement.fxml is in src/main/resources/\n\n" +
                             "Error: " + e.getMessage());
+        }
+    }
+
+    private void openInventoryStock() {
+        openInventoryAndSelectTab(false);
+    }
+
+    private void openInventoryWaste() {
+        openInventoryAndSelectTab(true);
+    }
+
+    private void openMenuDishAdmin() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/menu-management.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Menu & Dish Management - Big4");
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open menu management.\n\nError: " + e.getMessage());
+        }
+    }
+
+    private void openInventoryAndSelectTab(boolean selectWasteTab) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/main-view.fxml"));
+            Parent inventoryRoot = loader.load();
+            Controllers.MainController controller = loader.getController();
+            if (selectWasteTab) {
+                controller.showWasteTab();
+            } else {
+                controller.showStockTab();
+            }
+
+            // Keep navbar visible by swapping only the center content on the same stage.
+            rootPane.setCenter(inventoryRoot);
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setTitle(selectWasteTab ? "Waste Records - Big4" : "Inventory Dashboard - Big4");
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Navigation Error", "Unable to open inventory.\n\nError: " + e.getMessage());
         }
     }
 
@@ -212,6 +377,7 @@ public class homepage {
             Stage stage = (Stage) deliveryBtn.getScene().getWindow();
             stage.setScene(new Scene(root, 1400, 800));
             stage.setTitle("Add Delivery - Big4");
+            stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Loading Error",
@@ -228,6 +394,7 @@ public class homepage {
             Stage stage = (Stage) deliveryBtn.getScene().getWindow();
             stage.setScene(new Scene(root, 1400, 800));
             stage.setTitle("DeliveryMan View - Big4");
+            stage.setMaximized(true);
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Loading Error",
@@ -259,13 +426,17 @@ public class homepage {
 
     @FXML
     private void handleEvents(ActionEvent event) {
-        showAlert("Events", "Upcoming Events",
-                "Welcome to our Events section!\n\n" +
-                        "Current Events:\n" +
-                        "• Wine Tasting Night - Friday 7 PM\n" +
-                        "• Chef's Special Dinner - Saturday 8 PM\n" +
-                        "• Brunch Event - Sunday 10 AM\n\n" +
-                        "Check back soon for more events!");
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/food-donation-events.fxml"));
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            stage.setScene(new Scene(root, 1400, 800));
+            stage.setTitle("Food Donation Management - Big4");
+            stage.setMaximized(true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Loading Error",
+                    "Unable to load Food Donation page.\n\nError: " + e.getMessage());
+        }
     }
 
     @FXML
@@ -283,14 +454,19 @@ public class homepage {
     @FXML
     private void handleAdmin(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminDelivery.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminPanel.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) adminBtn.getScene().getWindow();
-            stage.setScene(new Scene(root, 1400, 800));
-            stage.setTitle("Admin Delivery - Big4");
+
+            Stage stage = new Stage();
+            stage.setTitle("Admin Panel - Big4");
+            stage.setScene(new Scene(root, 1400, 850));
+            stage.setResizable(true);
+            stage.setMaximized(true);
+            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showErrorAlert("Navigation Error", "Unable to open Admin dashboard.\n\nError: " + e.getMessage());
+            showAlert("Error", "Loading Error",
+                    "Unable to open Admin Panel.\n\nError: " + e.getMessage());
         }
     }
 
@@ -359,12 +535,19 @@ public class homepage {
 
     private void loadScene(String fxmlPath, String windowTitle, int width, int height) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            String normalizedPath = fxmlPath.startsWith("/") ? fxmlPath : "/" + fxmlPath;
+            URL resource = getClass().getResource(normalizedPath);
+            if (resource == null) {
+                throw new IOException("FXML not found: " + normalizedPath);
+            }
+
+            FXMLLoader loader = new FXMLLoader(resource);
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle(windowTitle);
             stage.setScene(new Scene(root, width, height));
             stage.setResizable(true);
+            stage.setMaximized(true);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.ClientMenuViewController"
+            prefWidth="1100.0" prefHeight="700.0"
+            styleClass="app-root"
+            stylesheets="@styles/client-menu.css">
+
+    <!-- TOP HEADER -->
+    <top>
+        <HBox spacing="12" styleClass="topbar">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+            <VBox spacing="2">
+                <Label text="Menus" styleClass="page-title"/>
+                <Label text="Choisissez un menu, puis découvrez les plats." styleClass="page-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="tfSearch" promptText="Rechercher un plat..." styleClass="search"/>
+        </HBox>
+    </top>
+
+    <!-- LEFT MENUS LIST -->
+    <left>
+        <VBox spacing="10" styleClass="left-panel" prefWidth="320">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+            <Label text="Liste des menus" styleClass="section-title"/>
+            <ListView fx:id="lvMenus" styleClass="menu-list" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER DISHES GRID -->
+    <center>
+        <VBox spacing="12" styleClass="content">
+            <padding>
+                <Insets top="18" right="18" bottom="18" left="18"/>
+            </padding>
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="lblSelectedMenu" text="Sélectionnez un menu" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbSort" promptText="Trier" styleClass="sort"/>
+            </HBox>
+
+            <ScrollPane fitToWidth="true" styleClass="scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <FlowPane fx:id="fpDishes"
+                              hgap="14" vgap="14"
+                              prefWrapLength="720"
+                              styleClass="dish-grid">
+                        <padding>
+                            <Insets top="2" right="2" bottom="2" left="2"/>
+                        </padding>
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>

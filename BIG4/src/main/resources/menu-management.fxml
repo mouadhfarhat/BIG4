@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="inventory-root" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MenuDishCrudController">
+
+    <top>
+      <VBox spacing="4" styleClass="menu-simple-header">
+         <padding>
+            <Insets bottom="6" left="18" right="18" top="14" />
+         </padding>
+         <children>
+            <Label styleClass="menu-simple-title" text="Menu &amp; Dish Management" />
+            <Label styleClass="menu-simple-subtitle" text="Manage restaurant menus and associated dishes." />
+            <Label fx:id="lblSelectedMenu" styleClass="menu-simple-subtitle" text="Selected menu: (none)" />
+         </children>
+      </VBox>
+    </top>
+
+    <center>
+        <VBox styleClass="main-surface">
+            <padding>
+                <Insets bottom="18" left="18" right="18" top="18" />
+            </padding>
+
+            <children>
+                <SplitPane dividerPositions="0.48" styleClass="split-root">
+                    <items>
+
+                        <!-- MENUS -->
+                        <VBox spacing="16" styleClass="panel-card">
+                            <padding>
+                                <Insets bottom="18" left="18" right="18" top="18" />
+                            </padding>
+                            <children>
+                                <Label styleClass="panel-title" text="Menus" />
+
+                                <TableView fx:id="tvMenus" prefHeight="260" styleClass="modern-table">
+                                    <columns>
+                                        <TableColumn fx:id="colMenuId" prefWidth="60" text="ID" />
+                                        <TableColumn fx:id="colMenuTitle" prefWidth="140" text="Title" />
+                                        <TableColumn fx:id="colMenuDesc" prefWidth="240" text="Description" />
+                                        <TableColumn fx:id="colMenuActive" prefWidth="90" text="Active" />
+                                    </columns>
+                                </TableView>
+
+                                <VBox spacing="12" styleClass="bottom-form-card">
+                                    <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                                    <children>
+                                        <GridPane hgap="12" vgap="12">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="30" />
+                                                <ColumnConstraints percentWidth="70" />
+                                            </columnConstraints>
+
+                                            <children>
+                                                <Label styleClass="field-label" text="Title" GridPane.rowIndex="0" />
+                                                <TextField fx:id="tfMenuTitle" promptText="e.g. Winter Specials" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+
+                                                <Label styleClass="field-label" text="Description" GridPane.rowIndex="1" />
+                                                <TextArea fx:id="taMenuDesc" prefRowCount="3" promptText="Short menu description" styleClass="field-area" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                                <Label styleClass="field-label" text="Active" GridPane.rowIndex="2" />
+                                                <CheckBox fx:id="cbMenuActive" styleClass="modern-check" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                            </children>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                        </GridPane>
+
+                                        <HBox alignment="CENTER_RIGHT" spacing="12">
+                                            <children>
+                                                <Button onAction="#onAddMenu" styleClass="btn-primary" text="Add" />
+                                                <Button onAction="#onUpdateMenu" styleClass="btn-secondary" text="Update" />
+                                                <Button onAction="#onDeleteMenu" styleClass="btn-danger" text="Delete" />
+                                                <Button onAction="#onClearMenu" styleClass="btn-ghost" text="Clear" />
+                                            </children>
+                                        </HBox>
+
+                                        <Label fx:id="lblMenuMsg" styleClass="error-label" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <!-- DISHES -->
+                        <VBox spacing="16" styleClass="panel-card">
+                            <padding>
+                                <Insets bottom="18" left="18" right="18" top="18" />
+                            </padding>
+                            <children>
+                                <Label styleClass="panel-title" text="Dishes" />
+
+                                <TableView fx:id="tvDishes" prefHeight="260" styleClass="modern-table">
+                                    <columns>
+                                        <TableColumn fx:id="colDishId" prefWidth="60" text="ID" />
+                                        <TableColumn fx:id="colDishName" prefWidth="140" text="Name" />
+                                        <TableColumn fx:id="colDishDesc" prefWidth="220" text="Description" />
+                                        <TableColumn fx:id="colDishPrice" prefWidth="90" text="Price" />
+                                        <TableColumn fx:id="colDishAvail" prefWidth="110" text="Available" />
+                                        <TableColumn fx:id="colDishStock" prefWidth="90" text="Stock" />
+                                        <TableColumn fx:id="colDishImage" prefWidth="180" text="Image URL" />
+                                    </columns>
+                                </TableView>
+
+                                <VBox spacing="12" styleClass="bottom-form-card">
+                                    <padding><Insets bottom="16" left="16" right="16" top="16" /></padding>
+                                    <children>
+                                        <GridPane hgap="12" vgap="12">
+                                            <columnConstraints>
+                                                <ColumnConstraints percentWidth="30" />
+                                                <ColumnConstraints percentWidth="70" />
+                                            </columnConstraints>
+
+                                            <children>
+                                                <Label styleClass="field-label" text="Name" />
+                                                <TextField fx:id="tfDishName" promptText="Dish name" styleClass="field" GridPane.columnIndex="1" />
+
+                                                <Label styleClass="field-label" text="Description" GridPane.rowIndex="1" />
+                                                <TextArea fx:id="taDishDesc" prefRowCount="3" promptText="Dish details" styleClass="field-area" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                                <Label styleClass="field-label" text="Price" GridPane.rowIndex="2" />
+                                                <TextField fx:id="tfDishPrice" promptText="e.g. 14.50" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+
+                                                <Label styleClass="field-label" text="Available" GridPane.rowIndex="3" />
+                                                <CheckBox fx:id="cbDishAvailable" styleClass="modern-check" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                                                <Label styleClass="field-label" text="Stock" GridPane.rowIndex="4" />
+                                                <TextField fx:id="tfDishStock" promptText="Quantity" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+
+                                                <Label styleClass="field-label" text="Image URL" GridPane.rowIndex="5" />
+                                                <TextField fx:id="tfDishImage" promptText="/images/dish.png" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                            </children>
+                                 <rowConstraints>
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                    <RowConstraints />
+                                 </rowConstraints>
+                                        </GridPane>
+
+                                        <HBox alignment="CENTER_RIGHT" spacing="12">
+                                            <children>
+                                                <Button onAction="#onAddDish" styleClass="btn-primary" text="Add" />
+                                                <Button onAction="#onUpdateDish" styleClass="btn-secondary" text="Update" />
+                                                <Button onAction="#onDeleteDish" styleClass="btn-danger" text="Delete" />
+                                                <Button onAction="#onClearDish" styleClass="btn-ghost" text="Clear" />
+                                            </children>
+                                        </HBox>
+
+                                        <Label fx:id="lblDishMsg" styleClass="error-label" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                    </items>
+                </SplitPane>
+            </children>
+        </VBox>
+    </center>
+
+
+</BorderPane>

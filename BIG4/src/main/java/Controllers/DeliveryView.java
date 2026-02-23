@@ -44,6 +44,7 @@ public class DeliveryView {
     @FXML private Button reserveBtn;
     @FXML private Button eventsBtn;
     @FXML private Button rapportBtn;
+    @FXML private Button adminBtn;
     @FXML private Button contactBtn;
     @FXML private Button deliveryBtn;
     @FXML private Button cartBtn;
@@ -176,10 +177,11 @@ public class DeliveryView {
     // ═════════════════════════════════════════════════════════════════════════
 
     @FXML private void handleAbout()        { navigateTo("/homepage.fxml",     "Big4",                 1400, 800); }
-    @FXML private void handleMenu()         { navigateTo("/Menu.fxml",          "Menu - Big4",          1400, 800); }
+    @FXML private void handleMenu()         { navigateTo("/menu.fxml",          "Menu - Big4",          1400, 800); }
     @FXML private void handleReservations() { navigateTo("/Reservations.fxml",  "Reservations - Big4",  1400, 800); }
     @FXML private void handleEvents()       { navigateTo("/Events.fxml",        "Events - Big4",        1400, 800); }
     @FXML private void handleRapport()      { navigateTo("/Rapport.fxml",       "Reports - Big4",       1400, 800); }
+    @FXML private void handleAdmin()        { navigateTo("/AdminDelivery.fxml",  "Admin - Big4",        1400, 800); }
     @FXML private void handleContact()      { navigateTo("/Contact.fxml",       "Contact - Big4",       1400, 800); }
     @FXML private void handleCart()         { navigateTo("/Cart.fxml",          "My Cart - Big4",       1400, 800); }
     @FXML private void handleProfile()      { navigateTo("/profile.fxml",       "My Profile - Big4",    900, 700); }
@@ -282,6 +284,7 @@ public class DeliveryView {
             Stage stage = getStage();
             stage.setScene(new Scene(root, w, h));
             stage.setTitle(title);
+            stage.setMaximized(true);
         } catch (IOException e) {
             showAlert("Error", "Navigation error: " + e.getMessage(), Alert.AlertType.ERROR);
         }

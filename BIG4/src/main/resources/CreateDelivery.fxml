@@ -21,7 +21,7 @@
         <VBox style="-fx-background-color: rgb(1,10,34);" spacing="0">
 
             <!-- ═══ NAVBAR ═══ -->
-            <HBox style="-fx-background-color: rgb(1,10,34); -fx-padding: 15;" spacing="40" alignment="CENTER_LEFT">
+            <HBox style="-fx-background-color: rgb(1,10,34); -fx-padding: 15;" spacing="20" alignment="CENTER_LEFT">
 
                 <!-- Logo -->
                 <VBox alignment="CENTER" prefWidth="100">
@@ -31,7 +31,7 @@
                 </VBox>
 
                 <!-- Nav Links -->
-                <HBox spacing="30" alignment="CENTER_LEFT">
+                <HBox spacing="18" alignment="CENTER_LEFT">
                     <Button fx:id="aboutBtn"   text="About"
                             style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
                             onAction="#handleAbout" />
@@ -59,7 +59,7 @@
                 <HBox HBox.hgrow="ALWAYS" />
 
                 <!-- Right Buttons -->
-                <HBox spacing="15" alignment="CENTER_RIGHT">
+                <HBox spacing="10" alignment="CENTER_RIGHT">
                     <Button fx:id="cartBtn" text="🛒"
                             style="-fx-font-size: 18; -fx-background-color: #FFA500; -fx-text-fill: white; -fx-padding: 10 25; -fx-border-radius: 25; -fx-background-radius: 25; -fx-cursor: hand;"
                             onAction="#handleCart" />
@@ -83,10 +83,10 @@
     </top>
 
     <center>
-        <ScrollPane style="-fx-padding: 0; -fx-background-color: #f5f5f5;">
-            <VBox spacing="20" style="-fx-padding: 40;">
+        <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-padding: 0; -fx-background-color: #f5f5f5;">
+            <VBox spacing="20" alignment="TOP_CENTER" style="-fx-padding: 40;">
 
-                <VBox spacing="20" style="-fx-background-color: white; -fx-padding: 30; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                <VBox spacing="20" maxWidth="1200" style="-fx-background-color: white; -fx-padding: 30; -fx-border-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
 
                     <Label text="Delivery Information" style="-fx-text-fill: rgb(1,10,34); -fx-font-size: 18; -fx-font-weight: bold;" />
 
