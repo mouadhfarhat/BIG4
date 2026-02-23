@@ -2,6 +2,9 @@ package Entities;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Ingredient {
 
@@ -13,6 +16,7 @@ public class Ingredient {
     private double unitCost;
     private LocalDate expiryDate;
     private LocalDateTime createdAt;
+    private final List<DishIngredient> dishUsages = new ArrayList<>();
 
     public Ingredient(Long id, String name, double quantityInStock,
                       String unit, double minStockLevel,
@@ -98,6 +102,29 @@ public class Ingredient {
         this.createdAt = createdAt;
     }
 
+    public List<DishIngredient> getDishUsages() {
+        return Collections.unmodifiableList(dishUsages);
+    }
+
+    public void setDishUsages(List<DishIngredient> usages) {
+        dishUsages.clear();
+        if (usages == null) {
+            return;
+        }
+        for (DishIngredient usage : usages) {
+            addDishUsage(usage);
+        }
+    }
+
+    public void addDishUsage(DishIngredient usage) {
+        if (usage == null) {
+            return;
+        }
+        usage.setIngredient(this);
+        usage.setIngredientId(this.id);
+        dishUsages.add(usage);
+    }
+
     @Override
     public String toString() {
         return "Ingredient{" +
@@ -109,6 +136,7 @@ public class Ingredient {
                 ", unitCost=" + unitCost +
                 ", expiryDate=" + expiryDate +
                 ", createdAt=" + createdAt +
+                ", dishUsages=" + dishUsages.size() +
                 '}';
     }
 }

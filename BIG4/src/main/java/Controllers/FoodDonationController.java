@@ -1,5 +1,6 @@
 package Controllers;
 
+import Entities.DonationDishRecommendation;
 import Entities.Fooddonationevent;
 import Entities.FoodDonationItem;
 import Services.Fooddonationeventservice;
@@ -27,6 +28,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class FoodDonationController {
+
+    private static final int DEFAULT_NEAR_EXPIRY_DAYS = 3;
 
     // ==================== DONATION ITEMS COMPONENTS ====================
     @FXML private TableView<FoodDonationItem> donationItemsTable;
@@ -63,12 +66,28 @@ public class FoodDonationController {
     @FXML private Label pendingEventsLabel;
     @FXML private Label completedEventsLabel;
 
+    // ==================== OPTIMIZATION PLANNER VIEW ====================
+    @FXML private TableView<Fooddonationevent> optimizationEventsTable;
+    @FXML private TableColumn<Fooddonationevent, Number> optEventIdColumn;
+    @FXML private TableColumn<Fooddonationevent, String> optEventDateColumn;
+    @FXML private TableColumn<Fooddonationevent, String> optEventCharityColumn;
+    @FXML private TableColumn<Fooddonationevent, String> optEventStatusColumn;
+
+    @FXML private TableView<DonationDishRecommendation> recommendationTable;
+    @FXML private TableColumn<DonationDishRecommendation, Number> recDishIdColumn;
+    @FXML private TableColumn<DonationDishRecommendation, String> recDishNameColumn;
+    @FXML private TableColumn<DonationDishRecommendation, Number> recMaxCountColumn;
+    @FXML private TableColumn<DonationDishRecommendation, String> recUsageScoreColumn;
+    @FXML private TableColumn<DonationDishRecommendation, String> recCostScoreColumn;
+    @FXML private TextField plannerDishQuantityField;
+
     // ==================== SERVICES AND DATA ====================
     private final FoodDonationItemService itemService = new FoodDonationItemService();
     private final Fooddonationeventservice eventService = new Fooddonationeventservice();
 
     private final ObservableList<FoodDonationItem> donationItems = FXCollections.observableArrayList();
     private final ObservableList<Fooddonationevent> donationEvents = FXCollections.observableArrayList();
+    private final ObservableList<DonationDishRecommendation> dishRecommendations = FXCollections.observableArrayList();
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter timestampFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -77,6 +96,7 @@ public class FoodDonationController {
     private void initialize() {
         setupItemsTable();
         setupEventsTable();
+        setupOptimizationView();
         loadAllData();
     }
 
@@ -144,14 +164,18 @@ public class FoodDonationController {
         donationEventsTable.setItems(donationEvents);
 
         // Configure status combo
-        donationStatusCombo.setItems(FXCollections.observableArrayList(
+        if (donationStatusCombo != null) {
+            donationStatusCombo.setItems(FXCollections.observableArrayList(
                 "PENDING", "SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED"
-        ));
+            ));
+        }
 
         // Configure delivery combo (optional - you can add delivery IDs here later)
-        donationDeliveryCombo.setItems(FXCollections.observableArrayList(
+        if (donationDeliveryCombo != null) {
+            donationDeliveryCombo.setItems(FXCollections.observableArrayList(
                 "None (NULL)"
-        ));
+            ));
+        }
 
         // Auto-populate form on selection
         donationEventsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
@@ -161,11 +185,53 @@ public class FoodDonationController {
         });
     }
 
+        private void setupOptimizationView() {
+        if (optimizationEventsTable != null) {
+            optEventIdColumn.setCellValueFactory(new PropertyValueFactory<>("donationEventId"));
+            optEventDateColumn.setCellValueFactory(cell -> {
+            Date eventDate = cell.getValue().getEventDate();
+            String display = eventDate != null ? eventDate.toLocalDate().format(dateFormatter) : "N/A";
+            return new SimpleStringProperty(display);
+            });
+            optEventCharityColumn.setCellValueFactory(new PropertyValueFactory<>("charityName"));
+            optEventStatusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+            optimizationEventsTable.setItems(donationEvents);
+
+            optimizationEventsTable.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) ->
+                loadOptimizationRecommendations()
+            );
+        }
+
+        if (recommendationTable != null) {
+            recDishIdColumn.setCellValueFactory(cell ->
+                new javafx.beans.property.ReadOnlyObjectWrapper<>(
+                    cell.getValue().getDish() != null ? cell.getValue().getDish().getId() : null
+                )
+            );
+            recDishNameColumn.setCellValueFactory(cell ->
+                new SimpleStringProperty(
+                    cell.getValue().getDish() != null ? cell.getValue().getDish().getName() : "N/A"
+                )
+            );
+            recMaxCountColumn.setCellValueFactory(cell ->
+                new javafx.beans.property.ReadOnlyObjectWrapper<>(cell.getValue().getMaxDishCountFromNearExpiry())
+            );
+            recUsageScoreColumn.setCellValueFactory(cell ->
+                new SimpleStringProperty(String.format("%.2f", cell.getValue().getNearExpiryUsageScore()))
+            );
+            recCostScoreColumn.setCellValueFactory(cell ->
+                new SimpleStringProperty(String.format("%.2f", cell.getValue().getCostSavingScore()))
+            );
+            recommendationTable.setItems(dishRecommendations);
+        }
+        }
+
     // ==================== DATA LOADING ====================
 
     private void loadAllData() {
         loadItems();
         loadEvents();
+        loadOptimizationRecommendations();
         updateStatistics();
     }
 
@@ -184,8 +250,75 @@ public class FoodDonationController {
             List<Fooddonationevent> events = eventService.getAllFoodDonationEvents();
             donationEvents.setAll(events);
             updateEventStatistics();
+            loadOptimizationRecommendations();
         } catch (SQLException e) {
             showError("Failed to load donation events", e);
+        }
+    }
+
+    private void loadOptimizationRecommendations() {
+        try {
+            List<DonationDishRecommendation> recommendations = eventService.suggestOptimizedDonationDishes(DEFAULT_NEAR_EXPIRY_DAYS);
+            dishRecommendations.setAll(recommendations);
+        } catch (SQLException e) {
+            dishRecommendations.clear();
+            showError("Failed to load optimization recommendations", e);
+        }
+    }
+
+    @FXML
+    private void handleRefreshOptimizationView() {
+        loadEvents();
+        loadOptimizationRecommendations();
+        showInfo("Optimization view refreshed!");
+    }
+
+    @FXML
+    private void handleAddRecommendedDishToEvent() {
+        Fooddonationevent selectedEvent = optimizationEventsTable != null
+                ? optimizationEventsTable.getSelectionModel().getSelectedItem()
+                : null;
+        if (selectedEvent == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Required", "Please select an event from the left list.");
+            return;
+        }
+
+        DonationDishRecommendation selectedRecommendation = recommendationTable != null
+                ? recommendationTable.getSelectionModel().getSelectedItem()
+                : null;
+        if (selectedRecommendation == null || selectedRecommendation.getDish() == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Required", "Please select a dish from the right list.");
+            return;
+        }
+
+        Integer quantity = parseInteger(
+                plannerDishQuantityField != null ? plannerDishQuantityField.getText() : null,
+                "Dish quantity"
+        );
+        if (quantity == null || quantity <= 0) {
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "Dish quantity must be a positive number.");
+            return;
+        }
+
+        try {
+            int eventId = selectedEvent.getDonationEventId();
+            int dishId = selectedRecommendation.getDish().getId();
+
+            if (itemService.itemExists(eventId, dishId)) {
+                itemService.incrementItemQuantityWithStock(eventId, dishId, quantity);
+            } else {
+                FoodDonationItem item = new FoodDonationItem(eventId, dishId, quantity);
+                itemService.addFoodDonationItemWithStock(item);
+            }
+
+            if (plannerDishQuantityField != null) {
+                plannerDishQuantityField.clear();
+            }
+
+            loadItems();
+            showSuccess("Dish added to selected event successfully!");
+        } catch (SQLException e) {
+            showError("Failed to add dish to selected event", e);
         }
     }
 
@@ -213,7 +346,7 @@ public class FoodDonationController {
             }
 
             FoodDonationItem item = new FoodDonationItem(eventId, itemId, quantity);
-            itemService.addFoodDonationItem(item);
+            itemService.addFoodDonationItemWithStock(item);
 
             clearItemForm();
             loadItems();
@@ -239,8 +372,7 @@ public class FoodDonationController {
                 return;
             }
 
-            selected.setQuantity(quantity);
-            itemService.updateFoodDonationItem(selected);
+            itemService.updateItemQuantityWithStock(selected.getDonationEventId(), selected.getItemId(), quantity);
 
             loadItems();
             showSuccess("Item updated successfully!");
@@ -266,7 +398,7 @@ public class FoodDonationController {
         Optional<ButtonType> result = confirm.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                itemService.deleteFoodDonationItem(selected.getDonationEventId(), selected.getItemId());
+                itemService.deleteFoodDonationItemWithStock(selected.getDonationEventId(), selected.getItemId());
                 clearItemForm();
                 loadItems();
                 showSuccess("Item deleted successfully!");
@@ -294,28 +426,16 @@ public class FoodDonationController {
                 return;
             }
 
-            String charityName = donationCharityNameField.getText();
-            if (charityName == null || charityName.trim().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "Please enter charity name!");
-                return;
-            }
-
-            Integer totalQuantity = parseInteger(donationTotalQuantityField.getText(), "Total Quantity");
-            if (totalQuantity == null || totalQuantity <= 0) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "Total quantity must be positive!");
-                return;
-            }
-
-            String status = donationStatusCombo.getValue();
-            if (status == null || status.trim().isEmpty()) {
-                status = "PENDING";
-            }
+            String charityInput = donationCharityNameField != null ? donationCharityNameField.getText() : null;
+            String charityName = (charityInput == null || charityInput.trim().isEmpty())
+                    ? "Donation Event " + eventDate
+                    : charityInput.trim();
 
             Fooddonationevent event = new Fooddonationevent();
             event.setEventDate(Date.valueOf(eventDate));
-            event.setTotalQuantity(totalQuantity);
-            event.setCharityName(charityName.trim());
-            event.setStatus(status);
+            event.setTotalQuantity(1);
+            event.setCharityName(charityName);
+            event.setStatus("PENDING");
             event.setDeliveryId(null); // Optional - can be set later
             event.setCalendarEventId(null); // Optional
 
@@ -345,21 +465,13 @@ public class FoodDonationController {
                 return;
             }
 
-            String charityName = donationCharityNameField.getText();
-            if (charityName == null || charityName.trim().isEmpty()) {
-                showAlert(Alert.AlertType.ERROR, "Validation Error", "Please enter charity name!");
-                return;
-            }
-
-            Integer totalQuantity = parseInteger(donationTotalQuantityField.getText(), "Total Quantity");
-            if (totalQuantity == null) return;
-
-            String status = donationStatusCombo.getValue();
+            String charityInput = donationCharityNameField != null ? donationCharityNameField.getText() : null;
+            String charityName = (charityInput == null || charityInput.trim().isEmpty())
+                    ? "Donation Event " + eventDate
+                    : charityInput.trim();
 
             selected.setEventDate(Date.valueOf(eventDate));
-            selected.setTotalQuantity(totalQuantity);
-            selected.setCharityName(charityName.trim());
-            selected.setStatus(status);
+            selected.setCharityName(charityName);
 
             eventService.updateFoodDonationEvent(selected);
 
@@ -388,7 +500,7 @@ public class FoodDonationController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 // Delete items first
-                itemService.deleteItemsByEventId(selected.getDonationEventId());
+                itemService.deleteItemsByEventIdWithStock(selected.getDonationEventId());
                 // Then delete event
                 eventService.deleteFoodDonationEvent(selected.getDonationEventId());
 
@@ -429,9 +541,15 @@ public class FoodDonationController {
         if (event.getEventDate() != null) {
             donationEventDatePicker.setValue(event.getEventDate().toLocalDate());
         }
-        donationTotalQuantityField.setText(String.valueOf(event.getTotalQuantity()));
-        donationCharityNameField.setText(event.getCharityName());
-        donationStatusCombo.setValue(event.getStatus());
+        if (donationTotalQuantityField != null && event.getTotalQuantity() != null) {
+            donationTotalQuantityField.setText(String.valueOf(event.getTotalQuantity()));
+        }
+        if (donationCharityNameField != null) {
+            donationCharityNameField.setText(event.getCharityName());
+        }
+        if (donationStatusCombo != null) {
+            donationStatusCombo.setValue(event.getStatus());
+        }
     }
 
     private void clearItemForm() {
@@ -443,9 +561,15 @@ public class FoodDonationController {
 
     private void clearEventForm() {
         donationEventDatePicker.setValue(null);
-        donationTotalQuantityField.clear();
-        donationCharityNameField.clear();
-        donationStatusCombo.getSelectionModel().clearSelection();
+        if (donationTotalQuantityField != null) {
+            donationTotalQuantityField.clear();
+        }
+        if (donationCharityNameField != null) {
+            donationCharityNameField.clear();
+        }
+        if (donationStatusCombo != null) {
+            donationStatusCombo.getSelectionModel().clearSelection();
+        }
         donationEventsTable.getSelectionModel().clearSelection();
     }
 

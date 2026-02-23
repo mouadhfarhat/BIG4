@@ -59,7 +59,7 @@
                         
                         <!-- EVENT FORM -->
                         <VBox spacing="12" style="-fx-background-color: white; -fx-padding: 25; -fx-border-color: #FF9800; -fx-border-width: 3; -fx-background-radius: 8; -fx-border-radius: 8;">
-                            <Label text="Create/Edit Event" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #FF9800;"/>
+                            <Label text="Create Event" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #FF9800;"/>
                             
                             <!-- Row 1 -->
                             <HBox spacing="20">
@@ -70,43 +70,16 @@
                                 </VBox>
                                 
                                 <VBox spacing="6">
-                                    <Label text="Charity Name:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                    <Label text="Event Name (Optional):" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
                                     <TextField fx:id="donationCharityNameField" prefWidth="280" 
-                                             promptText="e.g., Hope Charity" style="-fx-font-size: 13px;"/>
-                                </VBox>
-                                
-                                <VBox spacing="6">
-                                    <Label text="Total Quantity:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-                                    <TextField fx:id="donationTotalQuantityField" prefWidth="140" 
-                                             promptText="e.g., 100" style="-fx-font-size: 13px;"/>
+                                             promptText="e.g., City Relief Event" style="-fx-font-size: 13px;"/>
                                 </VBox>
                             </HBox>
-                            
-                            <!-- Row 2 -->
-                            <HBox spacing="20">
-                                <VBox spacing="6">
-                                    <Label text="Status:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-                                    <ComboBox fx:id="donationStatusCombo" prefWidth="180" 
-                                            style="-fx-font-size: 13px;"/>
-                                </VBox>
-                                
-                                <VBox spacing="6">
-                                    <Label text="Delivery (Optional):" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
-                                    <ComboBox fx:id="donationDeliveryCombo" prefWidth="280" 
-                                            promptText="Select delivery (optional)" style="-fx-font-size: 13px;"/>
-                                </VBox>
-                            </HBox>
-                            
-                            <!-- Info Note -->
-                            <Label text="ℹ️ Created At and Updated At are automatically set by the database" 
-                                   style="-fx-font-size: 12px; -fx-text-fill: #666; -fx-font-style: italic;"/>
                             
                             <!-- BUTTONS -->
                             <HBox spacing="12" alignment="CENTER_LEFT" style="-fx-padding: 15 0 0 0;">
                                 <Button text="➕ Create Event" onAction="#handleAddDonationEvent" 
                                         style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-padding: 12 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;"/>
-                                <Button text="✏️ Update" onAction="#handleUpdateDonationEvent" 
-                                        style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-padding: 12 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;"/>
                                 <Button text="🗑️ Delete" onAction="#handleDeleteDonationEvent" 
                                         style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-padding: 12 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 5;"/>
                                 <Button text="🔄 Refresh" onAction="#handleRefreshEvents" 
@@ -219,6 +192,61 @@
                         
                     </VBox>
                 </ScrollPane>
+            </Tab>
+
+            <!-- ==================== TAB 3: PLANNER ==================== -->
+            <Tab text="🎯 Planner" style="-fx-font-size: 14px;">
+                <BorderPane style="-fx-background-color: #f5f5f5; -fx-padding: 18;">
+                    <center>
+                        <SplitPane dividerPositions="0.42" prefHeight="620">
+                            <items>
+                                <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 16; -fx-border-color: #ddd; -fx-border-width: 2; -fx-background-radius: 8; -fx-border-radius: 8;">
+                                    <Label text="Created Events" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                                    <TableView fx:id="optimizationEventsTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white;">
+                                        <columns>
+                                            <TableColumn fx:id="optEventIdColumn" text="ID" prefWidth="70" style="-fx-alignment: CENTER;"/>
+                                            <TableColumn fx:id="optEventDateColumn" text="Date" prefWidth="130"/>
+                                            <TableColumn fx:id="optEventCharityColumn" text="Event" prefWidth="250"/>
+                                            <TableColumn fx:id="optEventStatusColumn" text="Status" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                                        </columns>
+                                        <columnResizePolicy>
+                                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                        </columnResizePolicy>
+                                    </TableView>
+                                </VBox>
+
+                                <VBox spacing="8" style="-fx-background-color: white; -fx-padding: 16; -fx-border-color: #ddd; -fx-border-width: 2; -fx-background-radius: 8; -fx-border-radius: 8;">
+                                    <HBox alignment="CENTER_LEFT" spacing="10">
+                                        <Label text="Dishes Using Near-Expiring Ingredients (≤ 3 days)" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #333;"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Button text="🔄 Refresh Suggestions" onAction="#handleRefreshOptimizationView"
+                                                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 5;"/>
+                                    </HBox>
+                                    <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 6 0 6 0;">
+                                        <Label text="Quantity:" style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                        <TextField fx:id="plannerDishQuantityField" prefWidth="110" promptText="e.g. 10"
+                                                   style="-fx-font-size: 13px;"/>
+                                        <Button text="➕ Add Selected Dish To Selected Event"
+                                                onAction="#handleAddRecommendedDishToEvent"
+                                                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 8 16; -fx-background-radius: 5;"/>
+                                    </HBox>
+                                    <TableView fx:id="recommendationTable" VBox.vgrow="ALWAYS" style="-fx-background-color: white;">
+                                        <columns>
+                                            <TableColumn fx:id="recDishIdColumn" text="Dish ID" prefWidth="90" style="-fx-alignment: CENTER;"/>
+                                            <TableColumn fx:id="recDishNameColumn" text="Dish Name" prefWidth="250"/>
+                                            <TableColumn fx:id="recMaxCountColumn" text="Max Count" prefWidth="110" style="-fx-alignment: CENTER;"/>
+                                            <TableColumn fx:id="recUsageScoreColumn" text="Near Expiry Usage" prefWidth="140" style="-fx-alignment: CENTER;"/>
+                                            <TableColumn fx:id="recCostScoreColumn" text="Cost Saving" prefWidth="120" style="-fx-alignment: CENTER;"/>
+                                        </columns>
+                                        <columnResizePolicy>
+                                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                        </columnResizePolicy>
+                                    </TableView>
+                                </VBox>
+                            </items>
+                        </SplitPane>
+                    </center>
+                </BorderPane>
             </Tab>
             
         </TabPane>

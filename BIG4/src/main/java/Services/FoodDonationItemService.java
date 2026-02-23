@@ -38,6 +38,21 @@ public class FoodDonationItemService {
         ps.executeUpdate();
     }
 
+    public void addFoodDonationItemWithStock(FoodDonationItem item) throws SQLException {
+        boolean previousAutoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            consumeIngredientsForDish(item.getItemId(), item.getQuantity());
+            addFoodDonationItem(item);
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(previousAutoCommit);
+        }
+    }
+
 
     public void addMultipleFoodDonationItems(List<FoodDonationItem> items) throws SQLException {
         String sql = "INSERT INTO food_donation_items(donation_event_id, item_id, quantity) VALUES(?, ?, ?)";
@@ -165,6 +180,32 @@ public class FoodDonationItemService {
         ps.executeUpdate();
     }
 
+    public void updateItemQuantityWithStock(Integer eventId, Integer itemId, Integer newQuantity) throws SQLException {
+        Integer oldQuantity = getCurrentItemQuantity(eventId, itemId);
+        if (oldQuantity == null) {
+            throw new SQLException("Donation item not found for update (eventId=" + eventId + ", dishId=" + itemId + ")");
+        }
+
+        int delta = newQuantity - oldQuantity;
+
+        boolean previousAutoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            if (delta > 0) {
+                consumeIngredientsForDish(itemId, delta);
+            } else if (delta < 0) {
+                restoreIngredientsForDish(itemId, -delta);
+            }
+            updateItemQuantity(eventId, itemId, newQuantity);
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(previousAutoCommit);
+        }
+    }
+
 
     public void updateItemQuantity(Integer eventId, Integer itemId, Integer newQuantity) throws SQLException {
         String sql = "UPDATE food_donation_items SET quantity = ? " +
@@ -189,6 +230,21 @@ public class FoodDonationItemService {
         ps.setInt(3, itemId);
 
         ps.executeUpdate();
+    }
+
+    public void incrementItemQuantityWithStock(Integer eventId, Integer itemId, Integer increment) throws SQLException {
+        boolean previousAutoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            consumeIngredientsForDish(itemId, increment);
+            incrementItemQuantity(eventId, itemId, increment);
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(previousAutoCommit);
+        }
     }
 
     public void decrementItemQuantity(Integer eventId, Integer itemId, Integer decrement) throws SQLException {
@@ -216,6 +272,26 @@ public class FoodDonationItemService {
         ps.executeUpdate();
     }
 
+    public void deleteFoodDonationItemWithStock(Integer eventId, Integer itemId) throws SQLException {
+        Integer existingQty = getCurrentItemQuantity(eventId, itemId);
+        if (existingQty == null) {
+            return;
+        }
+
+        boolean previousAutoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            restoreIngredientsForDish(itemId, existingQty);
+            deleteFoodDonationItem(eventId, itemId);
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(previousAutoCommit);
+        }
+    }
+
     public void deleteItemsByEventId(Integer eventId) throws SQLException {
         String sql = "DELETE FROM food_donation_items WHERE donation_event_id = ?";
 
@@ -223,6 +299,25 @@ public class FoodDonationItemService {
         ps.setInt(1, eventId);
 
         ps.executeUpdate();
+    }
+
+    public void deleteItemsByEventIdWithStock(Integer eventId) throws SQLException {
+        List<FoodDonationItem> existingItems = getItemsByEventId(eventId);
+
+        boolean previousAutoCommit = cnx.getAutoCommit();
+        cnx.setAutoCommit(false);
+        try {
+            for (FoodDonationItem item : existingItems) {
+                restoreIngredientsForDish(item.getItemId(), item.getQuantity());
+            }
+            deleteItemsByEventId(eventId);
+            cnx.commit();
+        } catch (SQLException e) {
+            cnx.rollback();
+            throw e;
+        } finally {
+            cnx.setAutoCommit(previousAutoCommit);
+        }
     }
 
 
@@ -306,4 +401,75 @@ public class FoodDonationItemService {
         item.setItemName(rs.getString("item_name"));
         return item;
     }
+
+    private Integer getCurrentItemQuantity(Integer eventId, Integer itemId) throws SQLException {
+        String sql = "SELECT quantity FROM food_donation_items WHERE donation_event_id = ? AND item_id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, eventId);
+            ps.setInt(2, itemId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantity");
+                }
+            }
+        }
+        return null;
+    }
+
+    private List<RecipeLine> getRecipeForDish(Integer dishId) throws SQLException {
+        String sql = "SELECT ingredient_id, quantity_required FROM dish_ingredient WHERE dish_id = ?";
+        List<RecipeLine> recipe = new ArrayList<>();
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, dishId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    recipe.add(new RecipeLine(rs.getInt("ingredient_id"), rs.getDouble("quantity_required")));
+                }
+            }
+        }
+        if (recipe.isEmpty()) {
+            throw new SQLException("Dish " + dishId + " has no recipe lines in dish_ingredient.");
+        }
+        return recipe;
+    }
+
+    private void consumeIngredientsForDish(Integer dishId, Integer dishQuantity) throws SQLException {
+        if (dishQuantity == null || dishQuantity <= 0) {
+            throw new SQLException("Dish quantity must be positive.");
+        }
+        List<RecipeLine> recipe = getRecipeForDish(dishId);
+
+        String sql = "UPDATE ingredient SET quantityInStock = quantityInStock - ? WHERE id = ? AND quantityInStock >= ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            for (RecipeLine line : recipe) {
+                double required = line.quantityRequired * dishQuantity;
+                ps.setDouble(1, required);
+                ps.setInt(2, line.ingredientId);
+                ps.setDouble(3, required);
+                int updated = ps.executeUpdate();
+                if (updated == 0) {
+                    throw new SQLException("Insufficient stock for ingredient ID " + line.ingredientId + " to add dish " + dishId + ".");
+                }
+            }
+        }
+    }
+
+    private void restoreIngredientsForDish(Integer dishId, Integer dishQuantity) throws SQLException {
+        if (dishQuantity == null || dishQuantity <= 0) {
+            return;
+        }
+        List<RecipeLine> recipe = getRecipeForDish(dishId);
+
+        String sql = "UPDATE ingredient SET quantityInStock = quantityInStock + ? WHERE id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            for (RecipeLine line : recipe) {
+                double restore = line.quantityRequired * dishQuantity;
+                ps.setDouble(1, restore);
+                ps.setInt(2, line.ingredientId);
+                ps.executeUpdate();
+            }
+        }
+    }
+
+    private record RecipeLine(int ingredientId, double quantityRequired) {}
 }

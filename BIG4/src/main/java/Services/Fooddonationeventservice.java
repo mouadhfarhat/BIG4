@@ -1,5 +1,6 @@
 package Services;
 
+import Entities.DonationDishRecommendation;
 import Entities.Fooddonationevent;
 import Utils.Mydatabase;
 
@@ -10,6 +11,7 @@ import java.util.List;
 public class Fooddonationeventservice {
 
     private Connection cnx;
+    private final DonationOptimizationService optimizationService;
 
     public Fooddonationeventservice() {
         try {
@@ -17,6 +19,7 @@ public class Fooddonationeventservice {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        optimizationService = new DonationOptimizationService();
     }
 
     // ==================== CREATE ====================
@@ -229,5 +232,12 @@ public class Fooddonationeventservice {
         event.setUpdatedAt(rs.getTimestamp("updated_at"));
 
         return event;
+    }
+
+    /**
+     * Returns ranked dish suggestions that maximize near-expiry ingredient usage.
+     */
+    public List<DonationDishRecommendation> suggestOptimizedDonationDishes(int nearExpiryDays) throws SQLException {
+        return optimizationService.rankDonationDishes(nearExpiryDays);
     }
 }
