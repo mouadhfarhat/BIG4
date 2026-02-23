@@ -94,15 +94,14 @@ public class AdminPanelController {
     }
 
     private void setActiveButton(Button activeButton) {
-        String defaultStyle = "-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;";
-        String activeStyle = "-fx-text-fill: #FFA500; -fx-font-size: 14; -fx-font-weight: bold; -fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 10 18;";
+        dashboardBtn.getStyleClass().remove("admin-nav-button-active");
+        menuAdminBtn.getStyleClass().remove("admin-nav-button-active");
+        ingredientsBtn.getStyleClass().remove("admin-nav-button-active");
+        wasteBtn.getStyleClass().remove("admin-nav-button-active");
 
-        dashboardBtn.setStyle(defaultStyle);
-        menuAdminBtn.setStyle(defaultStyle);
-        ingredientsBtn.setStyle(defaultStyle);
-        wasteBtn.setStyle(defaultStyle);
-
-        activeButton.setStyle(activeStyle);
+        if (!activeButton.getStyleClass().contains("admin-nav-button-active")) {
+            activeButton.getStyleClass().add("admin-nav-button-active");
+        }
     }
 
     private void showLoadError(String errorPrefix, Exception e) {

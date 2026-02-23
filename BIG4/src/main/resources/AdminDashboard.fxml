@@ -19,7 +19,10 @@
            style="-fx-background-color: #f5f5f5;">
 
     <ScrollPane fitToWidth="true"
+                fitToHeight="false"
                 hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                pannable="true"
                 style="-fx-background: #f5f5f5; -fx-background-color: #f5f5f5;">
         <content>
             <VBox spacing="14" style="-fx-background-color: #f5f5f5;">
@@ -35,18 +38,24 @@
                                style="-fx-font-size: 13; -fx-text-fill: #666;"/>
                     </VBox>
 
-                    <VBox spacing="6" style="-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb); -fx-background-radius: 14; -fx-padding: 12 14 12 14;">
-                        <Label text="Live Weather"
-                               style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #dbeafe;"/>
-                        <Label fx:id="weatherTempLabel" text="-- °C"
-                               style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label fx:id="weatherDemandLabel" text="Demand x--"
-                               style="-fx-font-size: 12; -fx-text-fill: #e2e8f0;"/>
-                        <Label fx:id="weatherExpiryLabel" text="Expiry x--"
-                               style="-fx-font-size: 12; -fx-text-fill: #e2e8f0;"/>
-                        <Label fx:id="weatherStatusLabel" text="Weather API: --"
-                               style="-fx-font-size: 11; -fx-text-fill: #bfdbfe;"/>
-                    </VBox>
+                          <VBox spacing="3" prefWidth="320" maxHeight="112"
+                             style="-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb); -fx-background-radius: 14; -fx-padding: 10 18 10 18;">
+                           <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label text="Live Weather"
+                                style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #dbeafe;"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Label fx:id="weatherStatusLabel" text="Weather API: --"
+                                style="-fx-font-size: 11; -fx-text-fill: #bfdbfe;"/>
+                           </HBox>
+                           <HBox alignment="CENTER_LEFT" spacing="14">
+                            <Label fx:id="weatherTempLabel" text="-- °C"
+                                style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                            <Label fx:id="weatherDemandLabel" text="Demand x--"
+                                style="-fx-font-size: 12; -fx-text-fill: #e2e8f0;"/>
+                            <Label fx:id="weatherExpiryLabel" text="Expiry x--"
+                                style="-fx-font-size: 12; -fx-text-fill: #e2e8f0;"/>
+                           </HBox>
+                          </VBox>
                 </HBox>
 
                 <HBox spacing="14">
@@ -104,17 +113,22 @@
         </content>
     </ScrollPane>
 
-    <HBox alignment="BOTTOM_RIGHT" StackPane.alignment="BOTTOM_RIGHT" mouseTransparent="false">
-        <padding>
-            <Insets bottom="20" right="20"/>
-        </padding>
+    <StackPane StackPane.alignment="BOTTOM_RIGHT"
+               onMouseClicked="#handleOpenAiChat"
+               pickOnBounds="false"
+               prefWidth="58" prefHeight="58"
+               maxWidth="58" maxHeight="58"
+               style="-fx-background-color: white; -fx-background-radius: 999; -fx-cursor: hand; -fx-border-color: #2563eb; -fx-border-width: 2; -fx-border-radius: 999; -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.35), 16, 0.2, 0, 4);">
+        <StackPane.margin>
+            <Insets bottom="18" right="18"/>
+        </StackPane.margin>
         <children>
-            <ImageView fx:id="aiChatLauncher" fitHeight="52" fitWidth="52" onMouseClicked="#handleOpenAiChat" pickOnBounds="true" preserveRatio="true" style="-fx-cursor: hand;">
+            <ImageView fx:id="aiChatLauncher" fitHeight="36" fitWidth="36" pickOnBounds="true" preserveRatio="true">
                 <image>
                     <Image url="@images/logo.png" />
                 </image>
             </ImageView>
         </children>
-    </HBox>
+    </StackPane>
 
 </StackPane>

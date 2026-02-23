@@ -9,8 +9,6 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -21,28 +19,16 @@
 <BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="inventory-root" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MenuDishCrudController">
 
     <top>
-      <HBox>
+      <VBox spacing="4" styleClass="menu-simple-header">
+         <padding>
+            <Insets bottom="6" left="18" right="18" top="14" />
+         </padding>
          <children>
-              <VBox spacing="6" styleClass="header-section">
-                  <padding>
-                      <Insets bottom="10" left="18" right="18" top="18" />
-                  </padding>
-                  <children>
-                      <Label styleClass="title-label" text="Menu &amp; Dish Management" />
-                      <Label styleClass="subtitle-label" text="Manage restaurant menus and associated dishes." />
-                      <Label fx:id="lblSelectedMenu" styleClass="subtitle-label" text="Selected menu: (none)" />
-                  </children>
-              </VBox>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <HBox.margin>
-                  <Insets left="135.0" />
-               </HBox.margin>
-               <image>
-                  <Image url="@images/logo.png" />
-               </image>
-            </ImageView>
+            <Label styleClass="menu-simple-title" text="Menu &amp; Dish Management" />
+            <Label styleClass="menu-simple-subtitle" text="Manage restaurant menus and associated dishes." />
+            <Label fx:id="lblSelectedMenu" styleClass="menu-simple-subtitle" text="Selected menu: (none)" />
          </children>
-      </HBox>
+      </VBox>
     </top>
 
     <center>
@@ -104,7 +90,6 @@
                                                 <Button onAction="#onUpdateMenu" styleClass="btn-secondary" text="Update" />
                                                 <Button onAction="#onDeleteMenu" styleClass="btn-danger" text="Delete" />
                                                 <Button onAction="#onClearMenu" styleClass="btn-ghost" text="Clear" />
-                                                <Button onAction="#onRefreshMenus" styleClass="btn-ghost" text="Refresh" />
                                             </children>
                                         </HBox>
 
@@ -178,7 +163,6 @@
                                                 <Button onAction="#onUpdateDish" styleClass="btn-secondary" text="Update" />
                                                 <Button onAction="#onDeleteDish" styleClass="btn-danger" text="Delete" />
                                                 <Button onAction="#onClearDish" styleClass="btn-ghost" text="Clear" />
-                                                <Button onAction="#onRefreshDishes" styleClass="btn-ghost" text="Refresh" />
                                             </children>
                                         </HBox>
 

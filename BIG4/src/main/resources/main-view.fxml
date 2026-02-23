@@ -138,9 +138,9 @@
                                             <!-- Right: buttons only -->
                                             <VBox styleClass="side-panel" prefWidth="220.0" minWidth="200.0" spacing="12" alignment="TOP_CENTER">
                                                 <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
-                                                <Button text="➕ Add Ingredient" onAction="#showIngredientAddForm" styleClass="primary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
-                                                <Button text="✏ Edit Selected" onAction="#showIngredientEditForm" styleClass="secondary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
-                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteIngredient" styleClass="danger-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="➕ Add Ingredient" onAction="#showIngredientAddForm" styleClass="ingredient-action-add" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="✏ Edit Selected" onAction="#showIngredientEditForm" styleClass="ingredient-action-edit" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteIngredient" styleClass="ingredient-action-delete" maxWidth="1.7976931348623157E308"/>
                                             </VBox>
                                         </HBox>
                                     </VBox>
@@ -179,9 +179,9 @@
                                             <!-- Right: buttons only -->
                                             <VBox styleClass="side-panel" prefWidth="220.0" minWidth="200.0" spacing="12" alignment="TOP_CENTER">
                                                 <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
-                                                <Button text="➕ Record Waste" onAction="#showWasteAddForm" styleClass="primary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
-                                                <Button text="✏ Edit Selected" onAction="#showWasteEditForm" styleClass="secondary-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
-                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteWaste" styleClass="danger-button side-panel-btn" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="➕ Record Waste" onAction="#showWasteAddForm" styleClass="waste-action-add" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="✏ Edit Selected" onAction="#showWasteEditForm" styleClass="waste-action-edit" maxWidth="1.7976931348623157E308"/>
+                                                <Button text="🗑 Delete Selected" onAction="#handleDeleteWaste" styleClass="waste-action-delete" maxWidth="1.7976931348623157E308"/>
                                             </VBox>
                                         </HBox>
                                     </VBox>

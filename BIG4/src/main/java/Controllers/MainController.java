@@ -31,6 +31,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -90,7 +91,7 @@ public class MainController {
 	@FXML
 	private TableColumn<WasteRecord, String> wasteIngredientColumn;
 	@FXML
-	private TableColumn<WasteRecord, Number> wasteQuantityColumn;
+	private TableColumn<WasteRecord, String> wasteQuantityColumn;
 	@FXML
 	private TableColumn<WasteRecord, String> wasteTypeColumn;
 	@FXML
@@ -286,9 +287,14 @@ public class MainController {
 		wasteIngredientColumn.setCellValueFactory(cell -> new SimpleStringProperty(
 				ingredientNameById(cell.getValue().getIngredientId())
 		));
-		wasteQuantityColumn.setCellValueFactory(cell -> new ReadOnlyObjectWrapper<>(
-				cell.getValue().getQuantityWasted()
-		));
+		wasteQuantityColumn.setCellValueFactory(cell -> {
+			WasteRecord record = cell.getValue();
+			Ingredient ingredient = ingredientById(record.getIngredientId());
+			String unit = ingredient != null && ingredient.getUnit() != null ? ingredient.getUnit().trim() : "";
+			String quantity = String.format("%.2f", record.getQuantityWasted());
+			String display = unit.isEmpty() ? quantity : quantity + " " + unit;
+			return new SimpleStringProperty(display);
+		});
 		wasteTypeColumn.setCellValueFactory(cell -> new SimpleStringProperty(
 				Optional.ofNullable(cell.getValue().getWasteType()).filter(type -> !type.isBlank()).orElse("-")
 		));
@@ -918,16 +924,31 @@ public class MainController {
 	private Stage buildDialogStage(Parent root, String title) {
 		Stage stage = new Stage();
 		stage.initModality(Modality.APPLICATION_MODAL);
+		Window owner = null;
 		if (mainTabPane != null && mainTabPane.getScene() != null) {
-			stage.initOwner(mainTabPane.getScene().getWindow());
+			owner = mainTabPane.getScene().getWindow();
+			stage.initOwner(owner);
 		}
 		stage.setTitle(title);
 		Scene scene = new Scene(root);
 		stage.setScene(scene);
+		stage.setResizable(false);
 		stage.sizeToScene();
-		stage.centerOnScreen();
-		stage.setMaximized(true);
+		centerDialog(stage, owner);
 		return stage;
+	}
+
+	private void centerDialog(Stage stage, Window owner) {
+		stage.setOnShown(event -> {
+			if (owner != null) {
+				double x = owner.getX() + (owner.getWidth() - stage.getWidth()) / 2;
+				double y = owner.getY() + (owner.getHeight() - stage.getHeight()) / 2;
+				stage.setX(Math.max(0, x));
+				stage.setY(Math.max(0, y));
+			} else {
+				stage.centerOnScreen();
+			}
+		});
 	}
 
 	private boolean ingredientMatchesFilter(Ingredient ingredient) {
