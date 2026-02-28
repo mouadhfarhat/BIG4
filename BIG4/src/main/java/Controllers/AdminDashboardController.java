@@ -2,6 +2,7 @@ package Controllers;
 
 import Utils.AiStockInsightService;
 import Utils.Mydatabase;
+import Services.IngredientWasteAutomationService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -12,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -43,6 +45,12 @@ public class AdminDashboardController {
     @FXML private Label wasteRecordsLabel;
     @FXML private Label inventoryValueLabel;
     @FXML private Label totalWasteQtyLabel;
+    @FXML private ComboBox<String> wastePeriodCombo;
+    @FXML private Label nearExpiryLabel;
+    @FXML private Label outOfStockLabel;
+    @FXML private Label avgUnitCostLabel;
+    @FXML private Label wasteCostPeriodLabel;
+    @FXML private Label lowStockRateLabel;
 
     @FXML private Label weatherTempLabel;
     @FXML private Label weatherDemandLabel;
@@ -57,6 +65,10 @@ public class AdminDashboardController {
 
     private final Mydatabase database = Mydatabase.getInstance();
     private final AiStockInsightService aiStockInsightService = new AiStockInsightService();
+    private final IngredientWasteAutomationService ingredientWasteAutomationService = new IngredientWasteAutomationService();
+    private static final String PERIOD_WEEK = "Week";
+    private static final String PERIOD_MONTH = "Month";
+    private static final String PERIOD_YEAR = "Year";
     private static final String OPEN_METEO_URL = "https://api.open-meteo.com/v1/forecast?latitude=36.8065&longitude=10.1815&current=temperature_2m&timezone=auto";
     private static final long WEATHER_CACHE_TTL_MS = 10 * 60 * 1000;
 
@@ -77,12 +89,23 @@ public class AdminDashboardController {
 
     @FXML
     public void initialize() {
+        ingredientWasteAutomationService.recordExpiredIngredientWaste();
         setupChatLauncher();
+        setupWastePeriodSelector();
         loadStatistics();
         loadWasteTypeChart();
         loadStockStatusChart();
         loadTopWastedChart();
         loadSmartInsights();
+    }
+
+    private void setupWastePeriodSelector() {
+        if (wastePeriodCombo == null) {
+            return;
+        }
+        wastePeriodCombo.setItems(FXCollections.observableArrayList(PERIOD_WEEK, PERIOD_MONTH, PERIOD_YEAR));
+        wastePeriodCombo.getSelectionModel().select(PERIOD_MONTH);
+        wastePeriodCombo.valueProperty().addListener((obs, oldValue, newValue) -> loadStatistics());
     }
 
     private void setupChatLauncher() {
@@ -518,16 +541,61 @@ public class AdminDashboardController {
     }
 
     private void loadStatistics() {
-        totalIngredientsLabel.setText(String.valueOf(fetchInt("SELECT COUNT(*) FROM Ingredient")));
-        lowStockLabel.setText(String.valueOf(fetchInt("SELECT COUNT(*) FROM Ingredient WHERE quantityInStock <= minStockLevel")));
-        expiredItemsLabel.setText(String.valueOf(fetchInt("SELECT COUNT(*) FROM Ingredient WHERE expiryDate IS NOT NULL AND expiryDate < CURDATE()")));
-        wasteRecordsLabel.setText(String.valueOf(fetchInt("SELECT COUNT(*) FROM WasteRecord")));
+        int totalIngredients = fetchInt("SELECT COUNT(*) FROM Ingredient");
+        int lowStockItems = fetchInt("SELECT COUNT(*) FROM Ingredient WHERE quantityInStock <= minStockLevel");
+        int expiredItems = fetchInt("SELECT COUNT(*) FROM Ingredient WHERE expiryDate IS NOT NULL AND expiryDate < CURDATE()");
+        int wasteRecords = fetchInt("SELECT COUNT(*) FROM WasteRecord");
+
+        totalIngredientsLabel.setText(String.valueOf(totalIngredients));
+        lowStockLabel.setText(String.valueOf(lowStockItems));
+        expiredItemsLabel.setText(String.valueOf(expiredItems));
+        wasteRecordsLabel.setText(String.valueOf(wasteRecords));
 
         double inventoryValue = fetchDouble("SELECT COALESCE(SUM(quantityInStock * unitCost), 0) FROM Ingredient");
         inventoryValueLabel.setText(String.format("$%.2f", inventoryValue));
 
-        double wasteQty = fetchDouble("SELECT COALESCE(SUM(quantityWasted), 0) FROM WasteRecord");
+        String wasteDateCondition = buildWastePeriodCondition("date");
+        String wasteDateConditionWithAlias = buildWastePeriodCondition("w.date");
+
+        double wasteQty = fetchDouble("SELECT COALESCE(SUM(quantityWasted), 0) FROM WasteRecord WHERE " + wasteDateCondition);
         totalWasteQtyLabel.setText(String.format("%.2f", wasteQty));
+
+        int nearExpiry = fetchInt("SELECT COUNT(*) FROM Ingredient WHERE expiryDate IS NOT NULL AND expiryDate BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY)");
+        int outOfStock = fetchInt("SELECT COUNT(*) FROM Ingredient WHERE quantityInStock <= 0");
+        double avgUnitCost = fetchDouble("SELECT COALESCE(AVG(unitCost), 0) FROM Ingredient");
+        double wasteCost = fetchDouble("SELECT COALESCE(SUM(w.quantityWasted * COALESCE(i.unitCost, 0)), 0) " +
+                "FROM WasteRecord w LEFT JOIN Ingredient i ON i.id = w.ingredientId WHERE " + wasteDateConditionWithAlias);
+        double lowStockRate = totalIngredients == 0 ? 0 : (lowStockItems * 100.0 / totalIngredients);
+
+        if (nearExpiryLabel != null) {
+            nearExpiryLabel.setText(String.valueOf(nearExpiry));
+        }
+        if (outOfStockLabel != null) {
+            outOfStockLabel.setText(String.valueOf(outOfStock));
+        }
+        if (avgUnitCostLabel != null) {
+            avgUnitCostLabel.setText(String.format("$%.2f", avgUnitCost));
+        }
+        if (wasteCostPeriodLabel != null) {
+            wasteCostPeriodLabel.setText(String.format("$%.2f", wasteCost));
+        }
+        if (lowStockRateLabel != null) {
+            lowStockRateLabel.setText(String.format("%.1f%%", lowStockRate));
+        }
+    }
+
+    private String buildWastePeriodCondition(String dateColumn) {
+        String selectedPeriod = wastePeriodCombo != null && wastePeriodCombo.getValue() != null
+                ? wastePeriodCombo.getValue()
+                : PERIOD_MONTH;
+
+        if (PERIOD_WEEK.equals(selectedPeriod)) {
+            return "YEAR(" + dateColumn + ") = YEAR(CURDATE()) AND WEEK(" + dateColumn + ", 1) = WEEK(CURDATE(), 1)";
+        }
+        if (PERIOD_YEAR.equals(selectedPeriod)) {
+            return "YEAR(" + dateColumn + ") = YEAR(CURDATE())";
+        }
+        return "YEAR(" + dateColumn + ") = YEAR(CURDATE()) AND MONTH(" + dateColumn + ") = MONTH(CURDATE())";
     }
 
     private void loadWasteTypeChart() {

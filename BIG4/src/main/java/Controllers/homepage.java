@@ -308,23 +308,6 @@ public class homepage {
         }
     }
 
-    @FXML
-    private void handleAdminInventory(ActionEvent event) {
-        if (adminPopup.isShowing()) {
-            adminPopup.hide();
-        } else {
-            javafx.geometry.Bounds bounds = ((Button) event.getSource()).localToScreen(((Button) event.getSource()).getBoundsInLocal());
-            double x = bounds.getMinX();
-            double y = bounds.getMaxY() + 6;
-            adminPopup.show(rootPane.getScene().getWindow(), x, y);
-        }
-    }
-
-    @FXML
-    private void handleAdminMenu(ActionEvent event) {
-        openMenuDishAdmin();
-    }
-
     // ── Delivery loaders ──────────────────────────────────────────────────────
 
     private void loadDeliveryDashboard() {

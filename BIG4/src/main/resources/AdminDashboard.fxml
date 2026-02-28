@@ -5,6 +5,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.Image?>
@@ -83,8 +84,35 @@
                         <Label fx:id="inventoryValueLabel" text="\$0.00" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
                     </VBox>
                     <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
-                        <Label text="Total Waste Quantity" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <HBox alignment="CENTER_LEFT" spacing="8">
+                            <Label text="Total Waste Quantity" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <ComboBox fx:id="wastePeriodCombo" prefWidth="110" style="-fx-font-size: 11;" />
+                        </HBox>
                         <Label fx:id="totalWasteQtyLabel" text="0.00" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+                    </VBox>
+                </HBox>
+
+                <HBox spacing="14">
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Near Expiry (7d)" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <Label fx:id="nearExpiryLabel" text="0" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #dc2626;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Out of Stock" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <Label fx:id="outOfStockLabel" text="0" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #b91c1c;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Avg Unit Cost" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <Label fx:id="avgUnitCostLabel" text="\$0.00" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: rgb(1,10,34);"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Waste Cost (Period)" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <Label fx:id="wasteCostPeriodLabel" text="\$0.00" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #7c3aed;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-background-radius: 12; -fx-padding: 16;">
+                        <Label text="Low Stock Rate" style="-fx-font-size: 12; -fx-text-fill: #666;"/>
+                        <Label fx:id="lowStockRateLabel" text="0.0%" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: #d97706;"/>
                     </VBox>
                 </HBox>
 

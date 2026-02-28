@@ -1,4 +1,5 @@
 package Entities;
+
 import java.sql.Timestamp;
 public class Menu {
     private int id;

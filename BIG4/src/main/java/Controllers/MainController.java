@@ -2,6 +2,7 @@ package Controllers;
 
 import Entities.Ingredient;
 import Entities.WasteRecord;
+import Services.IngredientWasteAutomationService;
 import Utils.Mydatabase;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleStringProperty;
@@ -41,6 +42,7 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
@@ -150,6 +152,7 @@ public class MainController {
 	private FilteredList<Ingredient> filteredIngredients;
 	private FilteredList<WasteRecord> filteredWasteRecords;
 	private final Mydatabase database = Mydatabase.getInstance();
+	private final IngredientWasteAutomationService ingredientWasteAutomationService = new IngredientWasteAutomationService();
 	private final DateTimeFormatter wasteDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	private static final String INGREDIENT_SELECT_ALL = "SELECT id, name, quantityInStock, unit, minStockLevel, unitCost, expiryDate, createdAt FROM Ingredient";
@@ -166,6 +169,7 @@ public class MainController {
 
 	@FXML
 	private void initialize() {
+		ingredientWasteAutomationService.recordExpiredIngredientWaste();
 		ensureIngredientCreatedAtColumn();
 		configureFilters();
 		configureIngredientTable();
@@ -214,13 +218,11 @@ public class MainController {
 		});
 		ingredientMinStockColumn.setCellValueFactory(new PropertyValueFactory<>("minStockLevel"));
 		ingredientUnitCostColumn.setCellValueFactory(new PropertyValueFactory<>("unitCost"));
-		if (ingredientCreatedColumn != null) {
-			ingredientCreatedColumn.setCellValueFactory(cell -> {
-				LocalDateTime createdAt = cell.getValue().getCreatedAt();
-				String display = createdAt != null ? createdAt.format(wasteDateFormatter) : "N/A";
-				return new SimpleStringProperty(display);
-			});
-		}
+		ingredientCreatedColumn.setCellValueFactory(cell -> {
+			LocalDateTime createdAt = cell.getValue().getCreatedAt();
+			String display = createdAt != null ? createdAt.format(wasteDateFormatter) : "N/A";
+			return new SimpleStringProperty(display);
+		});
 
 		// ── Expiry countdown display ──
 		ingredientExpiryColumn.setCellValueFactory(cell -> {
@@ -595,21 +597,6 @@ public class MainController {
 		}
 	}
 
-	@FXML
-	private void handleAddIngredient() {
-		showIngredientAddForm();
-	}
-
-	@FXML
-	private void handleUpdateIngredient() {
-		showIngredientEditForm();
-	}
-
-	@FXML
-	private void handleClearIngredientForm() {
-		ingredientsTable.getSelectionModel().clearSelection();
-	}
-
 	// Inline form clearing removed; dialogs manage their own state.
 
 	public boolean saveWasteCreate(WasteDialogController.WasteFormData form) {
@@ -878,16 +865,6 @@ public class MainController {
 			showAlert(Alert.AlertType.INFORMATION, "Deleted", "Waste record removed.");
 			refreshStatistics();
 		}
-	}
-
-	@FXML
-	private void handleRecordWaste() {
-		showWasteAddForm();
-	}
-
-	@FXML
-	private void handleClearWasteForm() {
-		wasteTable.getSelectionModel().clearSelection();
 	}
 
 	// Inline waste form clearing removed; dialogs manage their own state.
@@ -1241,81 +1218,153 @@ public class MainController {
 	// ═══════════════════════════════════════════════════════════════════
 
 	@FXML
-	private void handleExportIngredientsPdf() {
+	private void handleImportIngredientsCsv() {
 		FileChooser chooser = new FileChooser();
-		chooser.setTitle("Export Ingredients to PDF");
-		chooser.setInitialFileName("Ingredients_Report.pdf");
-		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-		File file = chooser.showSaveDialog(ingredientsTable.getScene().getWindow());
+		chooser.setTitle("Import Ingredients from CSV");
+		chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+		File file = chooser.showOpenDialog(ingredientsTable.getScene().getWindow());
 		if (file == null) return;
 
-		try (PDDocument doc = new PDDocument()) {
-			String[] headers = {"Name", "In Stock", "Unit", "Min Stock", "Unit Cost", "Expiry"};
-			float[] colWidths = {120, 70, 60, 70, 70, 100};
+		int importedCount = 0;
+		int skippedCount = 0;
 
-			List<Ingredient> data = new ArrayList<>(ingredients);
-			int rowsPerPage = 28;
-			int totalPages = (int) Math.ceil((double) data.size() / rowsPerPage);
-			if (totalPages == 0) totalPages = 1;
+		try (Connection connection = database.getConnection();
+			 PreparedStatement insertIngredient = connection.prepareStatement(INGREDIENT_INSERT)) {
 
-			for (int page = 0; page < totalPages; page++) {
-				PDPage pdPage = new PDPage(PDRectangle.A4);
-				doc.addPage(pdPage);
-				try (PDPageContentStream cs = new PDPageContentStream(doc, pdPage)) {
-					float y = pdPage.getMediaBox().getHeight() - 40;
-					float xStart = 30;
+			List<String> lines = Files.readAllLines(file.toPath());
+			for (String rawLine : lines) {
+				String line = rawLine == null ? "" : rawLine.trim();
+				if (line.isEmpty()) continue;
 
-					// Title
-					cs.setFont(PDType1Font.HELVETICA_BOLD, 16);
-					cs.beginText();
-					cs.newLineAtOffset(xStart, y);
-					cs.showText("Ingredients Report");
-					cs.endText();
-					y -= 10;
+				List<String> columns = parseCsvLine(line);
+				if (columns.isEmpty()) {
+					skippedCount++;
+					continue;
+				}
 
-					// Subtitle
-					cs.setFont(PDType1Font.HELVETICA, 9);
-					cs.beginText();
-					cs.newLineAtOffset(xStart, y);
-					cs.showText("Generated: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-					cs.endText();
-					y -= 20;
+				if (isCsvHeader(columns)) {
+					continue;
+				}
 
-					// Table header
-					drawPdfTableRow(cs, xStart, y, colWidths, headers, PDType1Font.HELVETICA_BOLD, 9);
-					y -= 16;
+				if (columns.size() < 5) {
+					skippedCount++;
+					continue;
+				}
 
-					// Rows
-					int start = page * rowsPerPage;
-					int end = Math.min(start + rowsPerPage, data.size());
-					for (int i = start; i < end; i++) {
-						Ingredient ing = data.get(i);
-						String expiryStr = ing.getExpiryDate() != null ? ing.getExpiryDate().toString() : "N/A";
-						String[] row = {
-								ing.getName(),
-								String.format("%.2f", ing.getQuantityInStock()),
-								ing.getUnit(),
-								String.format("%.2f", ing.getMinStockLevel()),
-								String.format("%.2f", ing.getUnitCost()),
-								expiryStr
-						};
-						drawPdfTableRow(cs, xStart, y, colWidths, row, PDType1Font.HELVETICA, 8);
-						y -= 14;
-					}
+				String name = columns.get(0).trim();
+				Double quantity = safeParseDouble(columns.get(1));
+				String unit = columns.get(2).trim();
+				Double minStock = safeParseDouble(columns.get(3));
+				Double unitCost = safeParseDouble(columns.get(4));
+				LocalDate expiry = columns.size() >= 6 ? parseCsvExpiry(columns.get(5)) : null;
+				LocalDateTime addedAt = columns.size() >= 7 ? parseCsvAddedAt(columns.get(6)) : null;
 
-					// Page number
-					cs.setFont(PDType1Font.HELVETICA, 8);
-					cs.beginText();
-					cs.newLineAtOffset(xStart, 20);
-					cs.showText("Page " + (page + 1) + " of " + totalPages);
-					cs.endText();
+				if (name.isEmpty() || quantity == null || minStock == null || unitCost == null || expiry == null) {
+					skippedCount++;
+					continue;
+				}
+
+				if (unit.isBlank() || "N/A".equalsIgnoreCase(unit)) {
+					unit = "UNIT";
+				}
+
+				try {
+					insertIngredient.setString(1, name);
+					insertIngredient.setDouble(2, quantity);
+					insertIngredient.setString(3, unit);
+					insertIngredient.setDouble(4, minStock);
+					insertIngredient.setDouble(5, unitCost);
+					insertIngredient.setDate(6, Date.valueOf(expiry));
+					insertIngredient.setTimestamp(7, Timestamp.valueOf(addedAt != null ? addedAt : LocalDateTime.now()));
+					insertIngredient.executeUpdate();
+					importedCount++;
+				} catch (SQLException ignored) {
+					skippedCount++;
 				}
 			}
-			doc.save(file);
-			showAlert(Alert.AlertType.INFORMATION, "Export", "Ingredients exported to PDF successfully.");
+
+			if (importedCount > 0) {
+				loadDataFromDatabase();
+				showAlert(Alert.AlertType.INFORMATION, "Import", "Imported " + importedCount + " ingredient(s). Skipped " + skippedCount + " line(s).");
+			} else {
+				showAlert(Alert.AlertType.WARNING, "Import", "No valid ingredient rows found in selected CSV.");
+			}
 		} catch (IOException e) {
-			showAlert(Alert.AlertType.ERROR, "Export Error", "Failed to export PDF: " + e.getMessage());
+			showAlert(Alert.AlertType.ERROR, "Import Error", "Failed to read CSV: " + e.getMessage());
+		} catch (SQLException e) {
+			showDatabaseError("Unable to import ingredients from CSV", e);
 		}
+	}
+
+	private boolean isCsvHeader(List<String> columns) {
+		if (columns.isEmpty()) {
+			return false;
+		}
+		String firstColumn = columns.get(0) == null ? "" : columns.get(0).trim().toLowerCase();
+		return "name".equals(firstColumn) || "ingredient".equals(firstColumn);
+	}
+
+	private List<String> parseCsvLine(String line) {
+		List<String> columns = new ArrayList<>();
+		if (line == null) {
+			return columns;
+		}
+
+		StringBuilder cell = new StringBuilder();
+		boolean inQuotes = false;
+		for (int index = 0; index < line.length(); index++) {
+			char current = line.charAt(index);
+			if (current == '"') {
+				if (inQuotes && index + 1 < line.length() && line.charAt(index + 1) == '"') {
+					cell.append('"');
+					index++;
+				} else {
+					inQuotes = !inQuotes;
+				}
+			} else if (current == ',' && !inQuotes) {
+				columns.add(cell.toString().trim());
+				cell.setLength(0);
+			} else {
+				cell.append(current);
+			}
+		}
+
+		columns.add(cell.toString().trim());
+		return columns;
+	}
+
+	private Double safeParseDouble(String value) {
+		try {
+			return Double.parseDouble(value);
+		} catch (NumberFormatException ex) {
+			return null;
+		}
+	}
+
+	private LocalDate parseCsvExpiry(String value) {
+		if (value == null || value.isBlank() || "N/A".equalsIgnoreCase(value)) {
+			return null;
+		}
+		try {
+			return LocalDate.parse(value);
+		} catch (Exception ex) {
+			return null;
+		}
+	}
+
+	private LocalDateTime parseCsvAddedAt(String value) {
+		if (value == null || value.isBlank() || "N/A".equalsIgnoreCase(value)) {
+			return null;
+		}
+		try {
+			return LocalDateTime.parse(value, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+		} catch (Exception ignored) {
+		}
+		try {
+			return LocalDate.parse(value).atStartOfDay();
+		} catch (Exception ignored) {
+		}
+		return null;
 	}
 
 	@FXML

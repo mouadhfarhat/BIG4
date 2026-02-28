@@ -9,8 +9,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -20,35 +19,10 @@
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" styleClass="inventory-root" stylesheets="@styles/main.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MenuDishCrudController">
 
-    <top>
-      <HBox>
-         <children>
-              <VBox spacing="6" styleClass="header-section">
-                  <padding>
-                      <Insets bottom="10" left="18" right="18" top="18" />
-                  </padding>
-                  <children>
-                      <Label styleClass="title-label" text="Menu &amp; Dish Management" />
-                      <Label styleClass="subtitle-label" text="Manage restaurant menus and associated dishes." />
-                      <Label fx:id="lblSelectedMenu" styleClass="subtitle-label" text="Selected menu: (none)" />
-                  </children>
-              </VBox>
-            <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-               <HBox.margin>
-                  <Insets left="135.0" />
-               </HBox.margin>
-               <image>
-                  <Image url="@images/logo.png" />
-               </image>
-            </ImageView>
-         </children>
-      </HBox>
-    </top>
-
     <center>
         <VBox styleClass="main-surface">
             <padding>
-                <Insets bottom="18" left="18" right="18" top="18" />
+                <Insets bottom="18" left="18" right="18" top="10" />
             </padding>
 
             <children>
@@ -153,14 +127,35 @@
                                                 <Label styleClass="field-label" text="Price" GridPane.rowIndex="2" />
                                                 <TextField fx:id="tfDishPrice" promptText="e.g. 14.50" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-                                                <Label styleClass="field-label" text="Available" GridPane.rowIndex="3" />
-                                                <CheckBox fx:id="cbDishAvailable" styleClass="modern-check" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                <Label styleClass="field-label" text="Image URL" GridPane.rowIndex="3" />
+                                                <TextField fx:id="tfDishImage" promptText="/images/dish.png" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-                                                <Label styleClass="field-label" text="Stock" GridPane.rowIndex="4" />
-                                                <TextField fx:id="tfDishStock" promptText="Quantity" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                                                <Label styleClass="field-label" text="Ingredient" GridPane.rowIndex="4" />
+                                                <HBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                                                    <children>
+                                                                        <ComboBox fx:id="cbRecipeIngredient" promptText="Select ingredient" HBox.hgrow="ALWAYS" />
+                                                                        <TextField fx:id="tfRecipeQuantity" promptText="Qty" prefWidth="90" />
+                                                                        <Button text="Add" onAction="#onAddRecipeIngredient" styleClass="btn-secondary" />
+                                                                    </children>
+                                                                </HBox>
 
-                                                <Label styleClass="field-label" text="Image URL" GridPane.rowIndex="5" />
-                                                <TextField fx:id="tfDishImage" promptText="/images/dish.png" styleClass="field" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                                                <Label styleClass="field-label" text="Recipe" GridPane.rowIndex="5" />
+                                                <VBox spacing="8" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                                                    <children>
+                                                                        <TableView fx:id="tvRecipeIngredients" prefHeight="130" styleClass="modern-table">
+                                                                            <columns>
+                                                                                <TableColumn fx:id="colRecipeIngredient" prefWidth="170" text="Ingredient" />
+                                                                                <TableColumn fx:id="colRecipeUnit" prefWidth="80" text="Unit" />
+                                                                                <TableColumn fx:id="colRecipeQty" prefWidth="110" text="Qty Required" />
+                                                                            </columns>
+                                                                        </TableView>
+                                                                        <HBox alignment="CENTER_RIGHT" spacing="8">
+                                                                            <children>
+                                                                                <Button text="Remove Selected" onAction="#onRemoveRecipeIngredient" styleClass="btn-danger" />
+                                                                            </children>
+                                                                        </HBox>
+                                                                    </children>
+                                                                </VBox>
                                             </children>
                                  <rowConstraints>
                                     <RowConstraints />
