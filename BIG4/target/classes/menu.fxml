@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.ClientMenuViewController"
+            prefWidth="1100.0" prefHeight="700.0"
+            styleClass="app-root"
+            stylesheets="@styles/client-menu.css">
+
+    <!-- TOP HEADER -->
+    <top>
+        <HBox spacing="12"  styleClass="topbar">
+            <VBox spacing="2">
+                <Label text="Menus" styleClass="page-title"/>
+                <Label text="Chose your menu and discover the magic ." styleClass="page-subtitle"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <TextField fx:id="tfSearch" promptText="Search ..." styleClass="search"/>
+        </HBox>
+    </top>
+
+    <!-- LEFT MENUS LIST -->
+    <left>
+        <VBox spacing="10"  styleClass="left-panel" prefWidth="320">
+            <Label text="Menu list " styleClass="section-title"/>
+            <ListView fx:id="lvMenus" styleClass="menu-list" VBox.vgrow="ALWAYS"/>
+        </VBox>
+    </left>
+
+    <!-- CENTER DISHES GRID -->
+    <center>
+        <VBox spacing="12" styleClass="content">
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label fx:id="lblSelectedMenu" text="Select A menu" styleClass="section-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <ComboBox fx:id="cbCurrency" promptText="Devise" styleClass="sort"/>
+                <ComboBox fx:id="cbSort" promptText="Trier" styleClass="sort"/>
+            </HBox>
+
+            <!-- dishes area takes all the height -->
+            <ScrollPane fx:id="spDishes" fitToWidth="true" styleClass="scroll" VBox.vgrow="ALWAYS">
+                <content>
+                    <FlowPane fx:id="fpDishes"
+                              hgap="14" vgap="14"
+                              prefWrapLength="720"
+                              styleClass="dish-grid"/>
+                </content>
+            </ScrollPane>
+
+            <!-- chat area stays at the bottom -->
+            <VBox spacing="8" styleClass="chat-box">
+                <Label text="Assistant" styleClass="chat-title"/>
+                <ListView fx:id="lvChat" prefHeight="140" styleClass="chat-list"/>
+                <HBox spacing="8">
+                    <TextField fx:id="tfChat" promptText="Ask for a suggestion..." HBox.hgrow="ALWAYS" styleClass="chat-input"/>
+                    <Button text="Send" onAction="#onSendChat" styleClass="chat-send"/>
+                </HBox>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
