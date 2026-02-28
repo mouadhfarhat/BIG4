@@ -1,0 +1,119 @@
+/* ROOT BACKGROUND */
+.app-root {
+    -fx-background-color: #0f172a; /* dark navy */
+}
+
+/* TOP BAR */
+.topbar {
+    -fx-background-color: #1e293b; /* slightly lighter */
+    -fx-padding: 20 30;
+}
+
+/* PAGE TITLES */
+.page-title {
+    -fx-text-fill: #f8fafc; /* near white */
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.page-subtitle {
+    -fx-text-fill: #cbd5e1; /* soft gray */
+    -fx-font-size: 13px;
+}
+
+/* LEFT PANEL */
+.left-panel {
+    -fx-background-color: #111827;
+    -fx-padding: 20;
+}
+
+.section-title {
+    -fx-text-fill: #f1f5f9;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* MENU LIST */
+.menu-list {
+    -fx-background-color: #1f2937;
+    -fx-control-inner-background: #1f2937;
+    -fx-text-fill: white;
+}
+
+.menu-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e2e8f0;
+}
+
+.menu-list .list-cell:selected {
+    -fx-background-color: #f97316; /* orange highlight */
+    -fx-text-fill: white;
+}
+
+/* CONTENT AREA */
+.content {
+    -fx-background-color: #0f172a;
+    -fx-padding: 20;
+}
+
+/* SCROLLPANE */
+.scroll {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+/* FLOWPANE GRID */
+.dish-grid {
+    -fx-background-color: transparent;
+}
+
+/* SEARCH FIELD */
+.search {
+    -fx-background-color: #1f2937;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #94a3b8;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12;
+}
+
+/* SORT COMBOBOX */
+.sort {
+    -fx-background-color: #1f2937;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+}
+.chat-box {
+    -fx-background-color: rgba(255,255,255,0.06);
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+    -fx-border-color: rgba(255,255,255,0.10);
+    -fx-border-radius: 12;
+}
+
+.chat-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+.chat-list {
+    -fx-background-color: transparent;
+}
+
+.chat-list .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #dbe7ff;
+}
+
+.chat-input {
+    -fx-background-color: rgba(255,255,255,0.10);
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: rgba(255,255,255,0.55);
+    -fx-background-radius: 10;
+}
+
+.chat-send {
+    -fx-background-color: #ff8a00;
+    -fx-text-fill: black;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+}
