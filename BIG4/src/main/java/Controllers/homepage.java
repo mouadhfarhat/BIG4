@@ -308,6 +308,23 @@ public class homepage {
         }
     }
 
+    @FXML
+    private void handleAdminInventory(ActionEvent event) {
+        if (adminPopup.isShowing()) {
+            adminPopup.hide();
+        } else {
+            javafx.geometry.Bounds bounds = ((Button) event.getSource()).localToScreen(((Button) event.getSource()).getBoundsInLocal());
+            double x = bounds.getMinX();
+            double y = bounds.getMaxY() + 6;
+            adminPopup.show(rootPane.getScene().getWindow(), x, y);
+        }
+    }
+
+    @FXML
+    private void handleAdminMenu(ActionEvent event) {
+        openMenuDishAdmin();
+    }
+
     // ── Delivery loaders ──────────────────────────────────────────────────────
 
     private void loadDeliveryDashboard() {
@@ -453,20 +470,13 @@ public class homepage {
 
     @FXML
     private void handleAdmin(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/AdminPanel.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Admin Panel - Big4");
-            stage.setScene(new Scene(root, 1400, 850));
-            stage.setResizable(true);
-            stage.setMaximized(true);
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showAlert("Error", "Loading Error",
-                    "Unable to open Admin Panel.\n\nError: " + e.getMessage());
+        if (adminPopup.isShowing()) {
+            adminPopup.hide();
+        } else {
+            javafx.geometry.Bounds bounds = adminBtn.localToScreen(adminBtn.getBoundsInLocal());
+            double x = bounds.getMinX();
+            double y = bounds.getMaxY() + 6;
+            adminPopup.show(rootPane.getScene().getWindow(), x, y);
         }
     }
 

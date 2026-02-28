@@ -214,11 +214,13 @@ public class MainController {
 		});
 		ingredientMinStockColumn.setCellValueFactory(new PropertyValueFactory<>("minStockLevel"));
 		ingredientUnitCostColumn.setCellValueFactory(new PropertyValueFactory<>("unitCost"));
-		ingredientCreatedColumn.setCellValueFactory(cell -> {
-			LocalDateTime createdAt = cell.getValue().getCreatedAt();
-			String display = createdAt != null ? createdAt.format(wasteDateFormatter) : "N/A";
-			return new SimpleStringProperty(display);
-		});
+		if (ingredientCreatedColumn != null) {
+			ingredientCreatedColumn.setCellValueFactory(cell -> {
+				LocalDateTime createdAt = cell.getValue().getCreatedAt();
+				String display = createdAt != null ? createdAt.format(wasteDateFormatter) : "N/A";
+				return new SimpleStringProperty(display);
+			});
+		}
 
 		// ── Expiry countdown display ──
 		ingredientExpiryColumn.setCellValueFactory(cell -> {
@@ -593,6 +595,21 @@ public class MainController {
 		}
 	}
 
+	@FXML
+	private void handleAddIngredient() {
+		showIngredientAddForm();
+	}
+
+	@FXML
+	private void handleUpdateIngredient() {
+		showIngredientEditForm();
+	}
+
+	@FXML
+	private void handleClearIngredientForm() {
+		ingredientsTable.getSelectionModel().clearSelection();
+	}
+
 	// Inline form clearing removed; dialogs manage their own state.
 
 	public boolean saveWasteCreate(WasteDialogController.WasteFormData form) {
@@ -861,6 +878,16 @@ public class MainController {
 			showAlert(Alert.AlertType.INFORMATION, "Deleted", "Waste record removed.");
 			refreshStatistics();
 		}
+	}
+
+	@FXML
+	private void handleRecordWaste() {
+		showWasteAddForm();
+	}
+
+	@FXML
+	private void handleClearWasteForm() {
+		wasteTable.getSelectionModel().clearSelection();
 	}
 
 	// Inline waste form clearing removed; dialogs manage their own state.

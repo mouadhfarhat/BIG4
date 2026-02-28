@@ -9,6 +9,38 @@ import java.util.List;
 
 public class DishService {
 
+    public List<Dish> getAll() {
+        String sql = "SELECT id, menu_id, name, description, base_price, available, stock_quantity, image_url, created_at, updated_at " +
+                "FROM dish ORDER BY id DESC";
+
+        List<Dish> dishes = new ArrayList<>();
+
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Dish d = new Dish();
+                d.setId(rs.getInt("id"));
+                d.setMenu_id(rs.getInt("menu_id"));
+                d.setName(rs.getString("name"));
+                d.setDescription(rs.getString("description"));
+                d.setBase_price(rs.getFloat("base_price"));
+                d.setAvailable(rs.getBoolean("available"));
+                d.setStock_quantity(rs.getInt("stock_quantity"));
+                d.setImage_url(rs.getString("image_url"));
+                d.setCreated_at(rs.getTimestamp("created_at"));
+                d.setUpdate_at(rs.getTimestamp("updated_at"));
+                dishes.add(d);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dishes;
+    }
+
     // ✅ used by admin: getByMenuId(...)
     public List<Dish> getByMenuId(int menuId) {
         String sql = "SELECT id, menu_id, name, description, base_price, available, stock_quantity, image_url, created_at, updated_at " +
