@@ -5,26 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="35eb6f08-3672-4ccb-99b9-506885c7bf86" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Controllers/ClientMenuViewController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/Controllers/DishCardController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/test/MenuCRUDTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/DishCard.fxml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/styles/client-menu.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/AIChatService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/ExchangeRateService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/MealDbService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/MenuChatBot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/PopularityService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/Services/WeatherService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/BIG4.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/misc.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Controllers/ClientMenuViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controllers/ClientMenuViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Controllers/DishCardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controllers/DishCardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Controllers/MenuDishCrudController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controllers/MenuDishCrudController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Controllers/homepage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Controllers/homepage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/test/MainFX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/test/MainFX.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/menu-management.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/menu-management.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Services/DishService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Services/DishService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Services/MenuService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Services/MenuService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/DishCard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/DishCard.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/resources/menu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/menu.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/main.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/styles/main.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/styles/client-menu.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/styles/client-menu.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,20 +43,25 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$/.." value="main" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "wissembn1010"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;wissembn1010&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/mouadhfarhat/BIG4.git",
-    "accountId": "cbfe04ac-5cec-468a-999c-304a8ba37662"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/mouadhfarhat/BIG4.git&quot;,
+    &quot;accountId&quot;: &quot;cbfe04ac-5cec-468a-999c-304a8ba37662&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -62,34 +70,36 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.MainFX.executor": "Run",
-    "Maven.BIG4 [clean].executor": "Run",
-    "Maven.BIG4 [compile].executor": "Run",
-    "Maven.BIG4 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor": "Run",
-    "Maven.BIG4 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:help].executor": "Run",
-    "Maven.BIG4 [org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile].executor": "Run",
-    "Maven.BIG4 [org.openjfx:javafx-maven-plugin:0.0.8:jlink].executor": "Run",
-    "Maven.BIG4 [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "git-widget-placeholder": "IntTest",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.2",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.MainFX.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.apache.maven.plugins:maven-clean-plugin:3.2.0:help].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.apache.maven.plugins:maven-jar-plugin:3.4.1:jar].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.openjfx:javafx-maven-plugin:0.0.8:jlink].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.BIG4 [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;IntTest&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Libraries&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -109,6 +119,16 @@
       <workItem from="1771314406122" duration="3527000" />
       <workItem from="1771496973877" duration="3195000" />
       <workItem from="1771764869284" duration="1634000" />
+      <workItem from="1771773130308" duration="3994000" />
+      <workItem from="1771971635292" duration="982000" />
+      <workItem from="1771972653990" duration="537000" />
+      <workItem from="1771973218691" duration="45000" />
+      <workItem from="1772005761657" duration="240000" />
+      <workItem from="1772006065709" duration="14408000" />
+      <workItem from="1772037355258" duration="37000" />
+      <workItem from="1772052320132" duration="1789000" />
+      <workItem from="1772093218169" duration="5535000" />
+      <workItem from="1772272587779" duration="1653000" />
     </task>
     <servers />
   </component>

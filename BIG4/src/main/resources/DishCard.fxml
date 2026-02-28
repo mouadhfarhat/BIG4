@@ -7,10 +7,14 @@
 
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="controllers.DishCardController"
+      fx:controller="Controllers.DishCardController"
       prefWidth="240" minWidth="240" maxWidth="240"
       styleClass="dish-card"
-      spacing="10" padding="12">
+      spacing="10">
+
+    <padding>
+        <Insets top="12" right="12" bottom="12" left="12"/>
+    </padding>
 
     <StackPane styleClass="dish-image-wrap">
         <ImageView fx:id="ivDish" fitWidth="216" fitHeight="140" preserveRatio="false" smooth="true" />
@@ -26,7 +30,11 @@
     <HBox alignment="CENTER_LEFT" spacing="10">
         <Label fx:id="lblPrice" text="12.500 DT" styleClass="dish-price"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <Button fx:id="btnAdd" text="Ajouter" styleClass="btn-primary"/>
+        <Button fx:id="btnAdd" text="BUY" styleClass="btn-primary"/>
+    </HBox>
+    <HBox spacing="6" alignment="CENTER_LEFT">
+        <Label fx:id="lblStars" text="★★★★★" styleClass="dish-stars"/>
+        <Label fx:id="lblPop" text="POPULAR" styleClass="badge" visible="false"/>
     </HBox>
 
 </VBox>

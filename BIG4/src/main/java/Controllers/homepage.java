@@ -11,99 +11,32 @@ import javafx.stage.Stage;
 
 public class homepage {
 
-    @FXML
-    private Button aboutBtn;
+    @FXML private Button aboutBtn;
+    @FXML private Button menuBtn;
+    @FXML private Button reserveBtn;
+    @FXML private Button eventsBtn;
+    @FXML private Button rapportBtn;
+    @FXML private Button contactBtn;
+    @FXML private Button cartBtn;
+    @FXML private Button adminInventoryBtn;
+    @FXML private Button adminMenuBtn;
+    @FXML private Button profileBtn;
+    @FXML private Button callBtn;
+    @FXML private Button viewMenuBtn;
+    @FXML private Button reserveTableBtn;
 
-    @FXML
-    private Button menuBtn;
+    // =========================
+    // NAVIGATION METHODS
+    // =========================
 
-    @FXML
-    private Button reserveBtn;
-
-    @FXML
-    private Button eventsBtn;
-
-    @FXML
-    private Button rapportBtn;
-
-    @FXML
-    private Button contactBtn;
-
-    @FXML
-    private Button cartBtn;
-
-    @FXML
-    private Button adminInventoryBtn;
-
-    @FXML
-    private Button adminMenuBtn;
-
-    @FXML
-    private Button profileBtn;
-
-    @FXML
-    private Button callBtn;
-
-    @FXML
-    private Button viewMenuBtn;
-
-    @FXML
-    private Button reserveTableBtn;
-
-    /**
-     * Handles the "About" button click
-     */
-    @FXML
-    private void handleAbout(ActionEvent event) {
-        showAlert("About", "About Big4",
-                "Big4 is a high-end gastronomic restaurant.\n\n" +
-                        "Our mission: Where coffee excellence meets gastronomy.\n\n" +
-                        "We offer refined cuisine with high-quality fresh products.");
-    }
-
-    /**
-     * Handles the "Menu" navigation button click
-     */
     @FXML
     private void handleMenu(ActionEvent event) {
         loadScene("/menu.fxml", "Menu - Big4");
     }
 
-    /**
-     * Handles the "Reservations" button click
-     */
     @FXML
     private void handleReservations(ActionEvent event) {
-        loadScene("resources/reservation.fxml", "Reservations - Big4");
-    }
-
-    /**
-     * Handles the "Events" button click
-     */
-    @FXML
-    private void handleEvents(ActionEvent event) {
-        showAlert("Events", "Upcoming Events",
-                "Welcome to our Events section!\n\n" +
-                        "Current Events:\n" +
-                        "• Wine Tasting Night - Friday 7 PM\n" +
-                        "• Chef's Special Dinner - Saturday 8 PM\n" +
-                        "• Brunch Event - Sunday 10 AM\n\n" +
-                        "Check back soon for more events!");
-    }
-
-    /**
-     * Handles the "Reports" button click
-     */
-    @FXML
-    private void handleRapport(ActionEvent event) {
-        showAlert("Reports", "Our Reports",
-                "Welcome to our Reports section!\n\n" +
-                        "Available Reports:\n" +
-                        "• Monthly Sales Report\n" +
-                        "• Customer Feedback Summary\n" +
-                        "• Restaurant Performance Analysis\n" +
-                        "• Menu Popularity Report\n\n" +
-                        "Reports are generated and updated regularly.");
+        loadScene("/reservation.fxml", "Reservations - Big4");
     }
 
     @FXML
@@ -116,79 +49,79 @@ public class homepage {
         loadScene("/menu-management.fxml", "Menu & Dish Management");
     }
 
-    /**
-     * Handles the "Contact" button click
-     */
+    @FXML
+    private void handleCart(ActionEvent event) {
+        loadScene("/cart.fxml", "My Cart - Big4");
+    }
+
+    @FXML
+    private void handleViewMenu(ActionEvent event) {
+        loadScene("/menu.fxml", "Menu - Big4");
+    }
+
+    @FXML
+    private void handleReserveTable(ActionEvent event) {
+        loadScene("/reservation.fxml", "Reservation - Big4");
+    }
+
+    // =========================
+    // ALERT PAGES
+    // =========================
+
+    @FXML
+    private void handleAbout(ActionEvent event) {
+        showAlert("About", "About Big4",
+                "Big4 is a high-end gastronomic restaurant.\n\n" +
+                        "Our mission: Where coffee excellence meets gastronomy.\n\n" +
+                        "We offer refined cuisine with high-quality fresh products.");
+    }
+
+    @FXML
+    private void handleEvents(ActionEvent event) {
+        showAlert("Events", "Upcoming Events",
+                "• Wine Tasting Night - Friday 7 PM\n" +
+                        "• Chef's Special Dinner - Saturday 8 PM\n" +
+                        "• Brunch Event - Sunday 10 AM");
+    }
+
+    @FXML
+    private void handleRapport(ActionEvent event) {
+        showAlert("Reports", "Available Reports",
+                "• Monthly Sales Report\n" +
+                        "• Customer Feedback Summary\n" +
+                        "• Restaurant Performance Analysis\n" +
+                        "• Menu Popularity Report");
+    }
+
     @FXML
     private void handleContact(ActionEvent event) {
         showAlert("Contact", "Contact Us",
                 "Email: info@big4restaurant.com\n" +
                         "Phone: +33 1 23 45 67 89\n" +
-                        "Address: 123 Gastronomic Street, Paris 75001\n" +
-                        "Website: www.big4restaurant.com");
+                        "Address: 123 Gastronomic Street, Paris");
     }
 
-    /**
-     * Handles the cart button click
-     */
-    @FXML
-    private void handleCart(ActionEvent event) {
-        loadScene("resources/cart.fxml", "My Cart - Big4");
-    }
-
-    /**
-     * Handles the profile button click
-     */
     @FXML
     private void handleProfile(ActionEvent event) {
         showAlert("Profile", "User Profile",
-                "Welcome to your profile!\n\n" +
-                        "Profile Information:\n" +
-                        "• Name: [Your Name]\n" +
-                        "• Email: your.email@example.com\n" +
-                        "• Phone: Your Phone Number\n" +
-                        "• Member Since: 2024\n\n" +
-                        "Edit your profile in the profile page.");
+                "Profile page coming soon.");
     }
 
-    /**
-     * Handles the call button click
-     */
     @FXML
     private void handleCall(ActionEvent event) {
         showAlert("Call Big4", "Contact Information",
-                "Phone: +33 1 23 45 67 89\n\n" +
-                        "Business Hours:\n" +
-                        "Monday - Friday: 10:00 AM - 11:00 PM\n" +
-                        "Saturday: 11:00 AM - 12:00 AM\n" +
-                        "Sunday: 11:00 AM - 11:00 PM");
+                "Phone: +33 1 23 45 67 89\n\nBusiness Hours: 10:00 - 23:00");
     }
 
-    /**
-     * Handles the "View Menu" button click
-     */
-    @FXML
-    private void handleViewMenu(ActionEvent event) {
-        loadScene("resources/menu.fxml", "Menu - Big4");
-    }
+    // =========================
+    // CORE WINDOW LOADER (NEW WINDOW)
+    // =========================
 
-    /**
-     * Handles the "Reserve a Table" button click
-     */
-    @FXML
-    private void handleReserveTable(ActionEvent event) {
-        loadScene("resources/reservation.fxml", "Reservation - Big4");
-    }
-
-    /**
-     * Helper method to load a new scene
-     */
     private void loadScene(String fxmlPath, String windowTitle) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
-            Parent root = loader.load();
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
 
-            Stage stage = new Stage();
+            Stage stage = new Stage(); // NEW WINDOW
             stage.setTitle(windowTitle);
             stage.setScene(new Scene(root, 1200, 800));
             stage.show();
@@ -200,9 +133,10 @@ public class homepage {
         }
     }
 
-    /**
-     * Helper method to show alert dialogs
-     */
+    // =========================
+    // ALERT HELPER
+    // =========================
+
     private void showAlert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
