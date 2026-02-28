@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="Controllers.MainController"
+            prefHeight="600.0" prefWidth="900.0"
+            stylesheets="@styles/main.css"
+            styleClass="inventory-root">
+    <children>
+        <VBox spacing="18.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="16.0"
+              AnchorPane.rightAnchor="16.0" AnchorPane.topAnchor="16.0">
+            <children>
+                <VBox spacing="6.0" styleClass="header-section">
+                    <children>
+                        <Label text="Inventory Dashboard" styleClass="title-label"/>
+                        <Label text="Track ingredient levels and record waste." styleClass="subtitle-label" wrapText="true"/>
+                    </children>
+                </VBox>
+                <TabPane fx:id="mainTabPane" VBox.vgrow="ALWAYS" styleClass="card-tab-pane">
+                    <tabs>
+                        <Tab text="Stock">
+                            <content>
+                                <BorderPane prefHeight="400.0" styleClass="content-card">
+                                    <center>
+                                        <TableView fx:id="ingredientsTable" prefHeight="200.0"
+                                                   BorderPane.alignment="CENTER" styleClass="elevated-table">
+                                            <columns>
+                                                <TableColumn fx:id="ingredientNameColumn" prefWidth="150.0"
+                                                             text="Ingredient"/>
+                                                <TableColumn fx:id="ingredientQuantityColumn" prefWidth="100.0"
+                                                             text="In Stock"/>
+                                                <TableColumn fx:id="ingredientUnitColumn" prefWidth="80.0"
+                                                             text="Unit"/>
+                                                <TableColumn fx:id="ingredientMinStockColumn" prefWidth="100.0"
+                                                             text="Min Stock"/>
+                                                <TableColumn fx:id="ingredientUnitCostColumn" prefWidth="100.0"
+                                                             text="Unit Cost"/>
+                                                <TableColumn fx:id="ingredientExpiryColumn" prefWidth="150.0"
+                                                             text="Expiry"/>
+                                            </columns>
+                                            <placeholder>
+                                                <Label text="No ingredients yet. Add your first ingredient to get started." styleClass="placeholder-label" wrapText="true"/>
+                                            </placeholder>
+                                        </TableView>
+                                    </center>
+                                    <bottom>
+                                        <VBox spacing="16.0" styleClass="form-card">
+                                            <padding>
+                                                <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
+                                            </padding>
+                                            <children>
+                                                <GridPane hgap="18.0" vgap="12.0" styleClass="form-grid">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints percentWidth="20.0"/>
+                                                        <ColumnConstraints percentWidth="30.0"/>
+                                                        <ColumnConstraints percentWidth="20.0"/>
+                                                        <ColumnConstraints percentWidth="30.0"/>
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints percentHeight="25.0"/>
+                                                        <RowConstraints percentHeight="25.0"/>
+                                                        <RowConstraints percentHeight="25.0"/>
+                                                        <RowConstraints percentHeight="25.0"/>
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <Label text="Name" styleClass="form-label"/>
+                                                        <TextField fx:id="ingredientNameField" GridPane.columnIndex="1" styleClass="form-input" promptText="e.g. Fresh Tomatoes"/>
+                                                        <Label text="Quantity" GridPane.rowIndex="1" styleClass="form-label"/>
+                                                        <TextField fx:id="ingredientQuantityField" GridPane.columnIndex="1"
+                                                                   GridPane.rowIndex="1" styleClass="form-input" promptText="e.g. 25"/>
+                                                        <Label text="Unit" GridPane.columnIndex="2" styleClass="form-label"/>
+                                                        <TextField fx:id="ingredientUnitField" GridPane.columnIndex="3" styleClass="form-input" promptText="e.g. kg"/>
+                                                        <Label text="Min Stock" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="form-label"/>
+                                                        <TextField fx:id="ingredientMinStockField" GridPane.columnIndex="3"
+                                                                   GridPane.rowIndex="1" styleClass="form-input" promptText="e.g. 5"/>
+                                                        <Label text="Unit Cost" GridPane.rowIndex="2" styleClass="form-label"/>
+                                                        <TextField fx:id="ingredientUnitCostField" GridPane.columnIndex="1"
+                                                                   GridPane.rowIndex="2" styleClass="form-input" promptText="e.g. 3.50"/>
+                                                        <Label text="Expiry Date" GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="form-label"/>
+                                                        <DatePicker fx:id="ingredientExpiryDatePicker" GridPane.columnIndex="3"
+                                                                   GridPane.rowIndex="2" styleClass="form-date-picker" promptText="Select date"/>
+                                                    </children>
+                                                </GridPane>
+                                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                                    <children>
+                                                        <Button onAction="#handleAddIngredient" text="Add" styleClass="primary-button"/>
+                                                        <Button onAction="#handleUpdateIngredient" text="Update" styleClass="secondary-button"/>
+                                                        <Button onAction="#handleDeleteIngredient" text="Delete" styleClass="danger-button"/>
+                                                        <Button onAction="#handleClearIngredientForm" text="Clear" styleClass="ghost-button"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </bottom>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                        <Tab text="Waste">
+                            <content>
+                                <BorderPane prefHeight="400.0" styleClass="content-card">
+                                    <center>
+                                        <TableView fx:id="wasteTable" prefHeight="200.0" BorderPane.alignment="CENTER" styleClass="elevated-table">
+                                            <columns>
+                                                <TableColumn fx:id="wasteIngredientColumn" prefWidth="150.0"
+                                                             text="Ingredient"/>
+                                                <TableColumn fx:id="wasteQuantityColumn" prefWidth="100.0"
+                                                             text="Quantity"/>
+                                                <TableColumn fx:id="wasteTypeColumn" prefWidth="120.0"
+                                                             text="Waste Type"/>
+                                                <TableColumn fx:id="wasteDateColumn" prefWidth="160.0" text="Recorded At"/>
+                                                <TableColumn fx:id="wasteReasonColumn" prefWidth="220.0" text="Reason"/>
+                                            </columns>
+                                            <placeholder>
+                                                <Label text="No waste records recorded yet." styleClass="placeholder-label"/>
+                                            </placeholder>
+                                        </TableView>
+                                    </center>
+                                    <bottom>
+                                        <VBox spacing="16.0" styleClass="form-card">
+                                            <padding>
+                                                <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
+                                            </padding>
+                                            <children>
+                                                <GridPane hgap="18.0" vgap="12.0" styleClass="form-grid">
+                                                    <columnConstraints>
+                                                        <ColumnConstraints percentWidth="20.0"/>
+                                                        <ColumnConstraints percentWidth="30.0"/>
+                                                        <ColumnConstraints percentWidth="20.0"/>
+                                                        <ColumnConstraints percentWidth="30.0"/>
+                                                    </columnConstraints>
+                                                    <rowConstraints>
+                                                        <RowConstraints percentHeight="33.0"/>
+                                                        <RowConstraints percentHeight="33.0"/>
+                                                        <RowConstraints percentHeight="34.0"/>
+                                                    </rowConstraints>
+                                                    <children>
+                                                        <Label text="Ingredient" styleClass="form-label"/>
+                                                        <ComboBox fx:id="wasteIngredientCombo" GridPane.columnIndex="1" styleClass="form-input" promptText="Select ingredient"/>
+                                                        <Label text="Quantity" GridPane.columnIndex="2" styleClass="form-label"/>
+                                                        <TextField fx:id="wasteQuantityField" GridPane.columnIndex="3" styleClass="form-input" promptText="e.g. 2"/>
+                                                        <Label text="Waste Type" GridPane.rowIndex="1" styleClass="form-label"/>
+                                                        <ComboBox fx:id="wasteTypeCombo" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="form-input" promptText="Choose type"/>
+                                                        <Label text="Reason" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="form-label"/>
+                                                        <TextArea fx:id="wasteReasonField" GridPane.columnIndex="3" GridPane.rowIndex="1"
+                                                                  prefRowCount="2" wrapText="true" styleClass="form-textarea" promptText="Describe what happened"/>
+                                                    </children>
+                                                </GridPane>
+                                                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                                                    <children>
+                                                        <Button onAction="#handleRecordWaste" text="Record Waste" styleClass="primary-button"/>
+                                                        <Button onAction="#handleDeleteWaste" text="Delete Record" styleClass="danger-button"/>
+                                                        <Button onAction="#handleClearWasteForm" text="Clear" styleClass="ghost-button"/>
+                                                    </children>
+                                                </HBox>
+                                            </children>
+                                        </VBox>
+                                    </bottom>
+                                </BorderPane>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </children>
+        </VBox>
+    </children>
+</AnchorPane>

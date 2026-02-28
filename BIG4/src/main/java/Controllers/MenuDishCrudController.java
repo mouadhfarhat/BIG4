@@ -111,9 +111,9 @@ public class MenuDishCrudController {
 
     private void refreshMenus() {
         try {
-            ObservableList<Menu> data = FXCollections.observableArrayList(menuService.getallMenu());
+            ObservableList<Menu> data = FXCollections.observableArrayList(menuService.getAllMenu());
             tvMenus.setItems(data);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblMenuMsg.setText("DB error (menus): " + e.getMessage());
         }
     }
@@ -146,7 +146,7 @@ public class MenuDishCrudController {
             onClearMenu();
             refreshMenus();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblMenuMsg.setText("Add menu failed: " + e.getMessage());
         }
     }
@@ -176,7 +176,7 @@ public class MenuDishCrudController {
 
             refreshMenus();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblMenuMsg.setText("Update menu failed: " + e.getMessage());
         }
     }
@@ -202,7 +202,7 @@ public class MenuDishCrudController {
             onClearDish();
             refreshMenus();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblMenuMsg.setText("Delete menu failed: " + e.getMessage());
         }
     }
@@ -231,7 +231,7 @@ public class MenuDishCrudController {
                     dishService.getByMenuId(selectedMenu.getId())
             );
             tvDishes.setItems(data);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblDishMsg.setText("DB error (dishes): " + e.getMessage());
         }
     }
@@ -281,7 +281,7 @@ public class MenuDishCrudController {
             onClearDish();
             refreshDishesForSelectedMenu();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblDishMsg.setText("Add dish failed: " + e.getMessage());
         }
     }
@@ -333,7 +333,7 @@ public class MenuDishCrudController {
 
             refreshDishesForSelectedMenu();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblDishMsg.setText("Update dish failed: " + e.getMessage());
         }
     }
@@ -353,7 +353,7 @@ public class MenuDishCrudController {
             onClearDish();
             refreshDishesForSelectedMenu();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             lblDishMsg.setText("Delete dish failed: " + e.getMessage());
         }
     }

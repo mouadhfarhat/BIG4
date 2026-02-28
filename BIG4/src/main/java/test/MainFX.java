@@ -15,6 +15,8 @@ public class MainFX extends Application {
         stage.setScene(scene);
         stage.setMaximized(true);
         stage.show();
+        int x ;
+
     }
 
     public static void main(String[] args) {

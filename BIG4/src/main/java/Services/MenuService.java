@@ -1,98 +1,111 @@
 package Services;
+
 import Entities.Menu;
 import Utils.Mydatabase;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuService {
-    private final Connection cnx;
 
-    public MenuService() {
-        try {
-            cnx = Mydatabase.getInstance().getConnection();
+    // ✅ used by admin: getAllMenu()
+    public List<Menu> getAllMenu() {
+        String sql = "SELECT id, title, description, isActive, created_at, updated_at FROM menu ORDER BY id DESC";
+        List<Menu> menus = new ArrayList<>();
+
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Menu m = new Menu();
+                m.setId(rs.getInt("id"));
+                m.setTitle(rs.getString("title"));
+                m.setDescription(rs.getString("description"));
+                m.setActive(rs.getBoolean("isActive"));
+                m.setCreatedAt(rs.getTimestamp("created_at"));
+                m.setUpdatedAt(rs.getTimestamp("updated_at"));
+                menus.add(m);
+            }
+
         } catch (SQLException e) {
-            throw new IllegalStateException("Unable to obtain database connection", e);
+            e.printStackTrace();
+        }
+        return menus;
+    }
+
+    // ✅ used by admin: addMenu2(...)
+    public void addMenu2(Menu m) {
+        String sql = "INSERT INTO menu(title, description, isActive) VALUES(?,?,?)";
+
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setString(1, m.getTitle());
+            ps.setString(2, m.getDescription());
+            ps.setBoolean(3, m.isActive());
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
-    /*public void addMenu(Menu menu) throws SQLException{
-        String sql = "insert into menu (title, description, isActive) " +
-                "values ('" + menu.getTitle() + "', '" +
-                menu.getDescription() + "', " +
-                menu.isActive() + ")";
-        Statement st = cnx.createStatement();
-        st.executeUpdate(sql);
-    }*/
-    public void addMenu2(Menu menu) throws SQLException {
-        String sql = "insert into menu (title , description , isActive)" + "values(?,?,?)";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setString(1, menu.getTitle());
-        ps.setString(2, menu.getDescription());
-        ps.setBoolean(3, menu.isActive());
-        ps.executeUpdate();
-    }
-    public void updateMenu(Menu menu) throws SQLException
-    {
-        String sql = "update menu set title = ? , description = ? , isActive = ? where id = ?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setString(1, menu.getTitle());
-        ps.setString(2, menu.getDescription());
-        ps.setBoolean(3, menu.isActive());
-        ps.setInt(4, menu.getId());
-        ps.executeUpdate();
 
-    }
-    public Menu getById(int id) throws SQLException {
+    // ✅ used by admin: updateMenu(...)
+    public void updateMenu(Menu m) {
+        String sql = "UPDATE menu SET title=?, description=?, isActive=? WHERE id=?";
 
-        String sql = "SELECT * FROM menu WHERE id = ?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
+            ps.setString(1, m.getTitle());
+            ps.setString(2, m.getDescription());
+            ps.setBoolean(3, m.isActive());
+            ps.setInt(4, m.getId());
+            ps.executeUpdate();
 
-        if (rs.next()) {
-            Menu m = new Menu();
-            m.setId(rs.getInt("id"));
-            m.setTitle(rs.getString("title"));
-            m.setDescription(rs.getString("description"));
-            m.setActive(rs.getBoolean("isActive"));
-            return m;
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return null; // if no row found
     }
 
+    // ✅ used by admin: delete(...)
+    public void delete(int id) {
+        String sql = "DELETE FROM menu WHERE id=?";
 
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
 
+            ps.setInt(1, id);
+            ps.executeUpdate();
 
-    public List<Menu> getallMenu() throws SQLException {
-        List<Menu> Menus = new ArrayList<>();
-        String sql = "select * from Menu";
-        Statement st = cnx.createStatement();
-        ResultSet rs = st.executeQuery(sql);
-        while (rs.next()) {
-            Menu p = new Menu();
-            p.setId(rs.getInt("id"));
-            p.setTitle(rs.getString("title"));
-            p.setDescription(rs.getString("description"));
-            p.setActive(rs.getBoolean("isActive"));
-            Menus.add(p);
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-
-        return Menus;
-    }
-    public void delete(int id) throws SQLException {
-
-        String sql = "DELETE FROM menu WHERE id = ?";
-        PreparedStatement ps = cnx.prepareStatement(sql);
-        ps.setInt(1, id);
-
-        ps.executeUpdate();
     }
 
+    // ✅ used by client page (optional)
+    public List<Menu> getActiveMenus() {
+        String sql = "SELECT id, title, description, isActive FROM menu WHERE isActive=1 ORDER BY title";
+        List<Menu> menus = new ArrayList<>();
+
+        try (Connection cnx = Mydatabase.getInstance().getConnection();
+             PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Menu m = new Menu();
+                m.setId(rs.getInt("id"));
+                m.setTitle(rs.getString("title"));
+                m.setDescription(rs.getString("description"));
+                m.setActive(rs.getBoolean("isActive"));
+                menus.add(m);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return menus;
+    }
 }

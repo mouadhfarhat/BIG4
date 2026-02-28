@@ -47,9 +47,12 @@
                 <Button fx:id="rapportBtn" text="Reports"
                         style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
                         onAction="#handleRapport" />
-                <Button fx:id="adminBtn" text="Admin"
+                <Button fx:id="adminInventoryBtn" text="Inventory Admin"
                     style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-underline: false; -fx-cursor: hand;"
-                    onAction="#handleAdmin" />
+                    onAction="#handleAdminInventory" />
+                <Button fx:id="adminMenuBtn" text="Menu Admin"
+                    style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-underline: false; -fx-cursor: hand;"
+                    onAction="#handleAdminMenu" />
                 <Button fx:id="contactBtn" text="Contact"
                         style="-fx-text-fill: white; -fx-font-size: 14; -fx-background-color: transparent; -fx-cursor: hand;"
                         onAction="#handleContact" />

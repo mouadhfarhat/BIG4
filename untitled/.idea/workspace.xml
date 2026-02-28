@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="23fc4be5-d21c-4da1-9e44-5ce05f7c3a1d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/AIChatService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/ExchangeRateService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/MealDbService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/MenuChatBot.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/PopularityService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/WeatherService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/BIG4.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/compiler.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/jarRepositories.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/ClientMenuViewController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/ClientMenuViewController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/DishCardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/DishCardController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/MenuDishCrudController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/MenuDishCrudController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/homepage.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Controllers/homepage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Services/DishService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/DishService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/java/Services/MenuService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/java/Services/MenuService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/resources/DishCard.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/resources/DishCard.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/resources/menu.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/resources/menu.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../BIG4/src/main/resources/styles/client-menu.css" beforeDir="false" afterPath="$PROJECT_DIR$/../BIG4/src/main/resources/styles/client-menu.css" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "wissembn1010"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/mouadhfarhat/BIG4.git",
+    "accountId": "cbfe04ac-5cec-468a-999c-304a8ba37662"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 0
+}]]></component>
+  <component name="ProjectId" id="3AIIQ8DhofT6nIA8IM0YvXgN2En" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "git-widget-placeholder": "IntTest",
+    "kotlin-language-version-configured": "true",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="23fc4be5-d21c-4da1-9e44-5ce05f7c3a1d" name="Changes" comment="" />
+      <created>1772273644297</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1772273644297</updated>
+      <workItem from="1772273648451" duration="140000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

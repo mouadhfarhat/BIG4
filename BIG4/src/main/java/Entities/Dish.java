@@ -1,9 +1,5 @@
 package Entities;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 public class Dish {
     private int id ;
     private int menu_id ;
@@ -15,8 +11,6 @@ public class Dish {
     private String image_url ;
     private Timestamp created_at;
     private Timestamp update_at;
-    private final List<DishIngredient> ingredientRequirements = new ArrayList<>();
-
     public Dish() {}
 
     public Dish(int id, int menu_id, String name, String description, float base_price, Boolean available, int stock_quantity, Timestamp created_at, String image_url, Timestamp update_at) {
@@ -121,29 +115,6 @@ public class Dish {
         this.update_at = update_at;
     }
 
-    public List<DishIngredient> getIngredientRequirements() {
-        return Collections.unmodifiableList(ingredientRequirements);
-    }
-
-    public void setIngredientRequirements(List<DishIngredient> requirements) {
-        ingredientRequirements.clear();
-        if (requirements == null) {
-            return;
-        }
-        for (DishIngredient requirement : requirements) {
-            addIngredientRequirement(requirement);
-        }
-    }
-
-    public void addIngredientRequirement(DishIngredient requirement) {
-        if (requirement == null) {
-            return;
-        }
-        requirement.setDish(this);
-        requirement.setDishId(this.id);
-        ingredientRequirements.add(requirement);
-    }
-
     @Override
     public String toString() {
         return "Dish{" +
@@ -156,7 +127,6 @@ public class Dish {
                 ", image_url='" + image_url + '\'' +
                 ", created_at=" + created_at +
                 ", update_at=" + update_at +
-                ", ingredientRequirements=" + ingredientRequirements.size() +
                 '}';
     }
 }
